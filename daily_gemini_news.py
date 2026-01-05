@@ -1,6 +1,7 @@
 import os
 import requests
 import smtplib
+import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
@@ -13,13 +14,12 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-MODEL_NAME = "gemini-1.5-pro"
+# We use FLASH because it is most stable for free API keys
+MODEL_NAME = "gemini-1.5-flash"
 
 def fetch_global_news():
     print("--- 1. Fetching News ---")
-    
-    # SIMPLIFIED QUERY: Complex queries often fail on free plans. 
-    # We switch to a broader query to GUARANTEE results.
+    # Using a broad query to ensure we get data
     url = (
         f"https://newsapi.org/v2/top-headlines?"
         f"category=general&"
@@ -32,8 +32,6 @@ def fetch_global_news():
         response = requests.get(url)
         data = response.json()
         articles = data.get("articles", [])
-        print(f"-> Status: {data.get('status')}")
-        print(f"-> Found {len(articles)} articles.")
         return articles
     except Exception as e:
         print(f"!! Error fetching news: {e}")
@@ -41,20 +39,16 @@ def fetch_global_news():
 
 def analyze_news(articles):
     print(f"--- 2. Analyzing with {MODEL_NAME} ---")
-    if not articles:
-        return None
-
-    # Prepare data
+    
+    # Prepare headlines for the prompt
     raw_text = ""
     for i, a in enumerate(articles):
         raw_text += f"{i+1}. {a['title']} (Source: {a['source']['name']})\n"
 
-    print(f"-> Input Tokens (Approx): {len(raw_text)}")
-
     genai.configure(api_key=GEMINI_API_KEY)
     model = genai.GenerativeModel(MODEL_NAME)
 
-    # BLOCK_NONE is critical for news
+    # Safety: Allow everything to prevent silent blocks
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -65,29 +59,36 @@ def analyze_news(articles):
     prompt = (
         "Summarize these news headlines into a daily briefing HTML format. "
         "Use <div class='section'> for each topic. "
-        "Include a <div class='theory-box'> explaining the context. "
-        "If the news is boring, explain why it matters.\n\n"
+        "Include a <div class='theory-box'> explaining the context.\n\n"
         f"HEADLINES:\n{raw_text}"
     )
 
     try:
         response = model.generate_content(prompt, safety_settings=safety_settings)
-        print("-> Gemini Response Received")
         
         if not response.parts:
-            print("!! Gemini returned EMPTY response (Safety Blocked).")
-            return None
+            return None, "Gemini returned empty response (Safety Block)."
             
         clean_html = response.text.replace("```html", "").replace("```", "")
-        return clean_html
-    except Exception as e:
-        print(f"!! Gemini Error: {e}")
-        return None
+        return clean_html, None
+        
+    except Exception:
+        # Capture the FULL error trace to send in email
+        error_msg = traceback.format_exc()
+        print(f"!! Gemini Error Trace:\n{error_msg}")
+        return None, error_msg
 
-def create_fallback_html(articles):
-    """Creates a simple HTML list if AI fails"""
-    print("--- Generating Fallback HTML ---")
-    html = "<h3>⚠️ AI Generation Failed - Here are the Raw Headlines</h3><ul>"
+def create_fallback_html(articles, error_msg):
+    """Creates a HTML list with the specific error message"""
+    html = f"""
+    <div style='background-color: #fee; border: 1px solid red; padding: 10px; margin-bottom: 20px;'>
+        <h3>⚠️ AI Generation Failed</h3>
+        <b>Error Details:</b><br>
+        <pre style='white-space: pre-wrap; font-size: 10px;'>{error_msg}</pre>
+    </div>
+    <h3>Raw Headlines</h3>
+    <ul>
+    """
     for a in articles:
         html += f"<li><b>{a['title']}</b><br><i>{a['source']['name']}</i></li><br>"
     html += "</ul>"
@@ -95,8 +96,6 @@ def create_fallback_html(articles):
 
 def send_email(html_content, subject_prefix=""):
     print("--- 3. Sending Email ---")
-    
-    # Load Template or Default
     try:
         with open('email_template.html', 'r') as f:
             template_str = f.read()
@@ -122,18 +121,18 @@ def send_email(html_content, subject_prefix=""):
         print(f"!! Failed to send email: {e}")
 
 if __name__ == "__main__":
-    print("=== STARTING JOB ===")
     articles = fetch_global_news()
     
     if not articles:
-        print("!! No articles found. Sending Error Email.")
-        send_email("<p>Error: NewsAPI returned 0 articles today. Check API Key or Query.</p>", "[ERROR]")
+        send_email("<p>Error: NewsAPI returned 0 articles.</p>", "[ERROR]")
     else:
-        analysis_html = analyze_news(articles)
+        # Try to analyze
+        analysis_html, error_msg = analyze_news(articles)
         
         if analysis_html:
             send_email(analysis_html)
         else:
-            print("!! AI Output was empty. Sending Fallback.")
-            fallback = create_fallback_html(articles)
-            send_email(fallback, "[FALLBACK]")
+            # Send the specific error to the user
+            print("!! Sending Fallback with Error details.")
+            fallback = create_fallback_html(articles, error_msg)
+            send_email(fallback, "[DEBUG]")
