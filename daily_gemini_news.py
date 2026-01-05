@@ -5,7 +5,7 @@ import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # --- CONFIGURATION ---
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -14,59 +14,63 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
+# 10 Diverse International Sources (Balanced Worldview)
+SOURCES = [
+    "reuters.com",       # Global/Neutral
+    "aljazeera.com",     # Middle East/Global South
+    "bbc.co.uk",         # UK/Public Service
+    "scmp.com",          # Asia/China Perspective
+    "dw.com",            # Europe/Germany
+    "bloomberg.com",     # Economics Focus
+    "wsj.com",           # US Business/Conservative
+    "theguardian.com",   # UK/Progressive
+    "france24.com",      # France/Global
+    "thehindu.com"       # India/South Asia
+]
+
 def get_working_model():
-    """
-    Asks Google API what models are available to THIS specific API Key
-    and selects the best one automatically.
-    """
+    """Auto-selects the best available Gemini model to prevent 404 errors."""
     print("--- Selecting Best Available AI Model ---")
     genai.configure(api_key=GEMINI_API_KEY)
-    
     try:
-        # Get list of all models your key can access
-        my_models = []
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                # Strip the "models/" prefix if it exists
-                clean_name = m.name.replace("models/", "")
-                my_models.append(clean_name)
+        my_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
         
-        print(f"-> Available Models: {my_models}")
-
-        # Preference list: Try these in order
+        # Preference order: Flash is faster/cheaper, Pro is smarter. 
+        # Since we want deep theory, we try Pro first, but fall back to Flash if needed.
         preferences = [
-            "gemini-1.5-flash", 
-            "gemini-1.5-flash-001",
-            "gemini-1.5-flash-latest",
-            "gemini-1.5-pro",
+            "gemini-1.5-pro", 
+            "gemini-1.5-pro-latest",
             "gemini-1.5-pro-001",
-            "gemini-pro"
+            "gemini-1.5-flash", 
+            "gemini-1.5-flash-latest"
         ]
-
-        # Find the first match
+        
         for pref in preferences:
             if pref in my_models:
                 print(f"vv SELECTED: {pref}")
                 return pref
         
-        # If no exact match, grab the first one that has "gemini" in the name
-        fallback = next((m for m in my_models if "gemini" in m), "gemini-pro")
-        print(f"-> Fallback Selection: {fallback}")
-        return fallback
-
+        return "gemini-pro" # Ultimate fallback
     except Exception as e:
-        print(f"!! Error listing models: {e}")
-        print("-> Defaulting to 'gemini-pro'")
-        return "gemini-pro"
+        print(f"!! Model selection error: {e}. Defaulting to gemini-1.5-flash")
+        return "gemini-1.5-flash"
 
 def fetch_global_news():
-    print("--- 1. Fetching News ---")
-    # Broad query to ensure we get results
+    print("--- 1. Fetching World News (Politics & Econ) ---")
+    
+    # Construct the advanced query
+    domains = ",".join(SOURCES)
+    # We look back 3 days to ensure we get the 'Latest' breaking news, but enough volume
+    date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
+    
     url = (
-        f"https://newsapi.org/v2/top-headlines?"
-        f"category=general&"
+        f"https://newsapi.org/v2/everything?"
+        f"q=(economy OR politics OR diplomacy OR 'international relations')&"
+        f"domains={domains}&"
+        f"from={date_from}&"
+        f"sortBy=publishedAt&" # Latest news first
         f"language=en&"
-        f"pageSize=10&"
+        f"pageSize=20&" # Fetch 20 to give AI enough context
         f"apiKey={NEWS_API_KEY}"
     )
     
@@ -74,24 +78,24 @@ def fetch_global_news():
         response = requests.get(url)
         data = response.json()
         articles = data.get("articles", [])
+        print(f"-> Found {len(articles)} articles from diverse sources.")
         return articles
     except Exception as e:
         print(f"!! Error fetching news: {e}")
         return []
 
 def analyze_news(articles):
-    # DYNAMICALLY GET THE MODEL NAME
     model_name = get_working_model()
-    
     print(f"--- 2. Analyzing with {model_name} ---")
     
+    # Prepare text for AI
     raw_text = ""
-    for i, a in enumerate(articles):
-        raw_text += f"{i+1}. {a['title']} (Source: {a['source']['name']})\n"
+    for i, a in enumerate(articles[:15]): # Limit to 15 to fit context window
+        raw_text += f"{i+1}. {a['title']} - Source: {a['source']['name']} - Date: {a['publishedAt'][:10]}\n"
 
     model = genai.GenerativeModel(model_name)
 
-    # Safety settings to preventing blocking
+    # Safety: Allow political content
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -100,38 +104,39 @@ def analyze_news(articles):
     ]
 
     prompt = (
-        "Summarize these news headlines into a daily briefing HTML format. "
-        "Use <div class='section'> for each topic. "
-        "Include a <div class='theory-box'> explaining the context.\n\n"
-        f"HEADLINES:\n{raw_text}"
+        "You are an expert Professor of International Relations and Economics. "
+        "Review these latest news headlines from diverse global sources. "
+        "Create a HTML Daily Intelligence Briefing.\n\n"
+        
+        "INSTRUCTIONS:\n"
+        "1. Identify the top 3-4 most critical global themes (e.g., 'Trade Wars', 'Elections', 'Energy Crisis').\n"
+        "2. For each theme, create a <div class='section'> block.\n"
+        "3. Inside the block:\n"
+        "   - Add a headline <div class='news-title'>Theme Title</div>\n"
+        "   - Summarize the development in 2 sentences. Cite the specific sources used (e.g. 'reported by Al Jazeera and WSJ').\n"
+        "   - CRITICAL STEP: Add a <div class='theory-box'>.\n"
+        "     Inside it, define the political/economic THEORY or concept at play.\n"
+        "     (e.g. explain 'Comparative Advantage', 'Soft Power', 'Realism', 'Inflationary Spiral').\n"
+        "     Label it <span class='theory-title'>CONCEPT: [Name of Theory]</span>.\n\n"
+        
+        f"NEWS DATA:\n{raw_text}"
     )
 
     try:
         response = model.generate_content(prompt, safety_settings=safety_settings)
-        
         if not response.parts:
             return None, "Gemini returned empty response (Safety Block)."
-            
+        
         clean_html = response.text.replace("```html", "").replace("```", "")
         return clean_html, None
-        
     except Exception:
         error_msg = traceback.format_exc()
-        print(f"!! Gemini Error Trace:\n{error_msg}")
         return None, error_msg
 
 def create_fallback_html(articles, error_msg):
-    html = f"""
-    <div style='background-color: #fee; border: 1px solid red; padding: 10px; margin-bottom: 20px;'>
-        <h3>⚠️ AI Generation Failed</h3>
-        <b>Error Details:</b><br>
-        <pre style='white-space: pre-wrap; font-size: 10px;'>{error_msg}</pre>
-    </div>
-    <h3>Raw Headlines</h3>
-    <ul>
-    """
+    html = f"<div style='background:#fee;padding:10px;'><h3>⚠️ Analysis Failed</h3><pre>{error_msg}</pre></div><ul>"
     for a in articles:
-        html += f"<li><b>{a['title']}</b><br><i>{a['source']['name']}</i></li><br>"
+        html += f"<li><b>{a['title']}</b><br><i>{a['source']['name']}</i></li>"
     html += "</ul>"
     return html
 
@@ -141,15 +146,15 @@ def send_email(html_content, subject_prefix=""):
         with open('email_template.html', 'r') as f:
             template_str = f.read()
     except:
-        template_str = "<html><body><h1>Daily Brief</h1>{{CONTENT}}</body></html>"
+        template_str = "<html><body><h1>Global Brief</h1>{{CONTENT}}</body></html>"
 
-    final_body = template_str.replace("{{DATE}}", datetime.now().strftime('%Y-%m-%d'))
+    final_body = template_str.replace("{{DATE}}", datetime.now().strftime('%A, %B %d, %Y'))
     final_body = final_body.replace("{{CONTENT}}", html_content)
 
     msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"{subject_prefix} 🌍 World Brief: {datetime.now().strftime('%Y-%m-%d')}"
+    msg['Subject'] = f"{subject_prefix} 🌍 Global Intelligence: {datetime.now().strftime('%Y-%m-%d')}"
     msg.attach(MIMEText(final_body, 'html'))
 
     try:
@@ -163,13 +168,11 @@ def send_email(html_content, subject_prefix=""):
 
 if __name__ == "__main__":
     articles = fetch_global_news()
-    
     if not articles:
-        send_email("<p>Error: NewsAPI returned 0 articles.</p>", "[ERROR]")
+        send_email("<p>No articles found matching the criteria today.</p>", "[EMPTY]")
     else:
         analysis_html, error_msg = analyze_news(articles)
         if analysis_html:
             send_email(analysis_html)
         else:
-            fallback = create_fallback_html(articles, error_msg)
-            send_email(fallback, "[DEBUG]")
+            send_email(create_fallback_html(articles, error_msg), "[DEBUG]")
