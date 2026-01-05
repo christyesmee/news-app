@@ -5,7 +5,7 @@ import traceback
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # --- CONFIGURATION ---
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
@@ -14,12 +14,54 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# We use FLASH because it is most stable for free API keys
-MODEL_NAME = "gemini-1.5-flash"
+def get_working_model():
+    """
+    Asks Google API what models are available to THIS specific API Key
+    and selects the best one automatically.
+    """
+    print("--- Selecting Best Available AI Model ---")
+    genai.configure(api_key=GEMINI_API_KEY)
+    
+    try:
+        # Get list of all models your key can access
+        my_models = []
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                # Strip the "models/" prefix if it exists
+                clean_name = m.name.replace("models/", "")
+                my_models.append(clean_name)
+        
+        print(f"-> Available Models: {my_models}")
+
+        # Preference list: Try these in order
+        preferences = [
+            "gemini-1.5-flash", 
+            "gemini-1.5-flash-001",
+            "gemini-1.5-flash-latest",
+            "gemini-1.5-pro",
+            "gemini-1.5-pro-001",
+            "gemini-pro"
+        ]
+
+        # Find the first match
+        for pref in preferences:
+            if pref in my_models:
+                print(f"vv SELECTED: {pref}")
+                return pref
+        
+        # If no exact match, grab the first one that has "gemini" in the name
+        fallback = next((m for m in my_models if "gemini" in m), "gemini-pro")
+        print(f"-> Fallback Selection: {fallback}")
+        return fallback
+
+    except Exception as e:
+        print(f"!! Error listing models: {e}")
+        print("-> Defaulting to 'gemini-pro'")
+        return "gemini-pro"
 
 def fetch_global_news():
     print("--- 1. Fetching News ---")
-    # Using a broad query to ensure we get data
+    # Broad query to ensure we get results
     url = (
         f"https://newsapi.org/v2/top-headlines?"
         f"category=general&"
@@ -38,17 +80,18 @@ def fetch_global_news():
         return []
 
 def analyze_news(articles):
-    print(f"--- 2. Analyzing with {MODEL_NAME} ---")
+    # DYNAMICALLY GET THE MODEL NAME
+    model_name = get_working_model()
     
-    # Prepare headlines for the prompt
+    print(f"--- 2. Analyzing with {model_name} ---")
+    
     raw_text = ""
     for i, a in enumerate(articles):
         raw_text += f"{i+1}. {a['title']} (Source: {a['source']['name']})\n"
 
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel(MODEL_NAME)
+    model = genai.GenerativeModel(model_name)
 
-    # Safety: Allow everything to prevent silent blocks
+    # Safety settings to preventing blocking
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -73,13 +116,11 @@ def analyze_news(articles):
         return clean_html, None
         
     except Exception:
-        # Capture the FULL error trace to send in email
         error_msg = traceback.format_exc()
         print(f"!! Gemini Error Trace:\n{error_msg}")
         return None, error_msg
 
 def create_fallback_html(articles, error_msg):
-    """Creates a HTML list with the specific error message"""
     html = f"""
     <div style='background-color: #fee; border: 1px solid red; padding: 10px; margin-bottom: 20px;'>
         <h3>⚠️ AI Generation Failed</h3>
@@ -126,13 +167,9 @@ if __name__ == "__main__":
     if not articles:
         send_email("<p>Error: NewsAPI returned 0 articles.</p>", "[ERROR]")
     else:
-        # Try to analyze
         analysis_html, error_msg = analyze_news(articles)
-        
         if analysis_html:
             send_email(analysis_html)
         else:
-            # Send the specific error to the user
-            print("!! Sending Fallback with Error details.")
             fallback = create_fallback_html(articles, error_msg)
             send_email(fallback, "[DEBUG]")
