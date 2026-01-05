@@ -2,110 +2,110 @@
 <html>
 <head>
     <style>
-        /* BASE STYLES */
+        /* EASY READING STYLES */
         body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            color: #222; 
-            line-height: 1.6; 
+            font-family: Verdana, sans-serif; /* Very readable font */
+            color: #333; 
+            line-height: 1.8; /* More space between lines */
             max-width: 700px; 
             margin: 0 auto; 
             padding: 20px; 
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
         }
         .container {
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         /* HEADER */
         .header { 
-            border-bottom: 3px solid #1a252f; 
-            padding-bottom: 15px; 
+            border-bottom: 4px solid #007bff; 
+            padding-bottom: 20px; 
             margin-bottom: 30px; 
+            text-align: center;
         }
         .header h1 { 
             margin: 0; 
-            font-size: 26px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            color: #1a252f;
+            font-size: 28px; 
+            color: #2c3e50;
         }
         .date { 
-            font-size: 12px; 
-            color: #666; 
-            text-transform: uppercase; 
+            font-size: 14px; 
+            color: #777; 
             margin-top: 5px; 
-            font-weight: bold;
         }
 
         /* HEADINGS */
         h2 { 
-            font-size: 18px; 
-            color: #1a252f; 
-            border-bottom: 1px solid #ddd; 
-            padding-bottom: 5px; 
-            margin-top: 30px; 
-            text-transform: uppercase;
+            font-size: 22px; 
+            color: #007bff; 
+            margin-top: 40px; 
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
 
         /* NEWS SECTION */
         .section { 
-            padding: 0 0 15px 0; 
-            margin-bottom: 15px; 
-            border-bottom: 1px solid #eee; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
         }
         .news-title { 
-            font-size: 16px; 
-            font-weight: 700; 
+            font-size: 18px; 
+            font-weight: bold; 
             color: #2c3e50; 
-            margin-bottom: 5px; 
+            margin-bottom: 10px; 
         }
 
-        /* THEORY / DEEP DIVE BOX */
+        /* LEARNING / THEORY BOX (Flashcard Style) */
         .theory-box { 
-            background-color: #f8f9fa; 
-            border-left: 4px solid #34495e; 
-            padding: 15px; 
-            margin: 20px 0; 
-            border-radius: 0 4px 4px 0;
+            background-color: #fff9db; /* Light Yellow */
+            border-left: 5px solid #ffc107; /* Darker Yellow Bar */
+            padding: 20px; 
+            margin: 25px 0; 
+            border-radius: 5px;
         }
         .theory-title { 
-            font-weight: 800; 
-            font-size: 13px; 
-            color: #34495e; 
+            font-weight: 900; 
+            font-size: 14px; 
+            color: #d39e00; 
             text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            margin-top: 0;
+            letter-spacing: 1px; 
+            margin-bottom: 10px;
         }
         
+        /* LINKS */
+        a { 
+            color: #007bff; 
+            text-decoration: none; 
+            font-weight: bold;
+        }
+        a:hover { text-decoration: underline; }
+
         /* FOOTER */
         .footer { 
-            font-size: 11px; 
+            font-size: 12px; 
             text-align: center; 
-            color: #999; 
-            margin-top: 40px; 
-            border-top: 1px solid #eee; 
-            padding-top: 20px; 
+            color: #aaa; 
+            margin-top: 50px; 
         }
-        
-        a { color: #3498db; text-decoration: none; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Strategic Intelligence Brief</h1>
-            <div class="date">{{DATE}} | GLOBAL MACRO & SYSTEMS ANALYSIS</div>
+            <h1>🎓 Global Mentor Brief</h1>
+            <div class="date">{{DATE}}</div>
         </div>
 
         {{CONTENT}}
 
         <div class="footer">
-            Automated Analysis via Gemini 1.5 • Multi-Source Monitor
+            Designed for Learning • Powered by Gemini AI
         </div>
     </div>
 </body>
