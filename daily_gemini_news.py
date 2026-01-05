@@ -2,212 +2,179 @@ import os
 import requests
 import smtplib
 import traceback
+import sys
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
 from datetime import datetime, timedelta
 
 # --- CONFIGURATION ---
-# Ensure these are set in your environment variables
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# BALANCED SOURCE LIST (Global, Financial, Geopolitical)
+# Balanced Source List (Global/Neutral/Financial)
 SOURCES = [
-    "reuters.com", "bloomberg.com", "ft.com", "wsj.com",  # Tier 1 Financial
-    "apnews.com", "bbc.com", "economist.com",             # Western Major
-    "scmp.com", "asia.nikkei.com", "thehindu.com",        # Asian Perspectives
-    "dw.com", "france24.com",                             # European Perspectives
-    "aljazeera.com", "arabnews.com"                       # Middle East Perspectives
+    "reuters.com", "bloomberg.com", "ft.com", "economist.com",  # Financial/Global
+    "aljazeera.com", "scmp.com", "thehindu.com",                # Non-Western Perspectives
+    "bbc.co.uk", "dw.com", "france24.com",                      # European Public Broadcasters
+    "wsj.com", "cnbc.com", "apnews.com", "politico.com"         # US/Political
 ]
 
 def get_working_model():
-    """Configures Gemini and finds the best available model."""
+    """Auto-selects the best available Gemini model."""
     genai.configure(api_key=GEMINI_API_KEY)
-    # Priority list of models
-    preferred = ['gemini-1.5-pro-latest', 'gemini-1.5-pro', 'gemini-1.5-flash-latest', 'gemini-1.5-flash']
     try:
-        available = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        for p in preferred:
-            if p in available:
-                return p
-        return available[0] if available else None
+        # Get all text-generation models available to your key
+        all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        
+        # Priority: Pro (Deep Reasoning) -> Flash (Speed)
+        for m in all_models:
+            if "1.5-pro" in m: return m
+        for m in all_models:
+            if "1.5-flash" in m: return m
+        
+        return all_models[0] if all_models else None
     except Exception as e:
-        print(f"Error listing models: {e}")
+        print(f"!! Model selection error: {e}")
         return None
 
 def fetch_global_news():
-    """Fetches high-impact news from the last 2 days to ensure freshness."""
-    print("--- Fetching Global News ---")
+    print("--- 1. Fetching Global News ---")
     domains = ",".join(SOURCES)
-    # Reduced to 2 days for higher relevance/immediacy
-    date_from = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
+    # 3-day lookback for freshness
+    date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
     
-    # Query logic: Focus on macro factors
-    query = "(economy OR inflation OR 'central bank' OR supply chain OR 'semiconductor' OR energy OR 'foreign policy' OR 'trade agreement')"
-    
-    url = (
-        f"https://newsapi.org/v2/everything?"
-        f"q={query}&"
-        f"domains={domains}&"
-        f"from={date_from}&"
-        f"sortBy=popularity&"  # Sort by popularity to get the "big" stories first
-        f"language=en&"
-        f"pageSize=80&"
-        f"apiKey={NEWS_API_KEY}"
-    )
+    # URL encoded parameters handled by dictionary to prevent errors
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        'q': '(economy OR politics OR "central bank" OR "supply chain" OR geopolitics OR "trade war" OR "emerging markets")',
+        'domains': domains,
+        'from': date_from,
+        'sortBy': 'publishedAt', # Latest news
+        'language': 'en',
+        'pageSize': 40, # High volume for better synthesis
+        'apiKey': NEWS_API_KEY
+    }
     
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        articles = response.json().get("articles", [])
-        print(f"Retrieved {len(articles)} articles.")
+        response = requests.get(url, params=params)
+        data = response.json()
+        articles = data.get("articles", [])
+        print(f"-> Found {len(articles)} articles.")
         return articles
     except Exception as e:
-        print(f"Fetch error: {e}")
+        print(f"!! Error fetching news: {e}")
         return []
 
 def analyze_news(articles):
-    """Sends articles to Gemini for strategic analysis."""
     model_name = get_working_model()
-    if not model_name:
-        return None, "No Gemini model available."
+    if not model_name: return None, "No AI models available."
 
-    print(f"--- Analyzing with {model_name} ---")
+    print(f"--- 2. Analyzing with {model_name} ---")
     
-    # Prepare text for context window
+    # Prepare text for AI (Limit to top 25 to fit context window)
     raw_text = ""
-    for i, a in enumerate(articles[:50]): # Limit to top 50 to fit context context comfortably
-        desc = a.get('description') or "No description"
-        raw_text += (
-            f"Article {i+1} | Source: {a['source']['name']} | Date: {a['publishedAt'][:10]}\n"
-            f"Title: {a['title']}\n"
-            f"Summary: {desc}\nURL: {a['url']}\n---\n"
-        )
+    for i, a in enumerate(articles[:25]):
+        # Sanitize text
+        title = a['title'].replace("{", "(").replace("}", ")")
+        source = a['source']['name']
+        raw_text += f"[{i+1}] {title} - {source} ({a['publishedAt'][:10]})\n"
 
     model = genai.GenerativeModel(model_name)
     
-    safety_settings = [{"category": c, "threshold": "BLOCK_NONE"} for c in [
-        "HARM_CATEGORY_HARASSMENT", "HARM_CATEGORY_HATE_SPEECH",
-        "HARM_CATEGORY_SEXUALLY_EXPLICIT", "HARM_CATEGORY_DANGEROUS_CONTENT"
-    ]]
+    # Disable safety filters to allow political/war analysis
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+    ]
 
-    # --- PROMPT ENGINEERING ---
     prompt = (
-        "Role: You are a macro-economic strategy engine. You provide cold, factual, high-level analysis.\n"
-        "Input: A list of news articles from various global sources.\n"
-        "Task: Synthesize this data into an HTML briefing. \n\n"
+        "Role: You are a Strategic Macro-Economic Analyst. Your output is a high-level intelligence brief for an investor focused on global systems, leverage, and capital allocation.\n"
+        "Tone: Strictly professional, dense, factual. No conversational filler (no 'Hello', no 'Here is the report').\n"
+        "Input: Use the provided news headlines.\n\n"
 
-        "**STRICT GUIDELINES:**\n"
-        "1. NO greeting, NO fluff, NO 'as an aspiring billionaire'. Start directly with the analysis.\n"
-        "2. ENSURE SOURCE VARIETY. Do not rely on a single news outlet. Cite different sources.\n"
-        "3. Tone: Professional, dense, executive-level English.\n\n"
+        "### OUTPUT FORMAT (HTML):\n\n"
 
-        "**OUTPUT STRUCTURE (HTML Only):**\n\n"
+        "<h2>EXECUTIVE SUMMARY</h2>\n"
+        "<p>Provide a 100-word synthesis of the current global state (Bullish/Bearish/Volatile). Connect the dots between isolated events.</p>\n\n"
 
-        "\n"
-        "<h2>Global Macro Synthesis</h2>\n"
-        "<p><i>A 150-word high-level synthesis of the current global state, connecting dots between regions (e.g., how EU policy affects Asian markets).</i></p>\n\n"
-
-        "\n"
-        "<h2>Strategic Deep Dives</h2>\n"
-        "<p>Select the top 3 most critical concepts relevant to today's news (e.g., Asymmetric Risk, Second-Order Effects, Capital Allocation, The Thucydides Trap, Creative Destruction). Use the CSS class 'deep-dive-box' for these.</p>\n"
-        
-        "<div class='deep-dive-box'>\n"
-        "  <h3>1. [Insert Concept Name]</h3>\n"
-        "  <p><strong>Theory:</strong> [Brief definition of the mental model/economic law].</p>\n"
-        "  <p><strong>Current Application:</strong> [How specifically does today's news demonstrate this concept? Cite specific events].</p>\n"
-        "  <p><strong>Strategic Implication:</strong> [What is the leverage point? How does one capitalize on this?].</p>\n"
-        "</div>\n"
-        "\n\n"
-
-        "\n"
-        "<h2>Critical Developments</h2>\n"
-        "\n"
-        "<div class='section'>\n"
-        "  <p class='news-title'>[Event Headline]</p>\n"
-        "  <p>[2-sentence factual summary]. <strong>Impact:</strong> [Why it matters].</p>\n"
-        "  <p style='font-size:12px'><a href='[URL]'>Read Source ([Source Name])</a></p>\n"
+        "<h2>1. STRATEGIC DEEP DIVES (The Learning Module)</h2>\n"
+        "Select exactly **3** distinct Strategic/Economic Concepts relevant to this week's news (e.g., *Asymmetric Risk*, *Regulatory Capture*, *The Cantillon Effect*, *Thucydides Trap*, *Network Effects*). Do not cite specific books, just the universal concepts.\n"
+        "For each, create a <div class='theory-box'>:\n"
+        "  <p class='theory-title'>CONCEPT: [NAME OF CONCEPT]</p>\n"
+        "  <p><strong>The Logic:</strong> Define the concept technically and logically.</p>\n"
+        "  <p><strong>Real-World Application:</strong> Apply this concept to a specific news story from the list (cite the story).</p>\n"
+        "  <p><strong>Investment Implication:</strong> How this dynamic creates wealth transfer or risk.</p>\n"
         "</div>\n\n"
 
-        f"DATA SOURCE:\n{raw_text}"
+        "<h2>2. GLOBAL POLITICAL & MARKET PULSE</h2>\n"
+        "Identify the 4 most critical specific developments. For each, use <div class='section'>:\n"
+        "  <div class='news-title'>[Headline of Event]</div>\n"
+        "  <p><strong>Fact Pattern:</strong> What actually happened? (Cite specific sources like 'Reuters reported...').</p>\n"
+        "  <p><strong>Structural Impact:</strong> Why this changes the status quo (e.g., 'Disrupts energy supply chains', 'Alters yield curve expectations').</p>\n"
+        "</div>\n\n"
+
+        f"RAW INTEL:\n{raw_text}"
     )
 
     try:
-        generation_config = {
-            "temperature": 0.3, # Low temperature for factual consistency
-            "max_output_tokens": 8192,
-        }
-
-        response = model.generate_content(prompt, generation_config=generation_config, safety_settings=safety_settings)
-        clean_html = response.text.strip().replace("```html", "").replace("```", "").strip()
-
-        # Append source list at the bottom
-        sources_html = "<h3>Reference Links</h3><ul style='font-size:12px; color:#666;'>"
-        # Deduplicate links for the footer
-        seen_urls = set()
-        count = 0
-        for a in articles:
-            if a['url'] not in seen_urls and count < 15:
-                sources_html += f"<li><a href='{a['url']}'>{a['title']}</a> ({a['source']['name']})</li>"
-                seen_urls.add(a['url'])
-                count += 1
-        sources_html += "</ul>"
-        
-        return clean_html + sources_html, None
+        response = model.generate_content(prompt, safety_settings=safety_settings)
+        if not response.parts:
+            return None, "Gemini blocked content (Safety)."
+        clean_html = response.text.replace("```html", "").replace("```", "")
+        return clean_html, None
     except Exception:
-        return None, traceback.format_exc()
+        error_msg = traceback.format_exc()
+        return None, error_msg
 
-def create_fallback_html(articles, error):
-    html = f"<div style='border:1px solid red; padding:20px;'><h3>Analysis Generation Failed</h3><pre>{error}</pre></div>"
-    html += "<h3>Raw Feed</h3><ul>"
-    for a in articles[:10]:
-        html += f"<li><a href='{a['url']}'>{a['title']}</a> - {a['source']['name']}</li>"
+def create_fallback_html(articles, error_msg):
+    html = f"<div style='background:#fee;padding:10px;border:1px solid red;'><h3>⚠️ Analysis Failed</h3><pre>{error_msg}</pre></div><ul>"
+    for a in articles[:15]:
+        html += f"<li><b>{a['title']}</b><br><i>{a['source']['name']}</i></li>"
     html += "</ul>"
     return html
 
-def send_email(html_content, prefix=""):
-    print("--- Sending Email ---")
+def send_email(html_content, subject_prefix=""):
+    print("--- 3. Sending Email ---")
     
-    # Read external HTML template
+    # Load HTML Template
     try:
         with open('email_template.html', 'r', encoding='utf-8') as f:
-            template = f.read()
+            template_str = f.read()
     except FileNotFoundError:
-        print("Error: email_template.html not found.")
-        return
+        print("!! Template not found, using simple fallback.")
+        template_str = "<html><body>{{CONTENT}}</body></html>"
 
-    # Insert Content and Date
-    current_date = datetime.now().strftime('%d %B %Y')
-    body = template.replace("{{CONTENT}}", html_content)
-    body = body.replace("{{DATE}}", current_date)
+    final_body = template_str.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y').upper())
+    final_body = final_body.replace("{{CONTENT}}", html_content)
 
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"{prefix} Strategic Intelligence: {current_date}"
-
-    msg.attach(MIMEText(body, 'html'))
+    msg['Subject'] = f"{subject_prefix} 🌐 Strategic Intel: {datetime.now().strftime('%Y-%m-%d')}"
+    msg.attach(MIMEText(final_body, 'html'))
 
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
-        print("Email sent successfully.")
+        print("vv Email sent successfully!")
     except Exception as e:
-        print(f"Email failed: {e}")
+        print(f"!! Failed to send email: {e}")
 
 if __name__ == "__main__":
     articles = fetch_global_news()
     if not articles:
-        print("No articles found to analyze.")
+        send_email("<p>No significant news found today.</p>", "[EMPTY]")
     else:
-        html_analysis, err = analyze_news(articles)
-        if html_analysis:
-            send_email(html_analysis)
+        analysis_html, error_msg = analyze_news(articles)
+        if analysis_html:
+            send_email(analysis_html)
         else:
-            send_email(create_fallback_html(articles, err), "[ERROR]")
+            send_email(create_fallback_html(articles, error_msg), "[DEBUG]")

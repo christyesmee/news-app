@@ -1,123 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Base Reset */
+        /* BASE STYLES */
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            color: #1a1a1a; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            color: #222; 
             line-height: 1.6; 
-            max-width: 680px; 
+            max-width: 700px; 
             margin: 0 auto; 
             padding: 20px; 
             background-color: #f4f4f4;
         }
-
-        /* Container */
         .container {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 30px;
             border-radius: 2px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Header */
-        .header {
-            border-bottom: 2px solid #000;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+        /* HEADER */
+        .header { 
+            border-bottom: 3px solid #1a252f; 
+            padding-bottom: 15px; 
+            margin-bottom: 30px; 
         }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #000;
+        .header h1 { 
+            margin: 0; 
+            font-size: 26px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: #1a252f;
         }
-        .date {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        /* Headings */
-        h2 {
-            font-size: 18px;
-            color: #2c3e50;
-            border-left: 4px solid #2c3e50;
-            padding-left: 10px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-        h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #000;
-        }
-
-        /* Deep Dive Box (The requested feature) */
-        .deep-dive-box {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-left: 4px solid #2980b9; /* Professional Blue Accent */
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        .deep-dive-box h3 {
-            margin-top: 0;
-            color: #2980b9;
-        }
-
-        /* News Section Box */
-        .section {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-        .news-title {
+        .date { 
+            font-size: 12px; 
+            color: #666; 
+            text-transform: uppercase; 
+            margin-top: 5px; 
             font-weight: bold;
-            font-size: 15px;
-            margin-bottom: 5px;
-            color: #333;
         }
 
-        /* Links */
-        a {
-            color: #2980b9;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        a:hover {
-            text-decoration: underline;
+        /* HEADINGS */
+        h2 { 
+            font-size: 18px; 
+            color: #1a252f; 
+            border-bottom: 1px solid #ddd; 
+            padding-bottom: 5px; 
+            margin-top: 30px; 
+            text-transform: uppercase;
         }
 
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            font-size: 11px;
-            color: #999;
-            text-align: center;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+        /* NEWS SECTION */
+        .section { 
+            padding: 0 0 15px 0; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #eee; 
         }
+        .news-title { 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: #2c3e50; 
+            margin-bottom: 5px; 
+        }
+
+        /* THEORY / DEEP DIVE BOX */
+        .theory-box { 
+            background-color: #f8f9fa; 
+            border-left: 4px solid #34495e; 
+            padding: 15px; 
+            margin: 20px 0; 
+            border-radius: 0 4px 4px 0;
+        }
+        .theory-title { 
+            font-weight: 800; 
+            font-size: 13px; 
+            color: #34495e; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            margin-top: 0;
+        }
+        
+        /* FOOTER */
+        .footer { 
+            font-size: 11px; 
+            text-align: center; 
+            color: #999; 
+            margin-top: 40px; 
+            border-top: 1px solid #eee; 
+            padding-top: 20px; 
+        }
+        
+        a { color: #3498db; text-decoration: none; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Strategic Intelligence Brief</h1>
-            <div class="date">{{DATE}}</div>
+            <div class="date">{{DATE}} | GLOBAL MACRO & SYSTEMS ANALYSIS</div>
         </div>
-        
+
         {{CONTENT}}
-        
+
         <div class="footer">
-            Generated by Gemini Pro • Automated Strategic Monitor
+            Automated Analysis via Gemini 1.5 • Multi-Source Monitor
         </div>
     </div>
 </body>
