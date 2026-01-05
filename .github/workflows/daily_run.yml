@@ -1,25 +1,24 @@
-name: Global Intelligence Brief
+name: Daily Gemini News
 on:
   schedule:
-    # Runs at 7:00 AM Eastern Time (12:00 UTC standard time)
-    - cron: '0 12 * * *'
-  workflow_dispatch:  # Keep this for manual runs
+    # Runs at 07:00 UTC every day (Adjust as needed)
+    - cron: '0 7 * * *'
+  # Allows you to click 'Run Workflow' manually for testing
+  workflow_dispatch:
 jobs:
   run-agent:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v5  # Updated to latest
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11'  # Recommended: newer & supported longer
+          python-version: '3.9'
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install requests google-generativeai  # List exactly what you need
-          # Or use requirements.txt if you have one
+          pip install -r requirements.txt
       - name: Run Script
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
@@ -27,4 +26,4 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-        run: python news_analyzer.py  # Make sure filename matches yours
+        run: python daily_gemini_news.py
