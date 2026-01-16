@@ -3,131 +3,120 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* MOBILE-FIRST STYLES */
+        /* MODERN MOBILE STYLES */
         body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #333; 
-            line-height: 1.6; 
+            line-height: 1.5; 
             margin: 0; 
             padding: 0; 
             background-color: #f4f4f4;
-            -webkit-text-size-adjust: 100%; /* Prevent font zooming issues */
         }
         
         .container {
             background-color: #ffffff;
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px; /* Reduced padding for mobile */
+            padding: 20px;
         }
 
         /* HEADER */
         .header { 
-            border-bottom: 3px solid #1a252f; 
-            padding-bottom: 15px; 
-            margin-bottom: 25px; 
+            background: #111;
+            color: #fff;
+            padding: 20px; 
+            margin: -20px -20px 25px -20px; /* Stretch to edges */
             text-align: center;
+            border-bottom: 4px solid #00d2ff; /* Tech Blue accent */
         }
         .header h1 { 
             margin: 0; 
-            font-size: 24px; /* Slightly smaller for mobile fitting */
-            color: #1a252f;
+            font-size: 22px; 
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .date { 
-            font-size: 13px; 
-            color: #777; 
+            font-size: 12px; 
+            opacity: 0.8;
             margin-top: 5px; 
-            font-weight: bold;
         }
 
-        /* SECTION HEADERS */
+        /* IMAGES */
+        .story-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            object-fit: cover;
+            max-height: 250px;
+            border: 1px solid #eee;
+        }
+
+        /* HEADERS */
         h2 { 
-            font-size: 20px; 
-            color: #2c3e50; 
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 8px;
-            margin-top: 35px;
-            margin-bottom: 20px;
+            font-size: 18px; 
+            color: #111; 
+            border-left: 4px solid #00d2ff;
+            padding-left: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        /* CARDS / SECTIONS */
+        /* CARDS */
         .section { 
+            background: #fff;
             padding: 0;
-            margin-bottom: 30px; 
+            margin-bottom: 35px; 
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
         }
         
         .news-title { 
             font-size: 18px; 
             font-weight: 800; 
             color: #000; 
-            margin-bottom: 8px; 
-            line-height: 1.3;
+            margin-bottom: 10px; 
         }
 
-        /* DEEP DIVE BOXES */
-        .theory-box { 
-            background-color: #f8f9fa; 
-            border-left: 4px solid #2c3e50; 
-            padding: 15px; 
-            margin-bottom: 30px;
-            border-radius: 4px;
-        }
-        .theory-title { 
-            font-weight: 900; 
-            font-size: 14px; 
-            color: #2c3e50; 
-            text-transform: uppercase; 
+        /* TEXT */
+        p {
+            font-size: 15px;
+            margin-bottom: 8px;
             margin-top: 0;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            color: #444;
         }
         
-        /* TEXT FORMATTING */
-        p {
-            font-size: 16px; /* Optimized for mobile reading */
-            margin-bottom: 12px;
-            margin-top: 0;
-        }
+        strong { color: #000; }
 
         a { 
-            color: #2980b9; 
+            color: #00d2ff; 
             text-decoration: none; 
             font-weight: bold;
         }
         
         /* FOOTER */
         .footer { 
-            font-size: 12px; 
+            font-size: 11px; 
             text-align: center; 
             color: #999; 
             margin-top: 40px; 
             padding-top: 20px;
             border-top: 1px solid #eee;
         }
-
-        /* MOBILE TWEAKS */
-        @media only screen and (max-width: 600px) {
-            .container { padding: 15px; width: 100% !important; }
-            h1 { font-size: 22px; }
-            h2 { font-size: 18px; }
-            p { font-size: 16px !important; }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Strategic Brief</h1>
+            <h1>⚡ Compute Market Intel</h1>
             <div class="date">{{DATE}}</div>
         </div>
 
         {{CONTENT}}
 
         <div class="footer">
-            Automated Intelligence • Gemini 1.5
+            AI Analysis • Gemini 1.5 Pro
         </div>
     </div>
 </body>

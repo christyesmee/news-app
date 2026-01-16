@@ -15,24 +15,14 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# --- SOURCES: COMPUTING & ASIAN SUPPLY CHAIN ---
+# --- SOURCES ---
 SOURCES = [
-    # Global Macro
     "reuters.com", "bloomberg.com", "ft.com", "wsj.com",
-    
-    # Asian Supply Chain (Critical for Compute)
-    "scmp.com",          # South China Morning Post
-    "nikkei.com",        # Nikkei Asia
-    "caixinglobal.com",  # China Finance
-    "digitimes.com",     # Taiwan Electronics (Key Source)
-    "taipeitimes.com",   # Taiwan General
-    
-    # Tech Industry Specific
-    "techcrunch.com", "wired.com", "theregister.com", "anandtech.com"
+    "scmp.com", "nikkei.com", "caixinglobal.com", "digitimes.com", 
+    "taipeitimes.com", "techcrunch.com", "wired.com", "theregister.com", "anandtech.com"
 ]
 
 def get_working_model():
-    """Auto-selects the best available Gemini model."""
     genai.configure(api_key=GEMINI_API_KEY)
     try:
         all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
@@ -50,7 +40,6 @@ def fetch_compute_news():
     domains = ",".join(SOURCES)
     date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
     
-    # QUERY LOGIC
     query = (
         '(semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR '
         '"supply chain" OR "rare earth" OR lithography OR "energy prices" OR '
@@ -84,10 +73,14 @@ def analyze_news(articles):
     if not model_name: return None, "No AI models available."
 
     print(f"--- 2. Analyzing with {model_name} ---")
+    
+    # We now include the Image URL in the data sent to Gemini
     raw_text = ""
-    for i, a in enumerate(articles[:30]):
+    for i, a in enumerate(articles[:25]):
         safe_title = a['title'].replace('"', "'")
-        raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']}\n"
+        # Use a placeholder if no image exists
+        img_url = a['urlToImage'] if a['urlToImage'] else "NO_IMAGE"
+        raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']} | IMAGE_URL: {img_url}\n"
 
     model = genai.GenerativeModel(model_name)
     
@@ -97,30 +90,29 @@ def analyze_news(articles):
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
     ]
 
-    # FIXED PROMPT SYNTAX (No line breaks inside strings)
     prompt = (
-        "Role: You are a specialized Compute Market Strategist. Your client invests in Semiconductors, Data Centers, and AI Hardware.\n"
-        "Goal: Identify exactly 3 critical market shifts. Focus on Direct impacts and Indirect impacts (e.g., Copper prices rising -> PCB costs up).\n"
-        "Constraints: Use Chinese/Asian sources (SCMP, Nikkei, DigiTimes) to balance US narratives.\n\n"
+        "Role: You are a Compute Market Strategist using 'Smart Brevity' style.\n"
+        "Goal: Create a visual, high-impact HTML briefing. Use Emojis to convey sentiment (e.g., 📉 for drops, 🚨 for alerts, 🇨🇳 for China).\n"
+        "Constraints: Keep text concise. Maintain strict technical jargon (e.g., 'CoWoS capacity', 'High-NA EUV') but explain impacts simply.\n\n"
 
-        "### INSTRUCTIONS FOR LINKS:\n"
-        "Cite sources using clickable HTML footnotes: <a href='URL_FROM_INPUT'>[1]</a>.\n\n"
-        
-        "### VISUALIZATION:\n"
-        "Insert a placeholder tag"
-        "Example: [Image of X] where a chart would clarify the data. \n\n"
+        "### INSTRUCTIONS FOR IMAGES & LINKS:\n"
+        "1. You MUST pick the best image from the provided 'IMAGE_URL' fields.\n"
+        "2. Insert the image at the top of each story block using: <img src='IMAGE_URL' class='story-image'>\n"
+        "3. If 'NO_IMAGE' is provided, do not insert an img tag.\n"
+        "4. Cite sources as clickable numbers: <a href='URL'>[1]</a>.\n\n"
 
         "### OUTPUT FORMAT (HTML):\n\n"
 
-        "<h2>Compute Market Intelligence</h2>\n"
-        "<p>Brief 2-sentence executive summary of the hardware market state (Bullish/Bearish/Constrained).</p>\n\n"
+        "<h2>⚡ Market Pulse</h2>\n"
+        "<p><strong>The Vibe:</strong> (1 sentence summary with an emoji). <strong>The Catalyst:</strong> (1 sentence on the main driver).</p>\n\n"
 
         "\n"
         "<div class='section'>\n"
-        "  <div class='news-title'>[1] TOPIC HEADLINE</div>\n"
-        "  <p><strong>The News:</strong> What actually happened? Cite sources. <a href='URL'>[1]</a></p>\n"
-        "  <p><strong>Impact on Compute:</strong> Technical/Operational impact. (e.g., 'Does this delay H100 shipments?' or 'Does this increase wafer costs?').</p>\n"
-        "  <p><strong>Impact on Market:</strong> Financial/Investment impact. (e.g., 'Bullish for equipment makers, Bearish for integrators').</p>\n"
+        "  \n"
+        "  <div class='news-title'>EMOJI + HEADLINE</div>\n"
+        "  <p><strong>📰 The Intel:</strong> What happened? (Max 2 sentences). <a href='URL'>[1]</a></p>\n"
+        "  <p><strong>💻 Compute Impact:</strong> Technical supply chain effect. Use jargon.</p>\n"
+        "  <p><strong>💰 Market Move:</strong> Investment/Price implication.</p>\n"
         "</div>\n\n"
 
         f"RAW INTEL:\n{raw_text}"
@@ -155,7 +147,7 @@ def send_email(html_content, subject_prefix=""):
     msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"{subject_prefix} 🖥️ Compute Intel: {datetime.now().strftime('%Y-%m-%d')}"
+    msg['Subject'] = f"{subject_prefix} ⚡ Compute Intel: {datetime.now().strftime('%Y-%m-%d')}"
     msg.attach(MIMEText(final_body, 'html'))
 
     try:
@@ -170,7 +162,7 @@ def send_email(html_content, subject_prefix=""):
 if __name__ == "__main__":
     articles = fetch_compute_news()
     if not articles:
-        send_email("<p>No compute market news found today.</p>", "[EMPTY]")
+        send_email("<p>No news found today.</p>", "[EMPTY]")
     else:
         analysis_html, error_msg = analyze_news(articles)
         if analysis_html:
