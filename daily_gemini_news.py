@@ -17,14 +17,14 @@ RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
 # --- SOURCES: COMPUTING & ASIAN SUPPLY CHAIN ---
 SOURCES = [
-    # Global Macro (For Inflation/Commodities impact on Hardware)
+    # Global Macro
     "reuters.com", "bloomberg.com", "ft.com", "wsj.com",
     
     # Asian Supply Chain (Critical for Compute)
-    "scmp.com",          # South China Morning Post (China perspective)
-    "nikkei.com",        # Nikkei Asia (Japan/Equipment perspective)
-    "caixinglobal.com",  # China Finance/Business
-    "digitimes.com",     # Taiwan Electronics/Semiconductors (The #1 source for chips)
+    "scmp.com",          # South China Morning Post
+    "nikkei.com",        # Nikkei Asia
+    "caixinglobal.com",  # China Finance
+    "digitimes.com",     # Taiwan Electronics (Key Source)
     "taipeitimes.com",   # Taiwan General
     
     # Tech Industry Specific
@@ -36,7 +36,6 @@ def get_working_model():
     genai.configure(api_key=GEMINI_API_KEY)
     try:
         all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        # We need reasoning capability for "Chain Reaction" logic
         for m in all_models:
             if "1.5-pro" in m: return m
         for m in all_models:
@@ -51,9 +50,7 @@ def fetch_compute_news():
     domains = ",".join(SOURCES)
     date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
     
-    # QUERY LOGIC:
-    # 1. Direct: Chips, GPUs, Data Centers, TSMC, NVIDIA
-    # 2. Indirect: Rare Earths, Copper, Energy Prices, Trade Tariffs
+    # QUERY LOGIC
     query = (
         '(semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR '
         '"supply chain" OR "rare earth" OR lithography OR "energy prices" OR '
@@ -66,7 +63,7 @@ def fetch_compute_news():
         'q': query,
         'domains': domains,
         'from': date_from,
-        'sortBy': 'relevance', # Get the most important stories first
+        'sortBy': 'relevance',
         'language': 'en',
         'pageSize': 40,
         'apiKey': NEWS_API_KEY
@@ -87,8 +84,6 @@ def analyze_news(articles):
     if not model_name: return None, "No AI models available."
 
     print(f"--- 2. Analyzing with {model_name} ---")
-    
-    # Prepare text with IDs for linking
     raw_text = ""
     for i, a in enumerate(articles[:30]):
         safe_title = a['title'].replace('"', "'")
@@ -102,19 +97,18 @@ def analyze_news(articles):
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
     ]
 
+    # FIXED PROMPT SYNTAX (No line breaks inside strings)
     prompt = (
         "Role: You are a specialized Compute Market Strategist. Your client invests in Semiconductors, Data Centers, and AI Hardware.\n"
-        "Goal: Identify exactly 3 critical market shifts. Focus on both Direct impacts (e.g., new chip bans) and Indirect impacts (e.g., Copper prices rising -> PCB costs up).\n"
+        "Goal: Identify exactly 3 critical market shifts. Focus on Direct impacts and Indirect impacts (e.g., Copper prices rising -> PCB costs up).\n"
         "Constraints: Use Chinese/Asian sources (SCMP, Nikkei, DigiTimes) to balance US narratives.\n\n"
 
         "### INSTRUCTIONS FOR LINKS:\n"
         "Cite sources using clickable HTML footnotes: <a href='URL_FROM_INPUT'>[1]</a>.\n\n"
         
         "### VISUALIZATION:\n"
-        "Insert a placeholder tag 
-
-[Image of X]
- where a chart would clarify the data (e.g.,  or ).\n\n"
+        "Insert a placeholder tag"
+        "Example: [Image of X] where a chart would clarify the data. \n\n"
 
         "### OUTPUT FORMAT (HTML):\n\n"
 
