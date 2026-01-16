@@ -15,11 +15,20 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# Balanced Source List
+# --- SOURCES: COMPUTING & ASIAN SUPPLY CHAIN ---
 SOURCES = [
-    "reuters.com", "bloomberg.com", "aljazeera.com", "bbc.co.uk", 
-    "scmp.com", "dw.com", "cnbc.com", "apnews.com", "economist.com",
-    "wsj.com", "ft.com"
+    # Global Macro (For Inflation/Commodities impact on Hardware)
+    "reuters.com", "bloomberg.com", "ft.com", "wsj.com",
+    
+    # Asian Supply Chain (Critical for Compute)
+    "scmp.com",          # South China Morning Post (China perspective)
+    "nikkei.com",        # Nikkei Asia (Japan/Equipment perspective)
+    "caixinglobal.com",  # China Finance/Business
+    "digitimes.com",     # Taiwan Electronics/Semiconductors (The #1 source for chips)
+    "taipeitimes.com",   # Taiwan General
+    
+    # Tech Industry Specific
+    "techcrunch.com", "wired.com", "theregister.com", "anandtech.com"
 ]
 
 def get_working_model():
@@ -27,8 +36,7 @@ def get_working_model():
     genai.configure(api_key=GEMINI_API_KEY)
     try:
         all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        # Prefer Flash for formatting adherence, Pro for depth.
-        # We will try Pro first for the "Detailed Explanation" requirement.
+        # We need reasoning capability for "Chain Reaction" logic
         for m in all_models:
             if "1.5-pro" in m: return m
         for m in all_models:
@@ -38,19 +46,29 @@ def get_working_model():
         print(f"!! Model selection error: {e}")
         return None
 
-def fetch_global_news():
-    print("--- 1. Fetching Global News ---")
+def fetch_compute_news():
+    print("--- 1. Fetching Compute Market News ---")
     domains = ",".join(SOURCES)
-    date_from = (datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d')
+    date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
+    
+    # QUERY LOGIC:
+    # 1. Direct: Chips, GPUs, Data Centers, TSMC, NVIDIA
+    # 2. Indirect: Rare Earths, Copper, Energy Prices, Trade Tariffs
+    query = (
+        '(semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR '
+        '"supply chain" OR "rare earth" OR lithography OR "energy prices" OR '
+        '"trade war" OR tariffs OR ASML OR TSMC OR NVIDIA) '
+        'AND (China OR Taiwan OR US OR Global)'
+    )
     
     url = "https://newsapi.org/v2/everything"
     params = {
-        'q': '(economy OR politics OR "supply chain" OR geopolitics OR "trade" OR "central bank")',
+        'q': query,
         'domains': domains,
         'from': date_from,
-        'sortBy': 'publishedAt',
+        'sortBy': 'relevance', # Get the most important stories first
         'language': 'en',
-        'pageSize': 50, # High volume to find the best 5 stories
+        'pageSize': 40,
         'apiKey': NEWS_API_KEY
     }
     
@@ -58,7 +76,7 @@ def fetch_global_news():
         response = requests.get(url, params=params)
         data = response.json()
         articles = data.get("articles", [])
-        print(f"-> Found {len(articles)} articles.")
+        print(f"-> Found {len(articles)} relevant articles.")
         return articles
     except Exception as e:
         print(f"!! Error fetching news: {e}")
@@ -72,7 +90,7 @@ def analyze_news(articles):
     
     # Prepare text with IDs for linking
     raw_text = ""
-    for i, a in enumerate(articles[:40]):
+    for i, a in enumerate(articles[:30]):
         safe_title = a['title'].replace('"', "'")
         raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']}\n"
 
@@ -85,29 +103,30 @@ def analyze_news(articles):
     ]
 
     prompt = (
-        "Role: You are a high-level Strategic Advisor. Your client is an investor building generational wealth.\n"
-        "Goal: Distill the news into a 'Billionaire Thinking' brief. Focus on leverage, systems, and implications.\n"
-        "Constraints: NO BULLET POINTS. Use paragraphs and clear headers. Maximize readability for mobile.\n\n"
+        "Role: You are a specialized Compute Market Strategist. Your client invests in Semiconductors, Data Centers, and AI Hardware.\n"
+        "Goal: Identify exactly 3 critical market shifts. Focus on both Direct impacts (e.g., new chip bans) and Indirect impacts (e.g., Copper prices rising -> PCB costs up).\n"
+        "Constraints: Use Chinese/Asian sources (SCMP, Nikkei, DigiTimes) to balance US narratives.\n\n"
 
         "### INSTRUCTIONS FOR LINKS:\n"
-        "Cite sources using clickable HTML footnotes like: <a href='URL_FROM_INPUT'>[1]</a>.\n\n"
+        "Cite sources using clickable HTML footnotes: <a href='URL_FROM_INPUT'>[1]</a>.\n\n"
+        
+        "### VISUALIZATION:\n"
+        "Insert a placeholder tag 
+
+[Image of X]
+ where a chart would clarify the data (e.g.,  or ).\n\n"
 
         "### OUTPUT FORMAT (HTML):\n\n"
 
-        "<h2>Billionaire Thinking and Implications</h2>\n"
-        "Select exactly **3** Deep Dive Concepts from this week's news. (Quality over Quantity).\n"
-        "For each concept, create a <div class='theory-box'>:\n"
-        "  <p class='theory-title'>CONCEPT: [Name of Concept]</p>\n"
-        "  <p><strong>The Logic:</strong> Provide a detailed, paragraph-length explanation of the economic or strategic theory. Teach the concept thoroughly.</p>\n"
-        "  <p><strong>Application & Implication:</strong> Explain how this applies to a specific news event this week (cite it with <a href='URL'>[1]</a>) and what the wealth implications are. How does one profit or protect capital here?</p>\n"
-        "</div>\n\n"
+        "<h2>Compute Market Intelligence</h2>\n"
+        "<p>Brief 2-sentence executive summary of the hardware market state (Bullish/Bearish/Constrained).</p>\n\n"
 
-        "<h2>Key Political Developments</h2>\n"
-        "Identify exactly **5** most critical events. For each use <div class='section'>:\n"
-        "  <div class='news-title'>[Concise Headline]</div>\n"
-        "  <p><strong>The Event:</strong> A clear paragraph summarizing the facts. No fluff.</p>\n"
-        "  <p><strong>The Impact:</strong> Why this changes the global landscape.</p>\n"
-        "  <p style='font-size:12px; margin-top:5px;'><em>Source: <a href='URL'>Read Article</a></em></p>\n"
+        "\n"
+        "<div class='section'>\n"
+        "  <div class='news-title'>[1] TOPIC HEADLINE</div>\n"
+        "  <p><strong>The News:</strong> What actually happened? Cite sources. <a href='URL'>[1]</a></p>\n"
+        "  <p><strong>Impact on Compute:</strong> Technical/Operational impact. (e.g., 'Does this delay H100 shipments?' or 'Does this increase wafer costs?').</p>\n"
+        "  <p><strong>Impact on Market:</strong> Financial/Investment impact. (e.g., 'Bullish for equipment makers, Bearish for integrators').</p>\n"
         "</div>\n\n"
 
         f"RAW INTEL:\n{raw_text}"
@@ -142,7 +161,7 @@ def send_email(html_content, subject_prefix=""):
     msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"{subject_prefix} 🧠 Strategic Brief: {datetime.now().strftime('%Y-%m-%d')}"
+    msg['Subject'] = f"{subject_prefix} 🖥️ Compute Intel: {datetime.now().strftime('%Y-%m-%d')}"
     msg.attach(MIMEText(final_body, 'html'))
 
     try:
@@ -155,9 +174,9 @@ def send_email(html_content, subject_prefix=""):
         print(f"!! Failed to send email: {e}")
 
 if __name__ == "__main__":
-    articles = fetch_global_news()
+    articles = fetch_compute_news()
     if not articles:
-        send_email("<p>No news found today.</p>", "[EMPTY]")
+        send_email("<p>No compute market news found today.</p>", "[EMPTY]")
     else:
         analysis_html, error_msg = analyze_news(articles)
         if analysis_html:
