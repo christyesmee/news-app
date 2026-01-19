@@ -20,13 +20,11 @@ SOURCES = [
     # Strategic/Management
     "economist.com", "hbr.org", "mckinsey.com", 
     # Tech Analysis
-    "semianalysis.com", "theregister.com", "techcrunch.com",
+    "semianalysis.com", "theregister.com", "techcrunch.com", "anandtech.com",
     # Global/European News
     "reuters.com", "bloomberg.com", "ft.com", "politico.eu", "euronews.com",
-    "scmp.com", "nikkei.com", "caixinglobal.com", "digitimes.com", 
-    "taipeitimes.com", "techcrunch.com", "wired.com", "theregister.com", "anandtech.com"
+    "scmp.com", "nikkei.com", "caixinglobal.com", "digitimes.com"
 ]
-
 
 def get_working_model():
     genai.configure(api_key=GEMINI_API_KEY)
@@ -44,18 +42,21 @@ def get_working_model():
 def fetch_strategic_news():
     print("--- 1. Fetching Chief of Staff Intel ---")
     domains = ",".join(SOURCES)
-    # Syncing with your prompt: 7 Days
     date_from = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
     
-    # Complex Query:
-    # 1. TOPICS: Quantum, Virtualization, EuroHPC, Sovereignty
-    # 2. REGION: Europe 
+    # LOGIC FIX: We group ALL topics together, AND then apply the region filter.
+    # This ensures we only get "NVIDIA" news IF it is relevant to "Europe/Global Context".
     query = (
-        '(quantum OR virtualization OR "EuroHPC" OR "digital sovereignty" OR "high performance computing" OR "AI regulation" OR "strategic autonomy") '
-        'AND (Europe OR EU )  OR "semiconductor" OR "AI chips" OR GPU OR "data center" OR foundry OR '
-        '"supply chain" OR "rare earth" OR lithography OR "energy prices" OR '
-        '"trade war" OR tariffs OR ASML OR TSMC OR NVIDIA) '
-        'AND (China OR Taiwan OR US OR Global)'
+        '('
+        # Topic Group 1: Strategic/Policy
+        'quantum OR virtualization OR "EuroHPC" OR "digital sovereignty" OR "high performance computing" OR "AI regulation" OR "strategic autonomy" '
+        'OR '
+        # Topic Group 2: Tech/Supply Chain
+        'semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR "supply chain" OR "rare earth" OR lithography OR ASML OR TSMC OR NVIDIA'
+        ') '
+        'AND '
+        # Context Group: Must be relevant to these regions
+        '(Europe OR EU OR Germany OR UK OR France OR Netherlands OR "North West Europe" OR China OR US)'
     )
     
     url = "https://newsapi.org/v2/everything"
@@ -63,9 +64,9 @@ def fetch_strategic_news():
         'q': query,
         'domains': domains,
         'from': date_from,
-        'sortBy': 'relevance', # Relevance is key for strategy
+        'sortBy': 'relevance', 
         'language': 'en',
-        'pageSize': 30,
+        'pageSize': 40,
         'apiKey': NEWS_API_KEY
     }
     
@@ -86,18 +87,20 @@ def analyze_news(articles):
     print(f"--- 2. Analyzing with {model_name} ---")
     
     raw_text = ""
-    for i, a in enumerate(articles[:25]):
+    for i, a in enumerate(articles[:30]):
         safe_title = a['title'].replace('"', "'")
         img_url = a['urlToImage'] if a['urlToImage'] else "NO_IMAGE"
         raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']} | IMG: {img_url}\n"
 
     model = genai.GenerativeModel(model_name)
     
-    # CRITICAL: Added Safety Settings so it doesn't block political news
+    # SAFETY SETTINGS (CRITICAL):
+    # This prevents the AI from blocking "Political/War" news which is essential for this brief.
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
     ]
 
     prompt = (
@@ -105,14 +108,15 @@ def analyze_news(articles):
         "Input: News from the last 7 days covering: Semiconductors/Compute, Data Centers, Quantum, Virtualization, and EU Tech Policy.\n"
         "Goal: Synthesize this into a 'Decision Advantage' brief. Connect the dots between the Tech Market (e.g. Chip shortage) and Policy (e.g. EuroHPC) also, the dots between policy (EuroHPC) and business (Hardware sales: Virtualization/HPC/Compute/storage/Quantum).\n"
         "Tone: Executive, sophisticated, forward-looking. Use 'We' perspective for the European market.\n\n"
-      
+        
         "### INSTRUCTIONS:\n"
         "1. Select the BEST image from the articles. Insert it at the top of the relevant section using: <img src='IMG_URL' class='story-image'>\n"
-        "2. Cite sources using clickable footnotes: <a href='URL'>[link to article]</a>.\n"
+        "2. Cite sources using clickable footnotes: <a href='URL'>[1]</a>.\n"
         "3. Focus on: UK, Netherlands, Germany, France, Nordics.\n\n"
+        "4. **Visuals:** Insert a placeholder tag [Image of X] where a chart would clarify the data. Example:  or .\n\n"
 
         "### OUTPUT FORMAT (HTML):\n"
-        "<h2>EU Strategic Horizon: NW Europe</h2>\n"
+        "<h2>🇪🇺 Strategic Horizon: NW Europe</h2>\n"
         "<p><strong>Executive Summary:</strong> (2-3 sentences on the macro-strategic vibe for the SVP).</p>\n\n"
 
         "\n"
@@ -127,7 +131,6 @@ def analyze_news(articles):
         f"RAW INTEL:\n{raw_text}"
     )
 
-    # CRITICAL: Added Error Handling and Safety Settings
     try:
         response = model.generate_content(prompt, safety_settings=safety_settings)
         return response.text.replace("```html", "").replace("```", ""), None
@@ -147,7 +150,7 @@ def send_email(html_content):
 
     # Custom Header for CoS
     final_html = template_str.replace("Compute Market Intel", "CoS Strategic Brief")
-    final_html = final_html.replace("⚡", "EU") 
+    final_html = final_html.replace("⚡", "🇪🇺") 
     final_html = final_html.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y'))
     final_html = final_html.replace("{{CONTENT}}", html_content)
 
