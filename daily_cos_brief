@@ -22,7 +22,10 @@ SOURCES = [
     # Tech Analysis
     "semianalysis.com", "theregister.com", "techcrunch.com",
     # Global/European News
-    "reuters.com", "bloomberg.com", "ft.com", "politico.eu", "euronews.com"
+    "reuters.com", "bloomberg.com", "ft.com", "politico.eu", "euronews.com",
+    "scmp.com", "nikkei.com", "caixinglobal.com", "digitimes.com", 
+    "taipeitimes.com", "techcrunch.com", "wired.com", "theregister.com", "anandtech.com"
+]
 ]
 
 def get_working_model():
@@ -41,14 +44,18 @@ def get_working_model():
 def fetch_strategic_news():
     print("--- 1. Fetching Chief of Staff Intel ---")
     domains = ",".join(SOURCES)
-    date_from = (datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d')
+    # Syncing with your prompt: 7 Days
+    date_from = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
     
     # Complex Query:
     # 1. TOPICS: Quantum, Virtualization, EuroHPC, Sovereignty
-    # 2. REGION: North West Europe (UK, Netherlands, Germany, France, Nordics)
+    # 2. REGION: Europe 
     query = (
         '(quantum OR virtualization OR "EuroHPC" OR "digital sovereignty" OR "high performance computing" OR "AI regulation" OR "strategic autonomy") '
-        'AND (Europe OR UK OR Germany OR Netherlands OR France OR "North West Europe" OR EU)'
+        'AND (Europe OR EU )  OR "semiconductor" OR "AI chips" OR GPU OR "data center" OR foundry OR '
+        '"supply chain" OR "rare earth" OR lithography OR "energy prices" OR '
+        '"trade war" OR tariffs OR ASML OR TSMC OR NVIDIA) '
+        'AND (China OR Taiwan OR US OR Global)'
     )
     
     url = "https://newsapi.org/v2/everything"
@@ -86,19 +93,26 @@ def analyze_news(articles):
 
     model = genai.GenerativeModel(model_name)
     
+    # CRITICAL: Added Safety Settings so it doesn't block political news
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+    ]
+
     prompt = (
         "Role: You are the Chief of Staff to the SVP of North West Europe. Your boss needs a strategic briefing, not just news.\n"
-        "Input: News on Quantum, Virtualization, EuroHPC, and EU Tech Policy.\n"
-        "Goal: Synthesize this into a 'Decision Advantage' brief. Connect the dots between policy (EuroHPC) and business (Virtualization/Quantum).\n"
+        "Input: News from the last 7 days covering: Semiconductors/Compute, Data Centers, Quantum, Virtualization, and EU Tech Policy.\n"
+        "Goal: Synthesize this into a 'Decision Advantage' brief. Connect the dots between the Tech Market (e.g. Chip shortage) and Policy (e.g. EuroHPC) also, the dots between policy (EuroHPC) and business (Hardware sales: Virtualization/HPC/Compute/storage/Quantum).\n"
         "Tone: Executive, sophisticated, forward-looking. Use 'We' perspective for the European market.\n\n"
-        
+      
         "### INSTRUCTIONS:\n"
-        "1. Select the top image from the articles to use as a header visual.\n"
-        "2. Cite sources using clickable footnotes: <a href='URL'>[1]</a>.\n"
+        "1. Select the BEST image from the articles. Insert it at the top of the relevant section using: <img src='IMG_URL' class='story-image'>\n"
+        "2. Cite sources using clickable footnotes: <a href='URL'>[link to article]</a>.\n"
         "3. Focus on: UK, Netherlands, Germany, France, Nordics.\n\n"
 
         "### OUTPUT FORMAT (HTML):\n"
-        "<h2>🇪🇺 Strategic Horizon: NW Europe</h2>\n"
+        "<h2>EU Strategic Horizon: NW Europe</h2>\n"
         "<p><strong>Executive Summary:</strong> (2-3 sentences on the macro-strategic vibe for the SVP).</p>\n\n"
 
         "\n"
@@ -106,15 +120,20 @@ def analyze_news(articles):
         "  \n"
         "  <div class='news-title'>HEADLINE (e.g., 'EuroHPC Expansion')</div>\n"
         "  <p><strong>The Situation:</strong> What is happening? <a href='URL'>[1]</a></p>\n"
-        "  <p><strong>Strategic Implication:</strong> Why does this matter for North West Europe? (e.g. 'Impacts our German data center strategy' or 'New funding available in Netherlands').</p>\n"
+        "  <p><strong>Strategic Implication:</strong> Why does this matter for Europe? (e.g. 'Impacts our German data center strategy' or 'New funding available in Netherlands').</p>\n"
         "  <p><strong>Action/Thought:</strong> A 'Chief of Staff' recommendation (e.g. 'Monitor regulatory shift' or 'Potential partnership opportunity').</p>\n"
         "</div>\n\n"
 
         f"RAW INTEL:\n{raw_text}"
     )
 
-    response = model.generate_content(prompt)
-    return response.text.replace("```html", "").replace("```", ""), None
+    # CRITICAL: Added Error Handling and Safety Settings
+    try:
+        response = model.generate_content(prompt, safety_settings=safety_settings)
+        return response.text.replace("```html", "").replace("```", ""), None
+    except Exception:
+        error_msg = traceback.format_exc()
+        return None, error_msg
 
 def send_email(html_content):
     print("--- 3. Sending Email ---")
@@ -127,8 +146,8 @@ def send_email(html_content):
         template_str = "<html><body>{{CONTENT}}</body></html>"
 
     # Custom Header for CoS
-    final_html = template_str.replace("Compute Market Intel", "SVP Strategic Brief")
-    final_html = final_html.replace("⚡", "🇪🇺") 
+    final_html = template_str.replace("Compute Market Intel", "CoS Strategic Brief")
+    final_html = final_html.replace("⚡", "EU") 
     final_html = final_html.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y'))
     final_html = final_html.replace("{{CONTENT}}", html_content)
 
@@ -138,13 +157,13 @@ def send_email(html_content):
         cleantext = re.sub(cleanr, '', raw_html)
         return cleantext.replace("&nbsp;", " ").replace("  ", " ").strip()
     
-    plain_text = f"Good morning. Here is the Strategic Brief for the SVP of North West Europe for {datetime.now().strftime('%A, %B %d')}.\n\n"
+    plain_text = f"Good morning. Here is your CoS Strategic Brief for {datetime.now().strftime('%A, %B %d')}.\n\n"
     plain_text += clean_html(html_content)
 
     msg = MIMEMultipart('alternative')
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"🇪🇺 SVP Briefing: {datetime.now().strftime('%Y-%m-%d')}"
+    msg['Subject'] = f"EU CoS Briefing: {datetime.now().strftime('%Y-%m-%d')}"
 
     msg.attach(MIMEText(plain_text, 'plain'))
     msg.attach(MIMEText(final_html, 'html'))
