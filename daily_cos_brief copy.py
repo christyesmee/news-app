@@ -2,7 +2,7 @@ import os
 import requests
 import smtplib
 import traceback
-import re
+import sys
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
@@ -15,7 +15,7 @@ EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
 
-# --- STRATEGIC SOURCES ---
+# --- SOURCES ---
 SOURCES = [
     # Strategic/Management
     "economist.com", "hbr.org", "mckinsey.com", 
@@ -39,23 +39,18 @@ def get_working_model():
         print(f"!! Model selection error: {e}")
         return None
 
-def fetch_strategic_news():
+def fetch_compute_news():
     print("--- 1. Fetching Chief of Staff Intel ---")
     domains = ",".join(SOURCES)
-    date_from = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+    date_from = (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d')
     
-    # LOGIC FIX: We group ALL topics together, AND then apply the region filter.
-    # This ensures we only get "NVIDIA" news IF it is relevant to "Europe/Global Context".
     query = (
         '('
-        # Topic Group 1: Strategic/Policy
         'quantum OR virtualization OR "EuroHPC" OR "digital sovereignty" OR "high performance computing" OR "AI regulation" OR "strategic autonomy" '
         'OR '
-        # Topic Group 2: Tech/Supply Chain
         'semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR "supply chain" OR "rare earth" OR lithography OR ASML OR TSMC OR NVIDIA'
         ') '
         'AND '
-        # Context Group: Must be relevant to these regions
         '(Europe OR EU OR Germany OR UK OR France OR Netherlands OR "North West Europe" OR China OR US)'
     )
     
@@ -64,7 +59,7 @@ def fetch_strategic_news():
         'q': query,
         'domains': domains,
         'from': date_from,
-        'sortBy': 'relevance', 
+        'sortBy': 'relevance',
         'language': 'en',
         'pageSize': 40,
         'apiKey': NEWS_API_KEY
@@ -74,7 +69,7 @@ def fetch_strategic_news():
         response = requests.get(url, params=params)
         data = response.json()
         articles = data.get("articles", [])
-        print(f"-> Found {len(articles)} strategic articles.")
+        print(f"-> Found {len(articles)} relevant articles.")
         return articles
     except Exception as e:
         print(f"!! Error fetching news: {e}")
@@ -86,21 +81,20 @@ def analyze_news(articles):
 
     print(f"--- 2. Analyzing with {model_name} ---")
     
+    # We now include the Image URL in the data sent to Gemini
     raw_text = ""
-    for i, a in enumerate(articles[:30]):
+    for i, a in enumerate(articles[:25]):
         safe_title = a['title'].replace('"', "'")
+        # Use a placeholder if no image exists
         img_url = a['urlToImage'] if a['urlToImage'] else "NO_IMAGE"
-        raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']} | IMG: {img_url}\n"
+        raw_text += f"ID: {i+1} | Title: {safe_title} | Source: {a['source']['name']} | URL: {a['url']} | IMAGE_URL: {img_url}\n"
 
     model = genai.GenerativeModel(model_name)
     
-    # SAFETY SETTINGS (CRITICAL):
-    # This prevents the AI from blocking "Political/War" news which is essential for this brief.
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
     ]
 
     prompt = (
@@ -109,22 +103,25 @@ def analyze_news(articles):
         "Goal: Synthesize this into a 'Decision Advantage' brief. Connect the dots between the Tech Market (e.g. Chip shortage) and Policy (e.g. EuroHPC) also, the dots between policy (EuroHPC) and business (Hardware sales: Virtualization/HPC/Compute/storage/Quantum).\n"
         "Tone: Executive, sophisticated, forward-looking. Use 'We' perspective for the European market.\n\n"
         
-        "### INSTRUCTIONS:\n"
-        "1. Select the BEST image from the articles. Insert it at the top of the relevant section using: <img src='IMG_URL' class='story-image'>\n"
-        "2. Cite sources using clickable footnotes: <a href='URL'>[1]</a>.\n"
-        "3. Focus on: UK, Netherlands, Germany, France, Nordics.\n\n"
+       "### INSTRUCTIONS FOR IMAGES & LINKS:\n"
+        "1. You MUST pick the best image from the provided 'IMAGE_URL' fields.\n"
+        "2. Insert the image at the top of each story block using: <img src='IMAGE_URL' class='story-image'>\n"
+        "3. If 'NO_IMAGE' is provided, do not insert an img tag.\n"
+        "4. Cite sources as clickable numbers: <a href='URL'>[1]</a>.\n\n"
 
-        "### OUTPUT FORMAT (HTML):\n"
-        "<h2>🇪🇺 Strategic Horizon: NW Europe</h2>\n"
+        "### OUTPUT FORMAT (HTML):\n\n"
+
+        "<h2>EU Strategic Horizon: NW Europe</h2>\n"
         "<p><strong>Executive Summary:</strong> (2-3 sentences on the macro-strategic vibe for the SVP).</p>\n\n"
 
         "\n"
         "<div class='section'>\n"
         "  \n"
-        "  <div class='news-title'>HEADLINE (e.g., 'EuroHPC Expansion')</div>\n"
-        "  <p><strong>The Situation:</strong> What is happening? <a href='URL'>[1]</a></p>\n"
-        "  <p><strong>Strategic Implication:</strong> Why does this matter for Europe? (e.g. 'Impacts our German data center strategy' or 'New funding available in Netherlands').</p>\n"
-        "  <p><strong>Action/Thought:</strong> A 'Chief of Staff' recommendation (e.g. 'Monitor regulatory shift' or 'Potential partnership opportunity').</p>\n"
+        "  <div class='news-title'>EMOJI + HEADLINE</div>\n"
+        "  <p><strong>📰 The Intel:</strong> What happened? (Max 2 sentences). <a href='URL'>[1]</a></p>\n"
+        "  <p><strong>💻 Compute Impact:</strong> Technical supply chain effect. Use jargon.</p>\n"
+        "  <p><strong>⚡ Strategic Implication:</strong> Why does this matter for Europe? (e.g. 'Impacts our German data center strategy' or 'New funding available in Netherlands').</p>\n"
+        "  <p><strong>💰 Action/Thought:</strong> A 'Chief of Staff' recommendation (e.g. 'Monitor regulatory shift' or 'Potential partnership opportunity').</p>\n"
         "</div>\n\n"
 
         f"RAW INTEL:\n{raw_text}"
@@ -132,57 +129,52 @@ def analyze_news(articles):
 
     try:
         response = model.generate_content(prompt, safety_settings=safety_settings)
-        return response.text.replace("```html", "").replace("```", ""), None
+        clean_html = response.text.replace("```html", "").replace("```", "")
+        return clean_html, None
     except Exception:
         error_msg = traceback.format_exc()
         return None, error_msg
 
-def send_email(html_content):
+def create_fallback_html(articles, error_msg):
+    html = f"<div style='background:#fee;padding:10px;border:1px solid red;'><h3>⚠️ Analysis Failed</h3><pre>{error_msg}</pre></div>"
+    for a in articles[:10]:
+        html += f"<p><a href='{a['url']}'>{a['title']}</a><br><small>{a['source']['name']}</small></p>"
+    return html
+
+def send_email(html_content, subject_prefix=""):
     print("--- 3. Sending Email ---")
     
-    # 1. Prepare HTML
     try:
         with open('email_template.html', 'r', encoding='utf-8') as f:
             template_str = f.read()
     except FileNotFoundError:
         template_str = "<html><body>{{CONTENT}}</body></html>"
 
-    # Custom Header for CoS
-    final_html = template_str.replace("Compute Market Intel", "CoS Strategic Brief")
-    final_html = final_html.replace("⚡", "🇪🇺") 
-    final_html = final_html.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y'))
-    final_html = final_html.replace("{{CONTENT}}", html_content)
+    final_body = template_str.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y'))
+    final_body = final_body.replace("{{CONTENT}}", html_content)
 
-    # 2. Plain Text (Voice)
-    def clean_html(raw_html):
-        cleanr = re.compile('<.*?>')
-        cleantext = re.sub(cleanr, '', raw_html)
-        return cleantext.replace("&nbsp;", " ").replace("  ", " ").strip()
-    
-    plain_text = f"Good morning. Here is your CoS Strategic Brief for {datetime.now().strftime('%A, %B %d')}.\n\n"
-    plain_text += clean_html(html_content)
-
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
     msg['To'] = RECIPIENT_EMAIL
-    msg['Subject'] = f"EU CoS Briefing: {datetime.now().strftime('%Y-%m-%d')}"
-
-    msg.attach(MIMEText(plain_text, 'plain'))
-    msg.attach(MIMEText(final_html, 'html'))
+    msg['Subject'] = f"{subject_prefix} ⚡ CoS Strategic Brief: {datetime.now().strftime('%Y-%m-%d')}"
+    msg.attach(MIMEText(final_body, 'html'))
 
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
-        print("vv CoS Email sent!")
+        print("vv Email sent successfully!")
     except Exception as e:
         print(f"!! Failed to send email: {e}")
 
 if __name__ == "__main__":
-    articles = fetch_strategic_news()
-    if articles:
-        html, err = analyze_news(articles)
-        if html: send_email(html)
+    articles = fetch_compute_news()
+    if not articles:
+        send_email("<p>No news found today.</p>", "[EMPTY]")
     else:
-        print("No strategic news found.")
+        analysis_html, error_msg = analyze_news(articles)
+        if analysis_html:
+            send_email(analysis_html)
+        else:
+            send_email(create_fallback_html(articles, error_msg), "[DEBUG]")
