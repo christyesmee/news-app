@@ -2,10 +2,22 @@ name: Daily Gemini News
 
 on:
   schedule:
-    # 7:00 AM Amsterdam (Winter Time)
+    # 7:00 AM Amsterdam (Winter)
     - cron: '0 6 * * *'
-
+  
+  # This adds the manual dropdown menu
   workflow_dispatch:
+    inputs:
+      agent_selector:
+        description: 'Which Agent to run?'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - cos_only
+        - market_only
+        - science_only
 
 jobs:
   run-agents:
@@ -23,8 +35,9 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # 1. MARKET AGENT (General Compute/Stocks)
+      # 1. MARKET AGENT (Runs if 'all' OR 'market_only')
       - name: Run Market Agent
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'market_only' }}
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -33,9 +46,9 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_gemini_news.py
 
-      # 2. SCIENCE AGENT (ArXiv Papers)
+      # 2. SCIENCE AGENT (Runs if 'all' OR 'science_only')
       - name: Run Science Agent
-        if: always()
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'science_only' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
@@ -43,9 +56,9 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_science_papers.py
 
-      # 3. CHIEF OF STAFF AGENT (SVP Strategy)
+      # 3. CHIEF OF STAFF AGENT (Runs if 'all' OR 'cos_only')
       - name: Run CoS Agent
-        if: always()
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'cos_only' }}
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
