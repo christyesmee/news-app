@@ -2,13 +2,13 @@ name: Daily Gemini News
 
 on:
   schedule:
-    - cron: '0 6 * * *' #7:00 AM Amsterdam 
-
+    # 7:00 AM Amsterdam (Winter Time)
+    - cron: '0 6 * * *'
 
   workflow_dispatch:
 
 jobs:
-  run-agent:
+  run-agents:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,8 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Script
+      # 1. MARKET AGENT (General Compute/Stocks)
+      - name: Run Market Agent
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -31,3 +32,24 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_gemini_news.py
+
+      # 2. SCIENCE AGENT (ArXiv Papers)
+      - name: Run Science Agent
+        if: always()
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python daily_science_papers.py
+
+      # 3. CHIEF OF STAFF AGENT (SVP Strategy)
+      - name: Run CoS Agent
+        if: always()
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python daily_cos_brief.py
