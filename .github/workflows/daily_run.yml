@@ -2,10 +2,10 @@ name: Daily Gemini News
 
 on:
   schedule:
-    # 7:00 AM Amsterdam (Winter)
+    # 7:00 AM Amsterdam (Winter Time UTC+1) -> 6:00 UTC
     - cron: '0 6 * * *'
   
-  # This adds the manual dropdown menu
+  # Manual Trigger with Dropdown
   workflow_dispatch:
     inputs:
       agent_selector:
@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # 1. MARKET AGENT (Runs if 'all' OR 'market_only')
+      # 1. MARKET AGENT
       - name: Run Market Agent
         if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'market_only' }}
         env:
@@ -46,7 +46,7 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_gemini_news.py
 
-      # 2. SCIENCE AGENT (Runs if 'all' OR 'science_only')
+      # 2. SCIENCE AGENT
       - name: Run Science Agent
         if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'science_only' }}
         env:
@@ -56,7 +56,7 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: python daily_science_papers.py
 
-      # 3. CHIEF OF STAFF AGENT (Runs if 'all' OR 'cos_only')
+      # 3. CHIEF OF STAFF AGENT
       - name: Run CoS Agent
         if: ${{ github.event_name == 'schedule' || github.event.inputs.agent_selector == 'all' || github.event.inputs.agent_selector == 'cos_only' }}
         env:
