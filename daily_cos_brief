@@ -3,6 +3,7 @@ import requests
 import smtplib
 import traceback
 import re
+import time  # <--- NEW: Required for sleep/retry
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import google.generativeai as genai
@@ -29,12 +30,18 @@ SOURCES = [
 def get_working_model():
     genai.configure(api_key=GEMINI_API_KEY)
     try:
-        all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        for m in all_models:
-            if "1.5-pro" in m: return m
-        for m in all_models:
-            if "1.5-flash" in m: return m
-        return all_models[0] if all_models else None
+        # Retry logic for Model Listing
+        for attempt in range(3):
+            try:
+                all_models = [m.name.replace("models/", "") for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                for m in all_models:
+                    if "1.5-pro" in m: return m
+                for m in all_models:
+                    if "1.5-flash" in m: return m
+                return all_models[0] if all_models else None
+            except Exception:
+                time.sleep(2) # Wait 2s if list_models fails
+        return None
     except Exception as e:
         print(f"!! Model selection error: {e}")
         return None
@@ -44,18 +51,13 @@ def fetch_strategic_news():
     domains = ",".join(SOURCES)
     date_from = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
     
-    # LOGIC FIX: We group ALL topics together, AND then apply the region filter.
-    # This ensures we only get "NVIDIA" news IF it is relevant to "Europe/Global Context".
     query = (
         '('
-        # Topic Group 1: Strategic/Policy
         'quantum OR virtualization OR "EuroHPC" OR "digital sovereignty" OR "high performance computing" OR "AI regulation" OR "strategic autonomy" '
         'OR '
-        # Topic Group 2: Tech/Supply Chain
         'semiconductor OR "AI chips" OR GPU OR "data center" OR foundry OR "supply chain" OR "rare earth" OR lithography OR ASML OR TSMC OR NVIDIA'
         ') '
         'AND '
-        # Context Group: Must be relevant to these regions
         '(Europe OR EU OR Germany OR UK OR France OR Netherlands OR "North West Europe" OR China OR US)'
     )
     
@@ -70,15 +72,33 @@ def fetch_strategic_news():
         'apiKey': NEWS_API_KEY
     }
     
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-        articles = data.get("articles", [])
-        print(f"-> Found {len(articles)} strategic articles.")
-        return articles
-    except Exception as e:
-        print(f"!! Error fetching news: {e}")
-        return []
+    # --- RETRY LOGIC FOR 503 ERRORS ---
+    for attempt in range(3): # Try 3 times
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            
+            # If server error (5xx), raise exception to trigger retry
+            if response.status_code >= 500:
+                print(f"!! Server Error {response.status_code}. Retrying in 5s...")
+                time.sleep(5)
+                continue
+                
+            # If client error (4xx), print and break (retrying won't help)
+            if response.status_code >= 400:
+                print(f"!! Client Error {response.status_code}: {response.text}")
+                return []
+
+            data = response.json()
+            articles = data.get("articles", [])
+            print(f"-> Found {len(articles)} strategic articles.")
+            return articles
+
+        except requests.exceptions.RequestException as e:
+            print(f"!! Network Error (Attempt {attempt+1}/3): {e}")
+            time.sleep(5) # Wait 5 seconds before retrying
+            
+    print("!! Failed to fetch news after 3 attempts.")
+    return []
 
 def analyze_news(articles):
     model_name = get_working_model()
@@ -94,8 +114,6 @@ def analyze_news(articles):
 
     model = genai.GenerativeModel(model_name)
     
-    # SAFETY SETTINGS (CRITICAL):
-    # This prevents the AI from blocking "Political/War" news which is essential for this brief.
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -131,30 +149,31 @@ def analyze_news(articles):
         f"RAW INTEL:\n{raw_text}"
     )
 
-    try:
-        response = model.generate_content(prompt, safety_settings=safety_settings)
-        return response.text.replace("```html", "").replace("```", ""), None
-    except Exception:
-        error_msg = traceback.format_exc()
-        return None, error_msg
+    # RETRY LOGIC FOR AI GENERATION (Handling Overload)
+    for attempt in range(3):
+        try:
+            response = model.generate_content(prompt, safety_settings=safety_settings)
+            return response.text.replace("```html", "").replace("```", ""), None
+        except Exception as e:
+            print(f"!! AI Generation Error (Attempt {attempt+1}/3): {e}")
+            time.sleep(5)
+            
+    return None, "AI Service Unavailable after 3 attempts."
 
 def send_email(html_content):
     print("--- 3. Sending Email ---")
     
-    # 1. Prepare HTML
     try:
         with open('email_template.html', 'r', encoding='utf-8') as f:
             template_str = f.read()
     except FileNotFoundError:
         template_str = "<html><body>{{CONTENT}}</body></html>"
 
-    # Custom Header for CoS
     final_html = template_str.replace("Compute Market Intel", "CoS Strategic Brief")
     final_html = final_html.replace("⚡", "🇪🇺") 
     final_html = final_html.replace("{{DATE}}", datetime.now().strftime('%B %d, %Y'))
     final_html = final_html.replace("{{CONTENT}}", html_content)
 
-    # 2. Plain Text (Voice)
     def clean_html(raw_html):
         cleanr = re.compile('<.*?>')
         cleantext = re.sub(cleanr, '', raw_html)
