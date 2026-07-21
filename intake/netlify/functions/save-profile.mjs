@@ -142,11 +142,6 @@ function validateProfile(input) {
     .filter(Boolean);
   profile.exclude = clampList(input.exclude, 30, 120);
 
-  // Phase 5 opt-in. Server-controlled slug; pass through only if it is a safe
-  // token, otherwise store empty (forwarding stays off for this profile).
-  const token = clampStr(input.forward_token, 64).toLowerCase();
-  profile.forward_token = /^[a-z0-9-]{6,64}$/.test(token) ? token : "";
-
   if (profile.topics.length === 0) errors.push("at least one topic is required");
 
   return { profile, errors };
