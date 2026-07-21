@@ -16,12 +16,16 @@ intake/
 
 ## Flow
 
-1. **Raw material (one screen).** Name, work email, company, one big textarea
-   for LinkedIn About/Experience or CV, an optional second textarea for whatever
-   defines their work right now (strategy doc, research proposal, OKRs), and a
-   consent checkbox for public web lookup. LinkedIn URLs are deliberately not
-   fetched — profile pages sit behind a login wall; paste is the reliable route.
-2. **Agent pipeline (~30–60s, live progress log).** The browser drives one
+1. **Conversational intake (AI chat).** The whole intake is a chat with an AI
+   interviewer (`converse` stage): it greets the user and, one short question at
+   a time, collects their name, work email, a paste of their background (LinkedIn
+   About/Experience, CV, or a defining doc), and consent for a public web lookup.
+   When it has enough it emits a ready signal and hands off to the pipeline.
+   Material is assembled from what the user actually pasted (never re-generated,
+   so nothing is lost). LinkedIn URLs are deliberately not fetched — profile
+   pages sit behind a login wall; paste is the reliable route. If the OpenAI
+   proxy is down, the chat falls back to three scripted questions.
+2. **Agent pipeline (~30–60s, progress shown inline in the chat).** The browser drives one
    serverless call per stage (keeps each call inside the function timeout):
    - **Enricher** — exhaustive entity extraction from ALL pasted material. Every
      named company, product, protocol, lab, benchmark, venue and person is a
@@ -36,9 +40,10 @@ intake/
    Every stage has a strict JSON contract and fails loudly with its stage name
    and a correlation id. Any stage failure degrades gracefully (deterministic
    fallbacks) — the flow never dies.
-3. **Gap questions (hard cap 3).** Chat-style. "You decide for me →" records the
-   deflection as confirmation authority: the Expander decides and the review
-   screen shows every decision.
+3. **Gap questions (hard cap 3).** Asked by the AI in the same chat, chosen by
+   the Profiler (not hardcoded). Saying "you decide" records the deflection as
+   confirmation authority: the Expander decides and the review screen shows every
+   decision.
 4. **Review & activate.** The full inferred profile in editable fields; delivery
    time, timezone and format (Punchy / Standard / Deep) are UI controls here,
    not chat questions. Activation commits `profiles/<id>.json` via

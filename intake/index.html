@@ -32,7 +32,7 @@
     .app {
       width: 100%;
       max-width: 620px;
-      min-height: 100dvh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       background: var(--card);
@@ -47,93 +47,66 @@
     header h1 { margin: 0; font-size: 17px; letter-spacing: .3px; }
     header p { margin: 3px 0 0; font-size: 12px; opacity: .7; }
 
-    .screen { display: none; padding: 18px; flex: 1 1 auto; overflow-y: auto; }
+    /* scrolling document screens (review, first brief) */
+    .screen { display: none; padding: 18px; flex: 1 1 auto; overflow-y: auto; min-height: 0; }
     .screen.active { display: block; }
     .screen h2 { font-size: 17px; margin: 0 0 4px; }
     .screen .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
 
+    /* the chat screen fills the frame; only the log scrolls */
+    #s-chat.active { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+    #chatlog {
+      flex: 1 1 auto; min-height: 0; overflow-y: auto;
+      padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .msg { max-width: 88%; padding: 10px 13px; border-radius: 15px; font-size: 15px; white-space: pre-wrap; word-wrap: break-word; }
+    .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.me { background: var(--me); color: var(--me-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg.status { background: transparent; color: var(--muted); font-size: 13px; padding: 3px 2px; align-self: flex-start; }
+    .msg.typing { color: var(--muted); font-style: italic; background: var(--bot); }
+    #chatform { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); flex: 0 0 auto; }
+    #chat-input {
+      flex: 1; border: 1px solid var(--line); border-radius: 18px; padding: 10px 15px;
+      font-size: 15px; font-family: inherit; outline: none; resize: none; max-height: 140px;
+    }
+    #chat-input:focus { border-color: var(--accent); }
+    #chat-send { border: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: 18px; padding: 0 18px; cursor: pointer; }
+    #chat-send:disabled { opacity: .5; cursor: default; }
+
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 5px; }
     .field input, .field select, .field textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 9px 11px;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      background: #fff;
-      color: var(--ink);
+      width: 100%; border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px;
+      font-size: 14px; font-family: inherit; outline: none; background: #fff; color: var(--ink);
     }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
     .field textarea { min-height: 56px; resize: vertical; }
-    .field textarea.big { min-height: 150px; }
+    .field textarea.big { min-height: 130px; }
     .field .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
     .row2 { display: flex; gap: 10px; }
     .row2 .field { flex: 1 1 0; min-width: 0; }
 
-    .consent {
-      display: flex; gap: 9px; align-items: flex-start;
-      border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
-      font-size: 13px; color: var(--ink); cursor: pointer; margin-bottom: 14px;
-    }
-    .consent input { width: auto; flex: 0 0 auto; margin: 3px 0 0; }
-
-    /* Format cards. NOTE: the generic .field input rule sets width:100%; radios
-       must keep natural size or they blow up the card (the v1 layout bug). */
+    /* Format cards. The generic .field input rule sets width:100%; radios must
+       keep natural size or they blow up the card (the v1 layout bug). */
     .formats { display: flex; flex-direction: column; gap: 8px; }
     .formats label {
-      display: flex; gap: 10px; align-items: flex-start;
-      width: 100%;
+      display: flex; gap: 10px; align-items: flex-start; width: 100%;
       border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
-      font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink);
-      cursor: pointer;
+      font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink); cursor: pointer;
     }
     .formats label input { width: auto; flex: 0 0 auto; margin: 3px 0 0; }
     .formats .fmt-body { flex: 1 1 auto; min-width: 0; }
     .formats .fmt-title { font-weight: 700; }
     .formats .fmt-desc { color: var(--muted); font-size: 12.5px; overflow-wrap: break-word; }
-    .formats label:has(input:checked) {
-      border-color: var(--accent);
-      background: #f2fbfd;
-      box-shadow: 0 0 0 1px var(--accent) inset;
-    }
+    .formats label:has(input:checked) { border-color: var(--accent); background: #f2fbfd; box-shadow: 0 0 0 1px var(--accent) inset; }
 
-    button.primary {
-      border: none; background: var(--accent); color: var(--accent-ink);
-      font-weight: 700; border-radius: 22px; padding: 13px 18px; font-size: 15px;
-      cursor: pointer; width: 100%; margin-top: 6px;
-    }
-    button.secondary {
-      border: 1px solid var(--line); background: #fff; color: var(--muted);
-      font-weight: 600; border-radius: 22px; padding: 10px 16px; font-size: 13px; cursor: pointer;
-    }
+    button.primary { border: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: 22px; padding: 13px 18px; font-size: 15px; cursor: pointer; width: 100%; margin-top: 6px; }
     button:disabled { opacity: .5; cursor: default; }
 
     .notice { font-size: 13px; padding: 10px 12px; border-radius: 9px; margin-bottom: 14px; }
     .notice.ok { background: #e7f8ee; color: var(--ok); }
     .notice.err { background: #fdecea; color: var(--err); }
     .notice.warn { background: #fff7e6; color: #92400e; }
-
-    /* progress log */
-    .steps { list-style: none; margin: 18px 0; padding: 0; }
-    .steps li {
-      display: flex; gap: 10px; align-items: flex-start;
-      padding: 8px 0; font-size: 14px; border-bottom: 1px dashed var(--line);
-    }
-    .steps .icon { flex: 0 0 22px; text-align: center; }
-    .steps .detail { color: var(--muted); font-size: 12px; }
-
-    /* gap-question chat */
-    #qlog { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-    .msg { max-width: 88%; padding: 10px 13px; border-radius: 15px; font-size: 15px; white-space: pre-wrap; word-wrap: break-word; }
-    .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg.me { background: var(--me); color: var(--me-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
-    #qform { display: flex; gap: 8px; }
-    #qform input { flex: 1; border: 1px solid var(--line); border-radius: 22px; padding: 11px 15px; font-size: 15px; outline: none; }
-    #qform input:focus { border-color: var(--accent); }
-    #qform button { border: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: 22px; padding: 0 18px; cursor: pointer; }
-    .qskip { margin-top: 8px; text-align: center; }
 
     details.raw { margin-top: 16px; }
     details.raw summary { font-size: 12.5px; color: var(--muted); cursor: pointer; }
@@ -154,136 +127,42 @@
   <div class="app">
     <header>
       <h1>⚡ Build your Daily Brief</h1>
-      <p>Paste what defines your work — we build the brief around you.</p>
+      <p>Chat with our assistant — it builds the brief around you.</p>
     </header>
 
-    <!-- B1: raw material -->
-    <section class="screen active" id="s-material">
-      <h2>Tell us who you are</h2>
-      <p class="sub">5 minutes, max 3 questions. We do the profiling — you just supply raw material and confirm.</p>
-      <div id="m-notice"></div>
-      <div class="row2">
-        <div class="field">
-          <label>Name</label>
-          <input id="m-name" type="text" autocomplete="name" />
-        </div>
-        <div class="field">
-          <label>Work email</label>
-          <input id="m-email" type="email" autocomplete="email" />
-        </div>
-      </div>
-      <div class="field">
-        <label>Company / organisation <span style="text-transform:none;font-weight:400">(optional)</span></label>
-        <input id="m-company" type="text" autocomplete="organization" />
-      </div>
-      <div class="field">
-        <label>Your LinkedIn About + Experience, or CV / bio</label>
-        <textarea id="m-bio" class="big" placeholder="Paste the text here (don't paste a LinkedIn URL — profile pages are behind a login, we can't read them)."></textarea>
-      </div>
-      <div class="field">
-        <label>Anything that defines your work right now <span style="text-transform:none;font-weight:400">(optional)</span></label>
-        <textarea id="m-doc" class="big" placeholder="Strategy doc, research proposal, OKRs, project brief — the more, the sharper your brief."></textarea>
-      </div>
-      <label class="consent">
-        <input id="m-consent" type="checkbox" />
-        <span>You may look me up online (name + company, public sources only) to sharpen my profile.</span>
-      </label>
-      <button class="primary" id="m-build" type="button">Build my profile</button>
-    </section>
-
-    <!-- B2: agent progress -->
-    <section class="screen" id="s-progress">
-      <h2>Building your profile…</h2>
-      <p class="sub">Our analysts are reading your material. This takes about a minute.</p>
-      <ul class="steps" id="steps"></ul>
-    </section>
-
-    <!-- B3: gap questions (max 3) -->
-    <section class="screen" id="s-questions">
-      <h2>A couple of questions</h2>
-      <p class="sub">Only what we couldn't infer — <span id="q-count"></span> at most.</p>
-      <div id="qlog"></div>
-      <form id="qform" autocomplete="off">
-        <input id="q-input" type="text" placeholder="Type your answer…" />
-        <button type="submit">Send</button>
+    <!-- Conversational AI intake -->
+    <section class="screen active" id="s-chat">
+      <div id="chatlog" aria-live="polite"></div>
+      <form id="chatform" autocomplete="off">
+        <textarea id="chat-input" rows="1" placeholder="Type your reply… (paste your bio / CV here when asked)"></textarea>
+        <button type="submit" id="chat-send">Send</button>
       </form>
-      <div class="qskip"><button class="secondary" id="q-skip" type="button">You decide for me →</button></div>
     </section>
 
-    <!-- B4: the inferred profile, editable -->
+    <!-- The inferred profile, editable -->
     <section class="screen" id="s-review">
       <h2>Here's your brief profile</h2>
       <p class="sub">Built from your material<span id="r-src"></span>. Everything is editable — check it, pick delivery, activate.</p>
       <div id="notice"></div>
 
       <div class="row2">
-        <div class="field">
-          <label>Name</label>
-          <input id="f-name" type="text" />
-        </div>
-        <div class="field">
-          <label>Email</label>
-          <input id="f-email" type="email" />
-        </div>
+        <div class="field"><label>Name</label><input id="f-name" type="text" /></div>
+        <div class="field"><label>Email</label><input id="f-email" type="email" /></div>
       </div>
-      <div class="field">
-        <label>Who you are (role narrative)</label>
-        <textarea id="f-role"></textarea>
-      </div>
-      <div class="field">
-        <label>Where you're heading</label>
-        <textarea id="f-trajectory"></textarea>
-      </div>
-      <div class="field">
-        <label>Goals (next 6–12 months)</label>
-        <textarea id="f-goals"></textarea>
-        <div class="hint">One per line.</div>
-      </div>
-      <div class="field">
-        <label>Information needs</label>
-        <textarea id="f-needs"></textarea>
-        <div class="hint">One per line — what the brief should keep you sharp on.</div>
-      </div>
-      <div class="field">
-        <label>Topics to track</label>
-        <textarea id="f-topics" class="big"></textarea>
-        <div class="hint">Comma-separated.</div>
-      </div>
-      <div class="field">
-        <label>Watchlist</label>
-        <textarea id="f-watchlist" class="big"></textarea>
-        <div class="hint">Companies, products, protocols, people, benchmarks — comma-separated.</div>
-      </div>
-      <div class="field">
-        <label>Priority sources</label>
-        <textarea id="f-sources"></textarea>
-        <div class="hint">Bare domains, comma-separated.</div>
-      </div>
-      <div class="field">
-        <label>arXiv categories</label>
-        <input id="f-arxiv" type="text" />
-        <div class="hint">e.g. cs.MA, cs.CL — leave empty if not research-relevant.</div>
-      </div>
-      <div class="field">
-        <label>Exclude</label>
-        <textarea id="f-exclude"></textarea>
-        <div class="hint">Comma-separated.</div>
-      </div>
+      <div class="field"><label>Who you are (role narrative)</label><textarea id="f-role"></textarea></div>
+      <div class="field"><label>Where you're heading</label><textarea id="f-trajectory"></textarea></div>
+      <div class="field"><label>Goals (next 6–12 months)</label><textarea id="f-goals"></textarea><div class="hint">One per line.</div></div>
+      <div class="field"><label>Information needs</label><textarea id="f-needs"></textarea><div class="hint">One per line — what the brief should keep you sharp on.</div></div>
+      <div class="field"><label>Topics to track</label><textarea id="f-topics" class="big"></textarea><div class="hint">Comma-separated.</div></div>
+      <div class="field"><label>Watchlist</label><textarea id="f-watchlist" class="big"></textarea><div class="hint">Companies, products, protocols, people, benchmarks — comma-separated.</div></div>
+      <div class="field"><label>Priority sources</label><textarea id="f-sources"></textarea><div class="hint">Bare domains, comma-separated.</div></div>
+      <div class="field"><label>arXiv categories</label><input id="f-arxiv" type="text" /><div class="hint">e.g. cs.MA, cs.CL — leave empty if not research-relevant.</div></div>
+      <div class="field"><label>Exclude</label><textarea id="f-exclude"></textarea><div class="hint">Comma-separated.</div></div>
       <div class="row2">
-        <div class="field">
-          <label>Deliver at</label>
-          <select id="f-hour"></select>
-        </div>
-        <div class="field">
-          <label>Timezone</label>
-          <select id="f-tz"></select>
-        </div>
+        <div class="field"><label>Deliver at</label><select id="f-hour"></select></div>
+        <div class="field"><label>Timezone</label><select id="f-tz"></select></div>
       </div>
-      <div class="field">
-        <label>Language</label>
-        <input id="f-language" type="text" maxlength="5" />
-        <div class="hint">2-letter code, e.g. en, nl.</div>
-      </div>
+      <div class="field"><label>Language</label><input id="f-language" type="text" maxlength="5" /><div class="hint">2-letter code, e.g. en, nl.</div></div>
       <div class="field" id="feedback-field" style="display:none">
         <label>Tune it: what should change?</label>
         <textarea id="f-feedback" placeholder="e.g. more on standards bodies, less funding news, shorter items"></textarea>
@@ -328,10 +207,9 @@
 
     const $ = (id) => document.getElementById(id);
     const state = {
-      material: "", name: "", email: "", company: "",
+      material: "", name: "", email: "", company: "", consent: false,
       entityPool: [], research: "", profiler: null, answers: [], tracking: null,
       queryPacks: [], usedResearch: false, warnings: [],
-      // tune mode (opened from the signed link in an email footer)
       tune: null, tuneToken: "", packBasis: "",
     };
 
@@ -365,26 +243,29 @@
       return body.data;
     }
 
-    let stepEl = null;
-    function step(text) {
-      const li = document.createElement("li");
-      li.innerHTML = '<span class="icon">⏳</span><span><span class="t"></span><div class="detail"></div></span>';
-      li.querySelector(".t").textContent = text;
-      $("steps").appendChild(li);
-      stepEl = li;
-      return li;
+    // ---------- chat primitives ----------
+    const chatlog = $("chatlog");
+    function chatAdd(text, who) {
+      const div = document.createElement("div");
+      div.className = "msg " + (who || "bot");
+      div.textContent = text;
+      chatlog.appendChild(div);
+      chatlog.scrollTop = chatlog.scrollHeight;
+      return div;
     }
-    function stepDone(detail) {
-      if (!stepEl) return;
-      stepEl.querySelector(".icon").textContent = "✅";
-      if (detail) stepEl.querySelector(".detail").textContent = detail;
+    function chatStatus(text) {
+      const el = chatAdd("⏳ " + text, "status");
+      return {
+        done: (d) => { el.textContent = "✅ " + text + (d ? " — " + d : ""); chatlog.scrollTop = chatlog.scrollHeight; },
+        warn: (d) => { el.textContent = "⚠️ " + text + (d ? " — " + d : ""); state.warnings.push(d || text); chatlog.scrollTop = chatlog.scrollHeight; },
+      };
     }
-    function stepWarn(detail) {
-      if (!stepEl) return;
-      stepEl.querySelector(".icon").textContent = "⚠️";
-      if (detail) stepEl.querySelector(".detail").textContent = detail;
-      state.warnings.push(detail || "step failed");
+    let typingEl = null;
+    function typing(on) {
+      if (on && !typingEl) { typingEl = chatAdd("…", "typing"); }
+      else if (!on && typingEl) { typingEl.remove(); typingEl = null; }
     }
+    function setBusy(b) { $("chat-input").disabled = b; $("chat-send").disabled = b; if (!b) $("chat-input").focus(); }
 
     // ---------- deterministic fallbacks (the flow never dies) ----------
     function poolToTracking(pool) {
@@ -392,10 +273,7 @@
       return {
         topics: by("topic").slice(0, 15),
         watchlist: ["company", "product", "protocol", "org", "person"].flatMap(by).slice(0, 40),
-        priority_sources: [],
-        arxiv_categories: [],
-        exclude: [],
-        language: "en",
+        priority_sources: [], arxiv_categories: [], exclude: [], language: "en",
       };
     }
     function packQueries(topics, watchlist) {
@@ -404,145 +282,202 @@
       let cur = [];
       for (const t of terms) {
         const q = cur.concat(t).join(" OR ");
-        if (q.length > 430 && cur.length) {
-          packs.push({ name: "pack-" + (packs.length + 1), q: cur.join(" OR ") });
-          cur = [t];
-        } else cur.push(t);
+        if (q.length > 430 && cur.length) { packs.push({ name: "pack-" + (packs.length + 1), q: cur.join(" OR ") }); cur = [t]; }
+        else cur.push(t);
       }
       if (cur.length) packs.push({ name: "pack-" + (packs.length + 1), q: cur.join(" OR ") });
       return packs.slice(0, 8);
     }
 
-    // ---------- B2: run the pipeline ----------
-    async function runPipeline() {
-      show("s-progress");
-      $("steps").innerHTML = "";
+    // ---------- the interview (AI-driven) ----------
+    const chatHistory = [];   // {role, content} sent to the converse stage
+    let phase = "interview";  // interview | gapq | busy
+    let fbSteps = null, fbIdx = 0;   // scripted fallback if converse is unavailable
 
-      step("Reading your material and extracting every named entity…");
+    const OPENER = "Hi! I'll build your personalised daily brief. To start — what's your name, and what do you do (your role and company)?";
+
+    function startChat() {
+      chatHistory.push({ role: "assistant", content: OPENER });
+      chatAdd(OPENER, "bot");
+      setBusy(false);
+    }
+
+    async function interviewTurn() {
+      phase = "busy";
+      setBusy(true);
+      typing(true);
+      try {
+        const r = await stage("converse", { messages: chatHistory });
+        typing(false);
+        if (r.ready) {
+          state.name = r.name || "";
+          state.email = r.email || "";
+          state.company = r.company || "";
+          state.consent = !!r.consent;
+          // Material = the substantial things they pasted (never re-generated by
+          // the model, so nothing is lost). Fall back to all user turns.
+          const pastes = chatHistory.filter((m) => m.role === "user" && m.content.length > 120).map((m) => m.content);
+          const allUser = chatHistory.filter((m) => m.role === "user").map((m) => m.content);
+          state.material = (pastes.length ? pastes : allUser).join("\n\n---\n\n");
+          if (r.reply) chatAdd(r.reply, "bot");
+          await runPipeline();
+        } else {
+          chatAdd(r.reply, "bot");
+          chatHistory.push({ role: "assistant", content: r.reply });
+          phase = "interview";
+          setBusy(false);
+        }
+      } catch (e) {
+        typing(false);
+        startFallback();
+      }
+    }
+
+    // scripted fallback (OpenAI proxy down): ask directly, build the same profile
+    function startFallback() {
+      fbSteps = [
+        { key: "name", q: "Our assistant is briefly unavailable — I'll just ask directly. What's your name?" },
+        { key: "email", q: "What work email should your brief go to?" },
+        { key: "material", q: "Paste your LinkedIn About + Experience, your CV/bio, or a doc that defines your work.", material: true },
+      ];
+      fbIdx = 0;
+      phase = "interview";
+      askFallback();
+    }
+    function askFallback() {
+      if (fbIdx >= fbSteps.length) { finishFallback(); return; }
+      chatAdd(fbSteps[fbIdx].q, "bot");
+      setBusy(false);
+    }
+    function recordFallback(text) {
+      const stepDef = fbSteps[fbIdx];
+      if (stepDef.material) state.material = text;
+      else state[stepDef.key] = text.trim();
+      fbIdx++;
+      askFallback();
+    }
+    function finishFallback() {
+      if (!state.name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(state.email) || state.material.length < 60) {
+        chatAdd("I still need a name, a valid email, and a paragraph about your work. Let's try again — what's your name?", "bot");
+        fbIdx = 0;
+        return;
+      }
+      state.consent = false;
+      runPipeline();
+    }
+
+    // ---------- the agent pipeline (progress shown inline in chat) ----------
+    async function runPipeline() {
+      phase = "busy";
+      setBusy(true);
+
+      let s = chatStatus("Reading your material and extracting every named entity…");
       try {
         const r = await stage("enrich", { material: state.material });
         state.entityPool = r.entity_pool || [];
-        stepDone(state.entityPool.length + " entities found");
-      } catch (e) {
-        stepWarn("Extraction failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — continuing without it");
-      }
+        s.done(state.entityPool.length + " entities found");
+      } catch (e) { s.warn("extraction skipped (" + e.stage + ")"); }
 
-      if ($("m-consent").checked && state.name) {
-        step("Researching your public footprint…");
+      if (state.consent && state.name) {
+        s = chatStatus("Researching your public footprint…");
         try {
-          const r = await stage("research", {
-            name: state.name, company: state.company,
-            role_hint: state.material.slice(0, 200),
-          });
+          const r = await stage("research", { name: state.name, company: state.company, role_hint: state.material.slice(0, 200) });
           state.research = r.findings || "";
           state.usedResearch = true;
           const extra = r.extra_entities || [];
           const seen = new Set(state.entityPool.map((e) => e.name.toLowerCase()));
           for (const e of extra) if (!seen.has(e.name.toLowerCase())) state.entityPool.push(e);
-          stepDone(extra.length ? "+" + extra.length + " entities from the web" : "done");
-        } catch (e) {
-          stepWarn("Web research unavailable — continuing with your material only");
-        }
+          s.done(extra.length ? "+" + extra.length + " from the web" : "done");
+        } catch (e) { s.warn("web research unavailable"); }
       }
 
-      step("Understanding your role, trajectory and goals…");
+      s = chatStatus("Understanding your role, trajectory and goals…");
       try {
         state.profiler = await stage("profile", {
-          material: state.material,
-          entity_pool: state.entityPool,
-          research_findings: state.research,
+          material: state.material, entity_pool: state.entityPool, research_findings: state.research,
         });
-        stepDone("");
+        s.done();
       } catch (e) {
-        stepWarn("Profiling failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — you can fill this in by hand");
+        s.warn("profiling skipped (" + e.stage + ")");
         state.profiler = { role_context: "", trajectory: "", goals: [], info_needs: [], gap_questions: [] };
       }
 
       const qs = (state.profiler.gap_questions || []).slice(0, 3);
-      if (qs.length) {
-        askQuestions(qs);
-      } else {
-        await finishPipeline();
-      }
+      if (qs.length) { startGapQuestions(qs); }
+      else { await finishPipeline(); }
     }
 
-    // ---------- B3: gap questions ----------
-    let pendingQs = [];
-    function askQuestions(qs) {
-      pendingQs = qs.slice();
-      $("q-count").textContent = qs.length === 1 ? "1 question" : qs.length + " questions";
-      show("s-questions");
-      nextQuestion();
+    // ---------- gap questions (in the same chat, AI-chosen, max 3) ----------
+    let pendingGap = [];
+    function startGapQuestions(qs) {
+      pendingGap = qs.slice();
+      chatAdd("Almost there — just " + (qs.length === 1 ? "one quick question" : qs.length + " quick questions") +
+        ". (Not sure on any? Just say “you decide”.)", "bot");
+      phase = "gapq";
+      askNextGap();
     }
-    function addQ(text, who) {
-      const div = document.createElement("div");
-      div.className = "msg " + who;
-      div.textContent = text;
-      $("qlog").appendChild(div);
-      div.scrollIntoView({ block: "end" });
+    function askNextGap() {
+      if (!pendingGap.length) { phase = "busy"; finishPipeline(); return; }
+      chatAdd(pendingGap[0], "bot");
+      setBusy(false);
     }
-    function nextQuestion() {
-      if (!pendingQs.length) { finishQuestions(); return; }
-      addQ(pendingQs[0], "bot");
-      $("q-input").focus();
-    }
-    function recordAnswer(text) {
-      addQ(text, "me");
-      state.answers.push({ question: pendingQs.shift(), answer: text });
-      nextQuestion();
-    }
-    $("qform").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const t = $("q-input").value.trim();
-      if (!t) return;
-      $("q-input").value = "";
-      recordAnswer(t);
-    });
-    $("q-skip").addEventListener("click", () => {
-      // Deflection is confirmation authority: the Expander decides and the
-      // review screen shows every decision it made.
-      while (pendingQs.length) {
-        state.answers.push({ question: pendingQs.shift(), answer: "You decide — use your judgement." });
-      }
-      addQ("You decide — use your judgement.", "me");
-      finishQuestions();
-    });
-    async function finishQuestions() {
-      show("s-progress");
-      await finishPipeline();
+    function recordGap(text) {
+      state.answers.push({ question: pendingGap.shift(), answer: text });
+      askNextGap();
     }
 
     async function finishPipeline() {
-      step("Building your tracking config (topics, watchlist, sources)…");
+      setBusy(true);
+      let s = chatStatus("Building your tracking config (topics, watchlist, sources)…");
       try {
         state.tracking = await stage("expand", {
-          entity_pool: state.entityPool,
-          profiler: state.profiler,
-          answers: state.answers,
-          research_findings: state.research,
+          entity_pool: state.entityPool, profiler: state.profiler,
+          answers: state.answers, research_findings: state.research,
         });
-        stepDone(state.tracking.topics.length + " topics, " + state.tracking.watchlist.length + " watchlist entries");
+        s.done(state.tracking.topics.length + " topics, " + state.tracking.watchlist.length + " watchlist entries");
       } catch (e) {
-        stepWarn("Expansion failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — using direct extraction");
+        s.warn("expansion skipped (" + e.stage + ") — using direct extraction");
         state.tracking = poolToTracking(state.entityPool);
       }
 
-      step("Composing themed news queries…");
+      s = chatStatus("Composing themed news queries…");
       try {
-        const r = await stage("queries", {
-          topics: state.tracking.topics, watchlist: state.tracking.watchlist,
-        });
+        const r = await stage("queries", { topics: state.tracking.topics, watchlist: state.tracking.watchlist });
         state.queryPacks = r.query_packs;
-        stepDone(state.queryPacks.length + " query packs");
+        s.done(state.queryPacks.length + " query packs");
       } catch (e) {
         state.queryPacks = packQueries(state.tracking.topics, state.tracking.watchlist);
-        stepWarn("Used deterministic query packing (" + state.queryPacks.length + " packs)");
+        s.warn(state.queryPacks.length + " packs (deterministic)");
       }
 
+      chatAdd("Done — here's the profile I built for you 👇", "bot");
       showReview();
     }
 
-    // ---------- timezone helpers (offset taken at signup; DST caveat in README) ----------
+    // ---------- chat input wiring ----------
+    const input = $("chat-input");
+    input.addEventListener("input", () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 140) + "px";
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("chatform").requestSubmit(); }
+    });
+    $("chatform").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text || $("chat-input").disabled) return;
+      chatAdd(text, "me");
+      input.value = "";
+      input.style.height = "auto";
+      if (phase === "gapq") { recordGap(text); return; }
+      if (phase !== "interview") return;
+      if (fbSteps) { recordFallback(text); return; }
+      chatHistory.push({ role: "user", content: text });
+      interviewTurn();
+    });
+
+    // ---------- timezone helpers ----------
     function tzList() {
       try { return Intl.supportedValuesOf("timeZone"); }
       catch { return ["UTC", "Europe/Amsterdam", "Europe/London", "America/New_York", "Asia/Singapore"]; }
@@ -571,7 +506,7 @@
     const toList = (v) => String(v || "").split(",").map((x) => x.trim()).filter(Boolean);
     const toLines = (v) => String(v || "").split("\n").map((x) => x.trim()).filter(Boolean);
 
-    // ---------- B4: review ----------
+    // ---------- review ----------
     function showReview() {
       const tune = state.tune;
       const t = tune || state.tracking || poolToTracking(state.entityPool);
@@ -579,8 +514,7 @@
       $("r-src").textContent = tune ? "" : (state.usedResearch ? " + public web research" : "");
       if (tune) {
         document.querySelector("#s-review h2").textContent = "Tune your brief";
-        document.querySelector("#s-review .sub").textContent =
-          "This is your current profile. Change anything, leave a note below, and save.";
+        document.querySelector("#s-review .sub").textContent = "This is your current profile. Change anything, leave a note below, and save.";
         $("feedback-field").style.display = "";
         $("confirm").textContent = "Save my brief settings";
       }
@@ -643,8 +577,6 @@
       const tz = $("f-tz").value || "UTC";
       const localHour = Number($("f-hour").value || 7);
       const fmt = (document.querySelector('input[name="fmt"]:checked') || {}).value || "standard";
-      // Tune mode keeps the original id (renaming must never fork a second
-      // profile) and carries the feedback log forward, appending today's note.
       const log = state.tune ? (state.tune.feedback_log || []).slice() : [];
       const note = state.tune ? $("f-feedback").value.trim() : "";
       if (note) log.push({ date: new Date().toISOString().slice(0, 10), note: note });
@@ -675,18 +607,11 @@
     $("confirm").addEventListener("click", async () => {
       const profile = buildProfile();
       if (!profile.name) { notice($("notice"), "err", "Please add your name."); return; }
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(profile.email)) {
-        notice($("notice"), "err", "That email doesn't look right — please check it."); return;
-      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(profile.email)) { notice($("notice"), "err", "That email doesn't look right — please check it."); return; }
       if (profile.topics.length === 0) { notice($("notice"), "err", "Add at least one topic to track."); return; }
-      // Re-pack queries when topics/watchlist changed since the packs were
-      // built (covers both pipeline edits and tune-mode edits).
       const basis = (profile.topics.join(", ") + "|" + profile.watchlist.join(", ")).toLowerCase();
-      if (!state.queryPacks.length || basis !== state.packBasis) {
-        profile.query_packs = packQueries(profile.topics, profile.watchlist);
-      } else {
-        profile.query_packs = state.queryPacks;
-      }
+      profile.query_packs = (!state.queryPacks.length || basis !== state.packBasis)
+        ? packQueries(profile.topics, profile.watchlist) : state.queryPacks;
       if (state.tuneToken) profile.tune_token = state.tuneToken;
 
       const btn = $("confirm");
@@ -698,8 +623,7 @@
           notice($("notice"), "ok",
             "Saved. An updated brief is on its way to your inbox now" +
             ($("f-feedback").value.trim() ? ", honouring your note." : ".") +
-            " From tomorrow it arrives daily at " +
-            String($("f-hour").value).padStart(2, "0") + ":00 (" + profile.timezone + ").");
+            " From tomorrow it arrives daily at " + String($("f-hour").value).padStart(2, "0") + ":00 (" + profile.timezone + ").");
           btn.textContent = "✓ Saved";
         } else {
           btn.textContent = "✓ Activated";
@@ -724,14 +648,11 @@
       show("s-first");
       const hh = String($("f-hour").value).padStart(2, "0");
       notice($("fb-banner"), "ok",
-        "Your daily brief will arrive by email at " + profile.email + " every day at " +
-        hh + ":00 (" + profile.timezone + "). Your first edition is being emailed to you " +
-        "right now — and here it is on screen:");
+        "Your daily brief will arrive by email at " + profile.email + " every day at " + hh + ":00 (" +
+        profile.timezone + "). Your first edition is being emailed to you right now — and here it is on screen:");
       try {
         const fetched = await stage("preview_fetch", {
-          query_packs: profile.query_packs,
-          language: profile.language,
-          priority_sources: profile.priority_sources,
+          query_packs: profile.query_packs, language: profile.language, priority_sources: profile.priority_sources,
         });
         if (!fetched.articles.length) throw new Error("no fresh articles found");
         const written = await stage("preview_write", {
@@ -760,62 +681,37 @@
         body: JSON.stringify(profile),
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        const e = new Error("save failed: " + res.status);
-        e.body = body;
-        throw e;
-      }
+      if (!res.ok) { const e = new Error("save failed: " + res.status); e.body = body; throw e; }
       return body;
     }
 
-    // ---------- Phase E: tune mode (signed link from the email footer) ----------
+    // ---------- tune mode (signed link from the email footer) ----------
     async function bootTune(id, token) {
-      show("s-progress");
-      $("steps").innerHTML = "";
-      step("Loading your profile…");
+      const s = chatStatus("Loading your profile…");
+      setBusy(true);
       try {
-        const res = await fetch("/api/get-profile?id=" + encodeURIComponent(id) +
-                                "&token=" + encodeURIComponent(token));
+        const res = await fetch("/api/get-profile?id=" + encodeURIComponent(id) + "&token=" + encodeURIComponent(token));
         const body = await res.json().catch(() => ({}));
         if (!res.ok || !body.ok) throw new Error(body.error || "HTTP " + res.status);
-        stepDone("");
+        s.done();
         state.tune = body.profile;
         state.tuneToken = token;
         state.queryPacks = Array.isArray(body.profile.query_packs) ? body.profile.query_packs : [];
         showReview();
       } catch (e) {
-        stepWarn(String(e.message || e));
-        show("s-material");
-        notice($("m-notice"), "err",
-          "Couldn't open your tune link (" + (e.message || e) + "). " +
-          "Use the link from your most recent brief, or rebuild your profile below.");
+        s.warn(String(e.message || e));
+        chatAdd("Couldn't open your tune link (" + (e.message || e) + "). Use the link from your most recent brief, or just tell me about yourself to rebuild your profile.", "bot");
+        startChat();
       }
     }
+
+    // ---------- kickoff ----------
     const params = new URLSearchParams(location.search);
     if (params.get("tune") && params.get("token")) {
       bootTune(params.get("tune").toLowerCase(), params.get("token"));
+    } else {
+      startChat();
     }
-
-    // ---------- B1: kickoff ----------
-    $("m-build").addEventListener("click", () => {
-      state.name = $("m-name").value.trim();
-      state.email = $("m-email").value.trim();
-      state.company = $("m-company").value.trim();
-      const bio = $("m-bio").value.trim();
-      const doc = $("m-doc").value.trim();
-      state.material = [bio, doc].filter(Boolean).join("\n\n---\n\n");
-
-      if (!state.name) { notice($("m-notice"), "err", "Please add your name."); return; }
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(state.email)) {
-        notice($("m-notice"), "err", "That email doesn't look right — please check it."); return;
-      }
-      if (state.material.length < 100) {
-        notice($("m-notice"), "err",
-          "Paste a bit more about yourself (your LinkedIn About + Experience, or a doc that defines your work) — the profile is built from this.");
-        return;
-      }
-      runPipeline();
-    });
   })();
   </script>
 </body>

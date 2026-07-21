@@ -61,7 +61,61 @@ export default async (req) => {
 
 // ---------------------------------------------------------------- stages
 
+const CONVERSE_SYSTEM =
+  "You are a warm, efficient intake assistant building someone's personalised daily news brief. " +
+  "Chat naturally, ONE short question at a time. Through conversation, collect:\n" +
+  "1. Their name.\n" +
+  "2. Their work email (where the brief is delivered).\n" +
+  "3. A solid description of who they are and what defines their work right now — ask them to " +
+  "paste their LinkedIn About + Experience, their CV/bio, or a doc (strategy, OKRs, research " +
+  "proposal). If they give only a sentence, warmly ask for more so the brief can be sharp. Do NOT " +
+  "ask them to list topics, sources, competitors or companies — you infer all of that later.\n" +
+  "4. Whether you may look them up online (name + company, public sources only) to sharpen the profile.\n\n" +
+  "Keep every message short and human. Acknowledge what they said, then ask the next thing. If they " +
+  "paste a LinkedIn URL, explain you cannot read login-walled pages and ask for the text instead.\n\n" +
+  "When you have their name, a valid-looking email, and at least a few sentences of background, STOP " +
+  "asking and reply with ONLY this JSON object and nothing else:\n" +
+  '{"ready": true, "name": "<name>", "email": "<email>", "company": "<company or empty>", ' +
+  '"consent": <true|false>, "closing": "<one warm line saying you are building their profile now>"}\n' +
+  "Emit that JSON exactly once, at the very end. Until then, reply with normal chat text only.";
+
 const STAGES = {
+  // 0. CONVERSE — the AI interviewer that runs the intake chat. Returns either
+  //    the next chat message, or {ready:true, name, email, company, consent}.
+  async converse(body, apiKey) {
+    const history = asList(body.messages)
+      .filter((m) => m && typeof m.content === "string" && (m.role === "user" || m.role === "assistant"))
+      .slice(-20)
+      .map((m) => ({ role: m.role, content: clamp(m.content, 8000) }));
+
+    const resp = await fetch(CHAT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: MODEL,
+        temperature: 0.6,
+        max_tokens: 400,
+        messages: [{ role: "system", content: CONVERSE_SYSTEM }, ...history],
+      }),
+    });
+    if (!resp.ok) throw new Error(`OpenAI ${resp.status}: ${(await resp.text()).slice(0, 300)}`);
+    const data = await resp.json();
+    const text = (data?.choices?.[0]?.message?.content ?? "").trim();
+
+    const parsed = extractJSON(text);
+    if (parsed && parsed.ready === true) {
+      return {
+        ready: true,
+        name: clamp(parsed.name, 120),
+        email: clamp(parsed.email, 200),
+        company: clamp(parsed.company, 160),
+        consent: parsed.consent === true,
+        reply: clamp(parsed.closing, 400) || "Perfect — building your profile now…",
+      };
+    }
+    return { ready: false, reply: text };
+  },
+
   // 1. ENRICHER — exhaustive entity extraction. Completeness over precision:
   //    losing named entities from pasted material was the v1 bug.
   async enrich(body, apiKey) {
