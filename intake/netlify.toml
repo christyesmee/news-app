@@ -12,10 +12,10 @@
 [functions]
   node_bundler = "esbuild"
 
-# Friendly path: /api/chat -> the chat function; /api/save-profile -> the saver.
+# Friendly paths for the functions.
 [[redirects]]
-  from = "/api/chat"
-  to = "/.netlify/functions/chat"
+  from = "/api/pipeline"
+  to = "/.netlify/functions/pipeline"
   status = 200
 
 [[redirects]]

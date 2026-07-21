@@ -1,38 +1,63 @@
-# Intake chatbot
+# Intake — profile-first (v2)
 
-A small hosted web app that interviews a prospect (via the OpenAI API) and builds
-a `profiles/<id>.json` for the [daily brief engine](../send_brief.py).
+A hosted web app that builds a rich daily-brief profile FROM the user's own
+material, instead of interviewing them. The user's time budget is 5–10 minutes:
+they paste raw material, answer at most 3 questions, and confirm an editable
+pre-filled profile.
 
 ```
 intake/
-  index.html                    chat UI (mobile-first) + review/confirm step + offline fallback
+  index.html                    the whole flow (material → progress → ≤3 questions → review)
   netlify.toml                  Netlify build/redirect config
-  netlify/functions/chat.mjs    proxies OpenAI Chat Completions (key stays server-side)
-  netlify/functions/save-profile.mjs   commits the confirmed profile to the repo (Phase 4)
+  netlify/functions/pipeline.mjs      staged agent pipeline (Enricher → Researcher →
+                                      Profiler → Expander → Query-packer), OpenAI
+  netlify/functions/save-profile.mjs  validates + commits profiles/<id>.json via GitHub API
 ```
-
-## Deploy on Netlify
-
-1. New site from this Git repo.
-2. **Site configuration → Build & deploy → Base directory:** `intake`
-   (everything in `netlify.toml` is relative to that base).
-3. **Environment variables:**
-   - `OPENAI_API_KEY` — used by `chat.mjs`.
-   - `GITHUB_TOKEN` — a **fine-grained** PAT scoped to *Contents: Read/Write* on
-     this repo only, used by `save-profile.mjs` (Phase 4).
-   - `GITHUB_REPO` — `owner/news-app` (defaults can be set in the function).
-4. Deploy. The chat is served at `/` and the functions at `/api/chat` and
-   `/api/save-profile` (see the redirects in `netlify.toml`).
 
 ## Flow
 
-1. The chat asks up to 7 questions (one at a time) and returns a strict JSON
-   profile matching the [Phase 1 schema](../profiles/example.json).
-2. The page shows the profile back, lets the user confirm email + a delivery
-   time (picked in their local timezone, converted to `send_hour_utc`), and pick
-   a format.
-3. On confirm, the profile is committed to `profiles/<id>.json`; the next hourly
-   workflow run emails that user.
+1. **Raw material (one screen).** Name, work email, company, one big textarea
+   for LinkedIn About/Experience or CV, an optional second textarea for whatever
+   defines their work right now (strategy doc, research proposal, OKRs), and a
+   consent checkbox for public web lookup. LinkedIn URLs are deliberately not
+   fetched — profile pages sit behind a login wall; paste is the reliable route.
+2. **Agent pipeline (~30–60s, live progress log).** The browser drives one
+   serverless call per stage (keeps each call inside the function timeout):
+   - **Enricher** — exhaustive entity extraction from ALL pasted material. Every
+     named company, product, protocol, lab, benchmark, venue and person is a
+     candidate. Losing named entities was the v1 bug; completeness is the bar.
+   - **Researcher** (consent-gated) — OpenAI Responses API with the built-in
+     `web_search` tool: public footprint, employer news, competitors.
+   - **Profiler** — role narrative, trajectory, goals, info needs + up to 3 gap
+     questions it genuinely couldn't infer.
+   - **Expander** — the tracking config: 8–15 topics, 20–40 watchlist entities
+     (including inferred adjacents), 10+ sources, arXiv categories, exclusions.
+   - **Query-packer** — themed NewsAPI query packs, each ≤450 chars.
+   Every stage has a strict JSON contract and fails loudly with its stage name
+   and a correlation id. Any stage failure degrades gracefully (deterministic
+   fallbacks) — the flow never dies.
+3. **Gap questions (hard cap 3).** Chat-style. "You decide for me →" records the
+   deflection as confirmation authority: the Expander decides and the review
+   screen shows every decision.
+4. **Review & activate.** The full inferred profile in editable fields; delivery
+   time, timezone and format (Punchy / Standard / Deep) are UI controls here,
+   not chat questions. Activation commits `profiles/<id>.json` via
+   `save-profile` (correlation-id diagnostics on failure).
 
-If the OpenAI proxy is unreachable, the page falls back to a baked-in scripted
-questionnaire that builds the same profile locally, so the flow never dies.
+## Deploy on Netlify
+
+1. New site from this Git repo, **Base directory:** `intake`.
+2. Environment variables (Site configuration → Environment variables), then
+   **redeploy — env changes only apply to new deploys**:
+   - `OPENAI_API_KEY` — pipeline (intake-time agents + web search).
+   - `GITHUB_TOKEN` — fine-grained PAT, **Contents: Read & Write** on this repo only.
+   - `GITHUB_REPO` — e.g. `christyesmee/news-app`.
+   - `GITHUB_BRANCH` — `main`.
+   - `OPENAI_MODEL` — optional, default `gpt-4o-mini`.
+
+## Notes
+
+- Serverless timeout: each stage is one call and fits the default 10s window on
+  gpt-4o-mini. If a stage times out on your plan, the UI logs it as a warning
+  and falls back — nothing blocks activation.
+- Cost per intake ≈ 4–6 gpt-4o-mini calls + up to 1 web search ≈ **€0.02–0.05**.

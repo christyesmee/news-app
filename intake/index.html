@@ -17,6 +17,7 @@
       --me-ink: #04252b;
       --line: #e5e7eb;
       --err: #b91c1c;
+      --ok: #065f46;
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -30,8 +31,8 @@
     }
     .app {
       width: 100%;
-      max-width: 560px;
-      height: 100dvh;
+      max-width: 620px;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       background: var(--card);
@@ -46,63 +47,11 @@
     header h1 { margin: 0; font-size: 17px; letter-spacing: .3px; }
     header p { margin: 3px 0 0; font-size: 12px; opacity: .7; }
 
-    #log {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .msg {
-      max-width: 85%;
-      padding: 10px 13px;
-      border-radius: 15px;
-      font-size: 15px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-    .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg.me { background: var(--me); color: var(--me-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
-    .msg.sys { background: transparent; color: var(--muted); font-size: 12.5px; align-self: center; text-align: center; }
-    .typing { font-style: italic; color: var(--muted); }
+    .screen { display: none; padding: 18px; flex: 1 1 auto; overflow-y: auto; }
+    .screen.active { display: block; }
+    .screen h2 { font-size: 17px; margin: 0 0 4px; }
+    .screen .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
 
-    form#composer {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      border-top: 1px solid var(--line);
-      flex: 0 0 auto;
-    }
-    #composer input {
-      flex: 1;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 11px 15px;
-      font-size: 15px;
-      outline: none;
-    }
-    #composer input:focus { border-color: var(--accent); }
-    button {
-      border: none;
-      background: var(--accent);
-      color: var(--accent-ink);
-      font-weight: 700;
-      border-radius: 22px;
-      padding: 0 18px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    button:disabled { opacity: .5; cursor: default; }
-
-    /* Review / confirmation panel */
-    .review {
-      padding: 18px;
-      overflow-y: auto;
-      flex: 1 1 auto;
-    }
-    .review h2 { font-size: 17px; margin: 0 0 4px; }
-    .review .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 5px; }
     .field input, .field select, .field textarea {
@@ -113,9 +62,25 @@
       font-size: 14px;
       font-family: inherit;
       outline: none;
+      background: #fff;
+      color: var(--ink);
     }
-    .field textarea { min-height: 54px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+    .field textarea { min-height: 56px; resize: vertical; }
+    .field textarea.big { min-height: 150px; }
     .field .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+    .row2 { display: flex; gap: 10px; }
+    .row2 .field { flex: 1 1 0; min-width: 0; }
+
+    .consent {
+      display: flex; gap: 9px; align-items: flex-start;
+      border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
+      font-size: 13px; color: var(--ink); cursor: pointer; margin-bottom: 14px;
+    }
+    .consent input { width: auto; flex: 0 0 auto; margin: 3px 0 0; }
+
+    /* Format cards. NOTE: the generic .field input rule sets width:100%; radios
+       must keep natural size or they blow up the card (the v1 layout bug). */
     .formats { display: flex; flex-direction: column; gap: 8px; }
     .formats label {
       display: flex; gap: 10px; align-items: flex-start;
@@ -124,12 +89,7 @@
       font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink);
       cursor: pointer;
     }
-    /* The generic .field input rule sets width:100%, which blows the radio up to
-       full card width and squeezes the text out of the card — the v1 layout bug.
-       Radios must keep their natural size. */
     .formats label input { width: auto; flex: 0 0 auto; margin: 3px 0 0; }
-    /* min-width: 0 lets the text column shrink inside the flex row so long
-       descriptions wrap within the card instead of overflowing it. */
     .formats .fmt-body { flex: 1 1 auto; min-width: 0; }
     .formats .fmt-title { font-weight: 700; }
     .formats .fmt-desc { color: var(--muted); font-size: 12.5px; overflow-wrap: break-word; }
@@ -138,10 +98,43 @@
       background: #f2fbfd;
       box-shadow: 0 0 0 1px var(--accent) inset;
     }
-    .primary { width: 100%; padding: 13px; margin-top: 6px; }
+
+    button.primary {
+      border: none; background: var(--accent); color: var(--accent-ink);
+      font-weight: 700; border-radius: 22px; padding: 13px 18px; font-size: 15px;
+      cursor: pointer; width: 100%; margin-top: 6px;
+    }
+    button.secondary {
+      border: 1px solid var(--line); background: #fff; color: var(--muted);
+      font-weight: 600; border-radius: 22px; padding: 10px 16px; font-size: 13px; cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: default; }
+
     .notice { font-size: 13px; padding: 10px 12px; border-radius: 9px; margin-bottom: 14px; }
-    .notice.ok { background: #e7f8ee; color: #065f46; }
+    .notice.ok { background: #e7f8ee; color: var(--ok); }
     .notice.err { background: #fdecea; color: var(--err); }
+    .notice.warn { background: #fff7e6; color: #92400e; }
+
+    /* progress log */
+    .steps { list-style: none; margin: 18px 0; padding: 0; }
+    .steps li {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 0; font-size: 14px; border-bottom: 1px dashed var(--line);
+    }
+    .steps .icon { flex: 0 0 22px; text-align: center; }
+    .steps .detail { color: var(--muted); font-size: 12px; }
+
+    /* gap-question chat */
+    #qlog { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+    .msg { max-width: 88%; padding: 10px 13px; border-radius: 15px; font-size: 15px; white-space: pre-wrap; word-wrap: break-word; }
+    .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.me { background: var(--me); color: var(--me-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
+    #qform { display: flex; gap: 8px; }
+    #qform input { flex: 1; border: 1px solid var(--line); border-radius: 22px; padding: 11px 15px; font-size: 15px; outline: none; }
+    #qform input:focus { border-color: var(--accent); }
+    #qform button { border: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: 22px; padding: 0 18px; cursor: pointer; }
+    .qskip { margin-top: 8px; text-align: center; }
+
     details.raw { margin-top: 16px; }
     details.raw summary { font-size: 12.5px; color: var(--muted); cursor: pointer; }
     pre { background: #0f1216; color: #d7e0ea; padding: 12px; border-radius: 9px; overflow-x: auto; font-size: 12px; }
@@ -151,203 +144,69 @@
   <div class="app">
     <header>
       <h1>⚡ Build your Daily Brief</h1>
-      <p>A few quick questions and you're set.</p>
+      <p>Paste what defines your work — we build the brief around you.</p>
     </header>
 
-    <div id="log" aria-live="polite"></div>
+    <!-- B1: raw material -->
+    <section class="screen active" id="s-material">
+      <h2>Tell us who you are</h2>
+      <p class="sub">5 minutes, max 3 questions. We do the profiling — you just supply raw material and confirm.</p>
+      <div id="m-notice"></div>
+      <div class="row2">
+        <div class="field">
+          <label>Name</label>
+          <input id="m-name" type="text" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label>Work email</label>
+          <input id="m-email" type="email" autocomplete="email" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Company / organisation <span style="text-transform:none;font-weight:400">(optional)</span></label>
+        <input id="m-company" type="text" autocomplete="organization" />
+      </div>
+      <div class="field">
+        <label>Your LinkedIn About + Experience, or CV / bio</label>
+        <textarea id="m-bio" class="big" placeholder="Paste the text here (don't paste a LinkedIn URL — profile pages are behind a login, we can't read them)."></textarea>
+      </div>
+      <div class="field">
+        <label>Anything that defines your work right now <span style="text-transform:none;font-weight:400">(optional)</span></label>
+        <textarea id="m-doc" class="big" placeholder="Strategy doc, research proposal, OKRs, project brief — the more, the sharper your brief."></textarea>
+      </div>
+      <label class="consent">
+        <input id="m-consent" type="checkbox" />
+        <span>You may look me up online (name + company, public sources only) to sharpen my profile.</span>
+      </label>
+      <button class="primary" id="m-build" type="button">Build my profile</button>
+    </section>
 
-    <form id="composer" autocomplete="off">
-      <input id="input" type="text" placeholder="Type your answer…" autofocus />
-      <button id="send" type="submit">Send</button>
-    </form>
-  </div>
+    <!-- B2: agent progress -->
+    <section class="screen" id="s-progress">
+      <h2>Building your profile…</h2>
+      <p class="sub">Our analysts are reading your material. This takes about a minute.</p>
+      <ul class="steps" id="steps"></ul>
+    </section>
 
-  <script>
-  (() => {
-    "use strict";
+    <!-- B3: gap questions (max 3) -->
+    <section class="screen" id="s-questions">
+      <h2>A couple of questions</h2>
+      <p class="sub">Only what we couldn't infer — <span id="q-count"></span> at most.</p>
+      <div id="qlog"></div>
+      <form id="qform" autocomplete="off">
+        <input id="q-input" type="text" placeholder="Type your answer…" />
+        <button type="submit">Send</button>
+      </form>
+      <div class="qskip"><button class="secondary" id="q-skip" type="button">You decide for me →</button></div>
+    </section>
 
-    const CHAT_ENDPOINT = "/api/chat";
-    const SAVE_ENDPOINT = "/api/save-profile";
+    <!-- B4: the inferred profile, editable -->
+    <section class="screen" id="s-review">
+      <h2>Here's your brief profile</h2>
+      <p class="sub">Built from your material<span id="r-src"></span>. Everything is editable — check it, pick delivery, activate.</p>
+      <div id="notice"></div>
 
-    const logEl = document.getElementById("log");
-    const form = document.getElementById("composer");
-    const input = document.getElementById("input");
-    const sendBtn = document.getElementById("send");
-
-    // Full transcript sent to the model each turn (user + assistant only).
-    const history = [];
-    let fallbackMode = false;
-    let fallbackStep = 0;
-    const fallbackAnswers = {};
-
-    // ---- Fallback questionnaire (used only if the OpenAI proxy errors) ----
-    const FALLBACK_QUESTIONS = [
-      { key: "name",             q: "What's your name?" },
-      { key: "email",            q: "What email address should your brief go to?" },
-      { key: "role_context",     q: "In a sentence or two: your role, how long you've been in it, and what you're accountable for over the next 12 months." },
-      { key: "topics",           q: "Which topics or themes should the brief track? (comma-separated)", list: true },
-      { key: "watchlist",        q: "Any specific companies, products or people to watch closely? (comma-separated, or 'none')", list: true },
-      { key: "regions",          q: "Which regions matter to you? (comma-separated)", list: true },
-      { key: "priority_sources", q: "Any preferred sources? Bare domains like ft.com, reuters.com (comma-separated, or 'none')", list: true },
-      { key: "exclude",          q: "Anything you never want to see? (comma-separated, or 'none')", list: true },
-      { key: "language",         q: "Which language should it be written in? A 2-letter code like en or nl." },
-    ];
-
-    // ---------- UI helpers ----------
-    function addMsg(text, who) {
-      const div = document.createElement("div");
-      div.className = "msg " + who;
-      div.textContent = text;
-      logEl.appendChild(div);
-      logEl.scrollTop = logEl.scrollHeight;
-      return div;
-    }
-
-    function setBusy(busy) {
-      input.disabled = busy;
-      sendBtn.disabled = busy;
-      if (!busy) input.focus();
-    }
-
-    // ---------- Profile extraction ----------
-    // Defensive: strip code fences, then extract the first {...} block and parse.
-    function extractProfile(text) {
-      if (!text) return null;
-      let candidate = null;
-      const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-      if (fence) candidate = fence[1].trim();
-      if (!candidate) {
-        const start = text.indexOf("{");
-        const end = text.lastIndexOf("}");
-        if (start !== -1 && end > start) candidate = text.slice(start, end + 1);
-      }
-      if (!candidate) return null;
-      try {
-        const obj = JSON.parse(candidate);
-        // Only treat it as a profile if it looks like one.
-        if (obj && typeof obj === "object" && ("topics" in obj || "send_hour_utc" in obj)) {
-          return obj;
-        }
-      } catch (_) { /* not valid JSON — treat as a normal message */ }
-      return null;
-    }
-
-    // ---------- Time helpers (DST-correct at creation time) ----------
-    function localHourToUtc(localHour) {
-      const d = new Date();
-      d.setHours(Number(localHour), 0, 0, 0);
-      return d.getUTCHours();
-    }
-    function utcHourToLocal(utcHour) {
-      const d = new Date();
-      d.setUTCHours(Number(utcHour), 0, 0, 0);
-      return d.getHours();
-    }
-    function tzLabel() {
-      try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "local time"; }
-      catch (_) { return "local time"; }
-    }
-
-    function slugify(name) {
-      const s = (name || "").toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "")
-        .trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-");
-      return s || ("user-" + Math.random().toString(36).slice(2, 8));
-    }
-    function toList(v) {
-      if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
-      return String(v || "").split(",").map((x) => x.trim())
-        .filter((x) => x && x.toLowerCase() !== "none");
-    }
-
-    // ---------- Chat flow ----------
-    async function callChat() {
-      const res = await fetch(CHAT_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
-      });
-      if (!res.ok) throw new Error("chat failed: " + res.status);
-      const data = await res.json();
-      if (!data.reply) throw new Error("empty reply");
-      return data.reply;
-    }
-
-    async function botTurn() {
-      const typing = addMsg("…", "bot");
-      typing.classList.add("typing");
-      setBusy(true);
-      try {
-        const reply = await callChat();
-        typing.remove();
-        const profile = extractProfile(reply);
-        if (profile) {
-          history.push({ role: "assistant", content: reply });
-          showReview(profile);
-        } else {
-          addMsg(reply, "bot");
-          history.push({ role: "assistant", content: reply });
-          setBusy(false);
-        }
-      } catch (err) {
-        typing.remove();
-        startFallback();
-      }
-    }
-
-    // ---------- Fallback flow ----------
-    function startFallback() {
-      if (fallbackMode) { askFallback(); return; }
-      fallbackMode = true;
-      addMsg("(Our assistant is unavailable right now — I'll just walk you through it directly.)", "sys");
-      askFallback();
-    }
-    function askFallback() {
-      if (fallbackStep >= FALLBACK_QUESTIONS.length) { finishFallback(); return; }
-      addMsg(FALLBACK_QUESTIONS[fallbackStep].q, "bot");
-      setBusy(false);
-    }
-    function recordFallback(answer) {
-      const step = FALLBACK_QUESTIONS[fallbackStep];
-      fallbackAnswers[step.key] = step.list ? toList(answer) : answer.trim();
-      fallbackStep++;
-      askFallback();
-    }
-    function finishFallback() {
-      const a = fallbackAnswers;
-      const profile = {
-        id: slugify(a.name),
-        active: true,
-        name: a.name || "",
-        email: a.email || "",
-        send_hour_utc: 6,
-        language: (a.language || "en").trim().slice(0, 5) || "en",
-        role_context: a.role_context || "",
-        regions: a.regions || [],
-        topics: a.topics || [],
-        watchlist: a.watchlist || [],
-        priority_sources: a.priority_sources || [],
-        exclude: a.exclude || [],
-      };
-      showReview(profile);
-    }
-
-    // ---------- Review / confirmation ----------
-    function showReview(profile) {
-      const app = document.querySelector(".app");
-      form.remove();
-      logEl.remove();
-
-      const localDefault = utcHourToLocal(
-        Number.isInteger(profile.send_hour_utc) ? profile.send_hour_utc : 6
-      );
-
-      const panel = document.createElement("div");
-      panel.className = "review";
-      panel.innerHTML = `
-        <h2>Here's your brief profile</h2>
-        <p class="sub">Check it over, pick a delivery time and format, then activate.</p>
-        <div id="notice"></div>
-
+      <div class="row2">
         <div class="field">
           <label>Name</label>
           <input id="f-name" type="text" />
@@ -356,143 +215,432 @@
           <label>Email</label>
           <input id="f-email" type="email" />
         </div>
+      </div>
+      <div class="field">
+        <label>Who you are (role narrative)</label>
+        <textarea id="f-role"></textarea>
+      </div>
+      <div class="field">
+        <label>Where you're heading</label>
+        <textarea id="f-trajectory"></textarea>
+      </div>
+      <div class="field">
+        <label>Goals (next 6–12 months)</label>
+        <textarea id="f-goals"></textarea>
+        <div class="hint">One per line.</div>
+      </div>
+      <div class="field">
+        <label>Information needs</label>
+        <textarea id="f-needs"></textarea>
+        <div class="hint">One per line — what the brief should keep you sharp on.</div>
+      </div>
+      <div class="field">
+        <label>Topics to track</label>
+        <textarea id="f-topics" class="big"></textarea>
+        <div class="hint">Comma-separated.</div>
+      </div>
+      <div class="field">
+        <label>Watchlist</label>
+        <textarea id="f-watchlist" class="big"></textarea>
+        <div class="hint">Companies, products, protocols, people, benchmarks — comma-separated.</div>
+      </div>
+      <div class="field">
+        <label>Priority sources</label>
+        <textarea id="f-sources"></textarea>
+        <div class="hint">Bare domains, comma-separated.</div>
+      </div>
+      <div class="field">
+        <label>arXiv categories</label>
+        <input id="f-arxiv" type="text" />
+        <div class="hint">e.g. cs.MA, cs.CL — leave empty if not research-relevant.</div>
+      </div>
+      <div class="field">
+        <label>Exclude</label>
+        <textarea id="f-exclude"></textarea>
+        <div class="hint">Comma-separated.</div>
+      </div>
+      <div class="row2">
         <div class="field">
-          <label>Deliver at (${tzLabel()})</label>
+          <label>Deliver at</label>
           <select id="f-hour"></select>
-          <div class="hint">Stored in UTC so it lands at your local time.</div>
         </div>
         <div class="field">
-          <label>Language</label>
-          <input id="f-language" type="text" maxlength="5" />
+          <label>Timezone</label>
+          <select id="f-tz"></select>
         </div>
-        <div class="field">
-          <label>Role &amp; accountabilities</label>
-          <textarea id="f-role"></textarea>
+      </div>
+      <div class="field">
+        <label>Language</label>
+        <input id="f-language" type="text" maxlength="5" />
+        <div class="hint">2-letter code, e.g. en, nl.</div>
+      </div>
+      <div class="field">
+        <label>Format</label>
+        <div class="formats">
+          <label><input type="radio" name="fmt" value="punchy" />
+            <div class="fmt-body"><div class="fmt-title">Punchy</div>
+            <div class="fmt-desc">~4 items, minimal context — the fastest possible read</div></div></label>
+          <label><input type="radio" name="fmt" value="standard" checked />
+            <div class="fmt-body"><div class="fmt-title">Standard</div>
+            <div class="fmt-desc">~6 items, each with the “why it matters for you”</div></div></label>
+          <label><input type="radio" name="fmt" value="deep" />
+            <div class="fmt-body"><div class="fmt-title">Deep</div>
+            <div class="fmt-desc">~8 items with more background and context per story</div></div></label>
         </div>
-        <div class="field">
-          <label>Topics to track</label>
-          <textarea id="f-topics"></textarea>
-          <div class="hint">Comma-separated.</div>
-        </div>
-        <div class="field">
-          <label>Watchlist</label>
-          <textarea id="f-watchlist"></textarea>
-          <div class="hint">Companies, products, people. Comma-separated.</div>
-        </div>
-        <div class="field">
-          <label>Regions</label>
-          <textarea id="f-regions"></textarea>
-          <div class="hint">Comma-separated.</div>
-        </div>
-        <div class="field">
-          <label>Priority sources</label>
-          <textarea id="f-sources"></textarea>
-          <div class="hint">Bare domains, comma-separated.</div>
-        </div>
-        <div class="field">
-          <label>Exclude</label>
-          <textarea id="f-exclude"></textarea>
-          <div class="hint">Comma-separated.</div>
-        </div>
-        <div class="field">
-          <label>Format</label>
-          <div class="formats">
-            <label><input type="radio" name="fmt" value="concise" />
-              <div class="fmt-body"><div class="fmt-title">Punchy</div>
-              <div class="fmt-desc">~4 items, minimal context — the fastest possible read</div></div></label>
-            <label><input type="radio" name="fmt" value="standard" checked />
-              <div class="fmt-body"><div class="fmt-title">Standard</div>
-              <div class="fmt-desc">5–6 items, each with the “why it matters for you”</div></div></label>
-            <label><input type="radio" name="fmt" value="deep" />
-              <div class="fmt-body"><div class="fmt-title">Deep</div>
-              <div class="fmt-desc">6+ items with more background and context per story</div></div></label>
-          </div>
-        </div>
+      </div>
 
-        <button class="primary" id="confirm" type="button">Activate my daily brief</button>
+      <button class="primary" id="confirm" type="button">Activate my daily brief</button>
+      <details class="raw"><summary>View raw profile JSON</summary><pre id="raw"></pre></details>
+    </section>
+  </div>
 
-        <details class="raw"><summary>View raw profile JSON</summary><pre id="raw"></pre></details>
-      `;
-      app.appendChild(panel);
+  <script>
+  (() => {
+    "use strict";
 
-      // Populate fields.
-      const hourSel = panel.querySelector("#f-hour");
-      for (let h = 0; h < 24; h++) {
-        const opt = document.createElement("option");
-        opt.value = String(h);
-        opt.textContent = String(h).padStart(2, "0") + ":00";
-        if (h === localDefault) opt.selected = true;
-        hourSel.appendChild(opt);
-      }
-      panel.querySelector("#f-name").value = profile.name || "";
-      panel.querySelector("#f-email").value = profile.email || "";
-      panel.querySelector("#f-language").value = profile.language || "en";
-      panel.querySelector("#f-role").value = profile.role_context || "";
-      panel.querySelector("#f-topics").value = (profile.topics || []).join(", ");
-      panel.querySelector("#f-watchlist").value = (profile.watchlist || []).join(", ");
-      panel.querySelector("#f-regions").value = (profile.regions || []).join(", ");
-      panel.querySelector("#f-sources").value = (profile.priority_sources || []).join(", ");
-      panel.querySelector("#f-exclude").value = (profile.exclude || []).join(", ");
+    const PIPELINE = "/api/pipeline";
+    const SAVE_ENDPOINT = "/api/save-profile";
 
-      const rawEl = panel.querySelector("#raw");
-      const refreshRaw = () => { rawEl.textContent = JSON.stringify(buildProfile(panel, profile), null, 2); };
-      refreshRaw();
-      panel.querySelectorAll("input, select, textarea").forEach((el) =>
-        el.addEventListener("input", refreshRaw));
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      material: "", name: "", email: "", company: "",
+      entityPool: [], research: "", profiler: null, answers: [], tracking: null,
+      queryPacks: [], usedResearch: false, warnings: [],
+    };
 
-      panel.querySelector("#confirm").addEventListener("click", () => onConfirm(panel, profile));
+    function show(id) {
+      document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+      $(id).classList.add("active");
+      window.scrollTo(0, 0);
+    }
+    function notice(el, kind, text) {
+      el.innerHTML = "";
+      const div = document.createElement("div");
+      div.className = "notice " + kind;
+      div.textContent = text;
+      el.appendChild(div);
     }
 
-    function buildProfile(panel, original) {
-      const fmt = (panel.querySelector('input[name="fmt"]:checked') || {}).value || "standard";
-      const depthNote = {
-        concise: " Prefers a punchy brief of about 4 items with minimal context.",
-        standard: "",
-        deep: " Prefers a deeper brief of 6+ items with more background.",
-      }[fmt];
+    // ---------- pipeline plumbing ----------
+    async function stage(name, payload) {
+      const res = await fetch(PIPELINE, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stage: name, ...payload }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) {
+        const e = new Error((body && (body.detail || body.error)) || ("HTTP " + res.status));
+        e.stage = name;
+        e.cid = body && body.cid;
+        throw e;
+      }
+      return body.data;
+    }
 
-      let role = (panel.querySelector("#f-role").value || "").trim();
-      if (depthNote && !role.includes(depthNote.trim())) role = (role + depthNote).trim();
+    let stepEl = null;
+    function step(text) {
+      const li = document.createElement("li");
+      li.innerHTML = '<span class="icon">⏳</span><span><span class="t"></span><div class="detail"></div></span>';
+      li.querySelector(".t").textContent = text;
+      $("steps").appendChild(li);
+      stepEl = li;
+      return li;
+    }
+    function stepDone(detail) {
+      if (!stepEl) return;
+      stepEl.querySelector(".icon").textContent = "✅";
+      if (detail) stepEl.querySelector(".detail").textContent = detail;
+    }
+    function stepWarn(detail) {
+      if (!stepEl) return;
+      stepEl.querySelector(".icon").textContent = "⚠️";
+      if (detail) stepEl.querySelector(".detail").textContent = detail;
+      state.warnings.push(detail || "step failed");
+    }
 
-      const name = panel.querySelector("#f-name").value.trim();
+    // ---------- deterministic fallbacks (the flow never dies) ----------
+    function poolToTracking(pool) {
+      const by = (t) => pool.filter((e) => e.type === t).map((e) => e.name);
       return {
-        id: original.id && original.id !== "example" ? original.id : slugify(name),
+        topics: by("topic").slice(0, 15),
+        watchlist: ["company", "product", "protocol", "org", "person"].flatMap(by).slice(0, 40),
+        priority_sources: [],
+        arxiv_categories: [],
+        exclude: [],
+        language: "en",
+      };
+    }
+    function packQueries(topics, watchlist) {
+      const terms = [...watchlist, ...topics].map((t) => (t.includes(" ") ? '"' + t + '"' : t));
+      const packs = [];
+      let cur = [];
+      for (const t of terms) {
+        const q = cur.concat(t).join(" OR ");
+        if (q.length > 430 && cur.length) {
+          packs.push({ name: "pack-" + (packs.length + 1), q: cur.join(" OR ") });
+          cur = [t];
+        } else cur.push(t);
+      }
+      if (cur.length) packs.push({ name: "pack-" + (packs.length + 1), q: cur.join(" OR ") });
+      return packs.slice(0, 8);
+    }
+
+    // ---------- B2: run the pipeline ----------
+    async function runPipeline() {
+      show("s-progress");
+      $("steps").innerHTML = "";
+
+      step("Reading your material and extracting every named entity…");
+      try {
+        const r = await stage("enrich", { material: state.material });
+        state.entityPool = r.entity_pool || [];
+        stepDone(state.entityPool.length + " entities found");
+      } catch (e) {
+        stepWarn("Extraction failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — continuing without it");
+      }
+
+      if ($("m-consent").checked && state.name) {
+        step("Researching your public footprint…");
+        try {
+          const r = await stage("research", {
+            name: state.name, company: state.company,
+            role_hint: state.material.slice(0, 200),
+          });
+          state.research = r.findings || "";
+          state.usedResearch = true;
+          const extra = r.extra_entities || [];
+          const seen = new Set(state.entityPool.map((e) => e.name.toLowerCase()));
+          for (const e of extra) if (!seen.has(e.name.toLowerCase())) state.entityPool.push(e);
+          stepDone(extra.length ? "+" + extra.length + " entities from the web" : "done");
+        } catch (e) {
+          stepWarn("Web research unavailable — continuing with your material only");
+        }
+      }
+
+      step("Understanding your role, trajectory and goals…");
+      try {
+        state.profiler = await stage("profile", {
+          material: state.material,
+          entity_pool: state.entityPool,
+          research_findings: state.research,
+        });
+        stepDone("");
+      } catch (e) {
+        stepWarn("Profiling failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — you can fill this in by hand");
+        state.profiler = { role_context: "", trajectory: "", goals: [], info_needs: [], gap_questions: [] };
+      }
+
+      const qs = (state.profiler.gap_questions || []).slice(0, 3);
+      if (qs.length) {
+        askQuestions(qs);
+      } else {
+        await finishPipeline();
+      }
+    }
+
+    // ---------- B3: gap questions ----------
+    let pendingQs = [];
+    function askQuestions(qs) {
+      pendingQs = qs.slice();
+      $("q-count").textContent = qs.length === 1 ? "1 question" : qs.length + " questions";
+      show("s-questions");
+      nextQuestion();
+    }
+    function addQ(text, who) {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      div.textContent = text;
+      $("qlog").appendChild(div);
+      div.scrollIntoView({ block: "end" });
+    }
+    function nextQuestion() {
+      if (!pendingQs.length) { finishQuestions(); return; }
+      addQ(pendingQs[0], "bot");
+      $("q-input").focus();
+    }
+    function recordAnswer(text) {
+      addQ(text, "me");
+      state.answers.push({ question: pendingQs.shift(), answer: text });
+      nextQuestion();
+    }
+    $("qform").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const t = $("q-input").value.trim();
+      if (!t) return;
+      $("q-input").value = "";
+      recordAnswer(t);
+    });
+    $("q-skip").addEventListener("click", () => {
+      // Deflection is confirmation authority: the Expander decides and the
+      // review screen shows every decision it made.
+      while (pendingQs.length) {
+        state.answers.push({ question: pendingQs.shift(), answer: "You decide — use your judgement." });
+      }
+      addQ("You decide — use your judgement.", "me");
+      finishQuestions();
+    });
+    async function finishQuestions() {
+      show("s-progress");
+      await finishPipeline();
+    }
+
+    async function finishPipeline() {
+      step("Building your tracking config (topics, watchlist, sources)…");
+      try {
+        state.tracking = await stage("expand", {
+          entity_pool: state.entityPool,
+          profiler: state.profiler,
+          answers: state.answers,
+          research_findings: state.research,
+        });
+        stepDone(state.tracking.topics.length + " topics, " + state.tracking.watchlist.length + " watchlist entries");
+      } catch (e) {
+        stepWarn("Expansion failed (" + e.stage + (e.cid ? ", ref " + e.cid : "") + ") — using direct extraction");
+        state.tracking = poolToTracking(state.entityPool);
+      }
+
+      step("Composing themed news queries…");
+      try {
+        const r = await stage("queries", {
+          topics: state.tracking.topics, watchlist: state.tracking.watchlist,
+        });
+        state.queryPacks = r.query_packs;
+        stepDone(state.queryPacks.length + " query packs");
+      } catch (e) {
+        state.queryPacks = packQueries(state.tracking.topics, state.tracking.watchlist);
+        stepWarn("Used deterministic query packing (" + state.queryPacks.length + " packs)");
+      }
+
+      showReview();
+    }
+
+    // ---------- timezone helpers (offset taken at signup; DST caveat in README) ----------
+    function tzList() {
+      try { return Intl.supportedValuesOf("timeZone"); }
+      catch { return ["UTC", "Europe/Amsterdam", "Europe/London", "America/New_York", "Asia/Singapore"]; }
+    }
+    function browserTz() {
+      try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; }
+      catch { return "UTC"; }
+    }
+    function hourInTz(tz, utcDate) {
+      return Number(new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "numeric", hour12: false }).format(utcDate)) % 24;
+    }
+    function utcHourFor(tz, localHour) {
+      for (let u = 0; u < 24; u++) {
+        const d = new Date();
+        d.setUTCHours(u, 0, 0, 0);
+        if (hourInTz(tz, d) === Number(localHour) % 24) return u;
+      }
+      return Number(localHour) % 24;
+    }
+
+    function slugify(name) {
+      const s = (name || "").toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "")
+        .trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-");
+      return s || ("user-" + Math.random().toString(36).slice(2, 8));
+    }
+    const toList = (v) => String(v || "").split(",").map((x) => x.trim()).filter(Boolean);
+    const toLines = (v) => String(v || "").split("\n").map((x) => x.trim()).filter(Boolean);
+
+    // ---------- B4: review ----------
+    function showReview() {
+      const t = state.tracking || poolToTracking(state.entityPool);
+      const p = state.profiler || {};
+      $("r-src").textContent = state.usedResearch ? " + public web research" : "";
+
+      $("f-name").value = state.name;
+      $("f-email").value = state.email;
+      $("f-role").value = p.role_context || "";
+      $("f-trajectory").value = p.trajectory || "";
+      $("f-goals").value = (p.goals || []).join("\n");
+      $("f-needs").value = (p.info_needs || []).join("\n");
+      $("f-topics").value = (t.topics || []).join(", ");
+      $("f-watchlist").value = (t.watchlist || []).join(", ");
+      $("f-sources").value = (t.priority_sources || []).join(", ");
+      $("f-arxiv").value = (t.arxiv_categories || []).join(", ");
+      $("f-exclude").value = (t.exclude || []).join(", ");
+      $("f-language").value = t.language || "en";
+
+      const hourSel = $("f-hour");
+      hourSel.innerHTML = "";
+      for (let h = 0; h < 24; h++) {
+        const o = document.createElement("option");
+        o.value = String(h);
+        o.textContent = String(h).padStart(2, "0") + ":00";
+        if (h === 7) o.selected = true;
+        hourSel.appendChild(o);
+      }
+      const tzSel = $("f-tz");
+      tzSel.innerHTML = "";
+      const mine = browserTz();
+      for (const z of tzList()) {
+        const o = document.createElement("option");
+        o.value = z; o.textContent = z;
+        if (z === mine) o.selected = true;
+        tzSel.appendChild(o);
+      }
+
+      if (state.warnings.length) {
+        notice($("notice"), "warn",
+          "Some analysis steps were skipped (" + state.warnings.length + ") — the fields below may be thinner than usual. Add anything missing by hand.");
+      }
+
+      const refreshRaw = () => { $("raw").textContent = JSON.stringify(buildProfile(), null, 2); };
+      document.querySelectorAll("#s-review input, #s-review select, #s-review textarea")
+        .forEach((el) => el.addEventListener("input", refreshRaw));
+      refreshRaw();
+      show("s-review");
+    }
+
+    function buildProfile() {
+      const tz = $("f-tz").value || "UTC";
+      const localHour = Number($("f-hour").value || 7);
+      const fmt = (document.querySelector('input[name="fmt"]:checked') || {}).value || "standard";
+      return {
+        id: slugify($("f-name").value),
         active: true,
-        name: name,
-        email: panel.querySelector("#f-email").value.trim(),
-        send_hour_utc: localHourToUtc(panel.querySelector("#f-hour").value),
-        language: (panel.querySelector("#f-language").value.trim() || "en").slice(0, 5),
-        role_context: role,
-        regions: toList(panel.querySelector("#f-regions").value),
-        topics: toList(panel.querySelector("#f-topics").value),
-        watchlist: toList(panel.querySelector("#f-watchlist").value),
-        priority_sources: toList(panel.querySelector("#f-sources").value),
-        exclude: toList(panel.querySelector("#f-exclude").value),
+        name: $("f-name").value.trim(),
+        email: $("f-email").value.trim(),
+        send_hour_utc: utcHourFor(tz, localHour),
+        timezone: tz,
+        language: ($("f-language").value.trim() || "en").slice(0, 5),
+        format: fmt,
+        role_context: $("f-role").value.trim(),
+        trajectory: $("f-trajectory").value.trim(),
+        goals: toLines($("f-goals").value),
+        info_needs: toLines($("f-needs").value),
+        regions: [],
+        topics: toList($("f-topics").value),
+        watchlist: toList($("f-watchlist").value),
+        priority_sources: toList($("f-sources").value),
+        arxiv_categories: toList($("f-arxiv").value),
+        exclude: toList($("f-exclude").value),
+        query_packs: state.queryPacks,
+        feedback_log: [],
       };
     }
 
-    function notice(panel, kind, text) {
-      panel.querySelector("#notice").innerHTML =
-        `<div class="notice ${kind}">${text}</div>`;
-    }
-
-    async function onConfirm(panel, original) {
-      const profile = buildProfile(panel, original);
-      if (!profile.name) { notice(panel, "err", "Please add your name."); return; }
+    $("confirm").addEventListener("click", async () => {
+      const profile = buildProfile();
+      if (!profile.name) { notice($("notice"), "err", "Please add your name."); return; }
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(profile.email)) {
-        notice(panel, "err", "That email doesn't look right — please check it."); return;
+        notice($("notice"), "err", "That email doesn't look right — please check it."); return;
       }
-      if (profile.topics.length === 0) {
-        notice(panel, "err", "Add at least one topic to track."); return;
-      }
+      if (profile.topics.length === 0) { notice($("notice"), "err", "Add at least one topic to track."); return; }
+      // Re-pack queries if the user edited topics/watchlist after the pipeline ran.
+      profile.query_packs = state.queryPacks.length
+        ? state.queryPacks : packQueries(profile.topics, profile.watchlist);
 
-      const btn = panel.querySelector("#confirm");
+      const btn = $("confirm");
       btn.disabled = true;
       btn.textContent = "Activating…";
       try {
         await saveProfile(profile);
-        notice(panel, "ok",
-          `You're all set. Your first brief will arrive around ${panel.querySelector("#f-hour").selectedOptions[0].textContent} ${tzLabel()}.`);
+        notice($("notice"), "ok",
+          "You're all set. Your first brief arrives around " +
+          String($("f-hour").value).padStart(2, "0") + ":00 " + profile.timezone + ".");
         btn.textContent = "✓ Activated";
       } catch (err) {
         btn.disabled = false;
@@ -504,9 +652,9 @@
         if (d.hint) parts.push(d.hint);
         parts.push(d.cid ? "Ref: " + d.cid + "." : "");
         parts.push("Your details are in the raw JSON below — copy them and send to the team, or fix and try again.");
-        notice(panel, "err", parts.filter(Boolean).join(" "));
+        notice($("notice"), "err", parts.filter(Boolean).join(" "));
       }
-    }
+    });
 
     async function saveProfile(profile) {
       const res = await fetch(SAVE_ENDPOINT, {
@@ -523,25 +671,26 @@
       return body;
     }
 
-    // ---------- Wire up input ----------
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text) return;
-      addMsg(text, "me");
-      input.value = "";
-      if (fallbackMode) {
-        recordFallback(text);
-      } else {
-        history.push({ role: "user", content: text });
-        botTurn();
-      }
-    });
+    // ---------- B1: kickoff ----------
+    $("m-build").addEventListener("click", () => {
+      state.name = $("m-name").value.trim();
+      state.email = $("m-email").value.trim();
+      state.company = $("m-company").value.trim();
+      const bio = $("m-bio").value.trim();
+      const doc = $("m-doc").value.trim();
+      state.material = [bio, doc].filter(Boolean).join("\n\n---\n\n");
 
-    // ---------- Kickoff ----------
-    // Seed the very first assistant question.
-    history.push({ role: "user", content: "Hi, I'd like to set up my daily brief." });
-    botTurn();
+      if (!state.name) { notice($("m-notice"), "err", "Please add your name."); return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(state.email)) {
+        notice($("m-notice"), "err", "That email doesn't look right — please check it."); return;
+      }
+      if (state.material.length < 100) {
+        notice($("m-notice"), "err",
+          "Paste a bit more about yourself (your LinkedIn About + Experience, or a doc that defines your work) — the profile is built from this.");
+        return;
+      }
+      runPipeline();
+    });
   })();
   </script>
 </body>
