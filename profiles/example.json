@@ -10,5 +10,6 @@
   "topics": ["developer tools", "AI coding assistants", "enterprise software pricing"],
   "watchlist": ["JetBrains", "GitHub Copilot", "Cursor", "Microsoft"],
   "priority_sources": ["techcrunch.com", "theregister.com", "ft.com", "reuters.com"],
-  "exclude": ["crypto price speculation", "consumer gadget reviews"]
+  "exclude": ["crypto price speculation", "consumer gadget reviews"],
+  "forward_token": ""
 }

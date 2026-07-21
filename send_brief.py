@@ -39,6 +39,12 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
+# Phase 5 (newsletter forwarding) -- all optional. When these are unset the whole
+# forwarding path is a no-op, so the engine runs unchanged without a dedicated inbox.
+IMAP_HOST = os.getenv("IMAP_HOST")
+IMAP_USER = os.getenv("IMAP_USER")
+IMAP_PASSWORD = os.getenv("IMAP_PASSWORD")
+
 PROFILES_DIR = "profiles"
 TEMPLATE_FILE = "email_template.html"
 # example.json is a committed reference profile; the scheduled run never emails it.
@@ -48,6 +54,10 @@ REFERENCE_PROFILE = "example.json"
 LOOKBACK_DAYS = 5
 MAX_ARTICLES = 40
 MAX_ARTICLES_TO_MODEL = 30
+
+# Forwarded-newsletter budget.
+MAX_FORWARDED = 8
+MAX_FORWARDED_CHARS = 12000
 
 
 # --- MODEL SELECTION (carried over from the old scripts) ---
@@ -185,6 +195,105 @@ def fetch_news(profile):
     return articles
 
 
+# --- FORWARDED NEWSLETTERS (Phase 5, optional) ---
+def _decode_part(part):
+    try:
+        payload = part.get_payload(decode=True)
+        if payload is None:
+            return ""
+        charset = part.get_content_charset() or "utf-8"
+        return payload.decode(charset, errors="replace")
+    except Exception:
+        return ""
+
+
+def _extract_body(msg):
+    """Return the best-effort plain-text body of an email message."""
+    plain, html = None, None
+    if msg.is_multipart():
+        for part in msg.walk():
+            ctype = part.get_content_type()
+            disposition = str(part.get("Content-Disposition") or "").lower()
+            if "attachment" in disposition:
+                continue
+            if ctype == "text/plain" and plain is None:
+                plain = _decode_part(part)
+            elif ctype == "text/html" and html is None:
+                html = _decode_part(part)
+    else:
+        if msg.get_content_type() == "text/html":
+            html = _decode_part(msg)
+        else:
+            plain = _decode_part(msg)
+
+    if plain and plain.strip():
+        return plain.strip()
+    if html:
+        return _clean_html(html)
+    return ""
+
+
+def fetch_forwarded(profile):
+    """Pull this user's recently forwarded newsletters from the shared inbox.
+
+    A profile opts in by carrying a ``forward_token``; the user forwards mail to
+    an alias/plus-address containing that token (e.g. briefs+<token>@gmail.com),
+    and we match it on the To/Cc/Delivered-To/Subject headers. Returns a text
+    block for THIS user only (never redistributed). No-op unless IMAP_* is set.
+    """
+    token = (profile.get("forward_token") or "").strip()
+    if not token or not (IMAP_HOST and IMAP_USER and IMAP_PASSWORD):
+        return ""
+
+    import imaplib
+    import email
+
+    token_l = token.lower()
+    collected = []
+    mailbox = None
+    try:
+        mailbox = imaplib.IMAP4_SSL(IMAP_HOST)
+        mailbox.login(IMAP_USER, IMAP_PASSWORD)
+        mailbox.select("INBOX")
+        since = (datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)).strftime("%d-%b-%Y")
+        typ, data = mailbox.search(None, "SINCE", since)
+        ids = data[0].split() if (typ == "OK" and data and data[0]) else []
+
+        for mid in reversed(ids):  # newest first
+            if len(collected) >= MAX_FORWARDED:
+                break
+            typ, msg_data = mailbox.fetch(mid, "(RFC822)")
+            if typ != "OK" or not msg_data or not msg_data[0]:
+                continue
+            msg = email.message_from_bytes(msg_data[0][1])
+            haystack = " ".join(
+                v for v in (
+                    msg.get("To", ""), msg.get("Cc", ""),
+                    msg.get("Delivered-To", ""), msg.get("Subject", ""),
+                ) if v
+            ).lower()
+            if token_l not in haystack:
+                continue
+            subject = msg.get("Subject", "(no subject)")
+            body = _extract_body(msg)
+            if body:
+                collected.append(f"--- Forwarded: {subject} ---\n{body[:3000]}")
+    except Exception as e:
+        print(f"!! {profile['id']}: forwarded-mail fetch failed: {e}")
+        return ""
+    finally:
+        if mailbox is not None:
+            try:
+                mailbox.logout()
+            except Exception:
+                pass
+
+    text = "\n\n".join(collected)[:MAX_FORWARDED_CHARS]
+    if text:
+        print(f"-> {profile['id']}: attached {len(collected)} forwarded newsletter(s)")
+    return text
+
+
 # --- ANALYSIS (Gemini) ---
 SAFETY_SETTINGS = [
     {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
@@ -194,7 +303,7 @@ SAFETY_SETTINGS = [
 ]
 
 
-def build_prompt(profile, raw_text):
+def build_prompt(profile, raw_text, forwarded_text=""):
     name = profile.get("name") or "the reader"
     role = profile.get("role_context", "")
     topics = ", ".join(profile.get("topics", [])) or "(none specified)"
@@ -202,6 +311,17 @@ def build_prompt(profile, raw_text):
     regions = ", ".join(profile.get("regions", [])) or "(none specified)"
     exclude = ", ".join(profile.get("exclude", [])) or "(nothing specific)"
     language = profile.get("language", "en")
+
+    forwarded_block = ""
+    if forwarded_text:
+        forwarded_block = (
+            "### TRUSTED FORWARDED SOURCES:\n"
+            "The reader forwarded the newsletters below to their own private inbox. Treat them as "
+            "high-trust context: fold anything relevant into the brief and, where it fits, add a short "
+            "story block for it. Summarise for THIS reader's eyes only -- never reproduce them verbatim "
+            "for redistribution.\n"
+            f"{forwarded_text}\n\n"
+        )
 
     return (
         f"Role: You are a senior intelligence analyst writing today's personalised daily brief for {name}.\n"
@@ -232,11 +352,12 @@ def build_prompt(profile, raw_text):
         f"- Write in the reader's language (language code: {language}).\n"
         "- Output raw HTML only. Do NOT wrap it in markdown code fences.\n\n"
 
+        f"{forwarded_block}"
         f"RAW ARTICLES:\n{raw_text}"
     )
 
 
-def analyze(profile, articles):
+def analyze(profile, articles, forwarded_text=""):
     import google.generativeai as genai
 
     model_name = get_working_model()
@@ -256,7 +377,7 @@ def analyze(profile, articles):
         )
 
     model = genai.GenerativeModel(model_name)
-    prompt = build_prompt(profile, raw_text)
+    prompt = build_prompt(profile, raw_text, forwarded_text)
     try:
         response = model.generate_content(prompt, safety_settings=SAFETY_SETTINGS)
         clean = response.text.replace("```html", "").replace("```", "")
@@ -312,10 +433,11 @@ def send_email(profile, html_content):
 def process(profile):
     print(f"=== Processing {profile['id']} <{profile.get('email')}> ===")
     articles = fetch_news(profile)
-    if not articles:
-        print(f"-> {profile['id']}: no articles; nothing sent.")
+    forwarded = fetch_forwarded(profile)
+    if not articles and not forwarded:
+        print(f"-> {profile['id']}: no articles and no forwarded mail; nothing sent.")
         return False
-    html, err = analyze(profile, articles)
+    html, err = analyze(profile, articles, forwarded)
     if not html:
         print(f"!! {profile['id']}: analysis failed:\n{err}")
         return False
@@ -335,6 +457,9 @@ def dry_run(profiles, force, current_hour):
         print(f"\n[{p.get('id')}] active={p.get('active')} send_hour_utc={p.get('send_hour_utc')} "
               f"email={p.get('email')} -> would_send={gated}")
         print(f"  language: {p.get('language', 'en')} | sources: {p.get('priority_sources', [])}")
+        forwarding = "on" if (p.get("forward_token") and IMAP_HOST) else "off"
+        print(f"  forwarding: {forwarding} (forward_token={'set' if p.get('forward_token') else 'none'}, "
+              f"IMAP_HOST={'set' if IMAP_HOST else 'unset'})")
         print(f"  query: {build_query(p)}")
 
 
