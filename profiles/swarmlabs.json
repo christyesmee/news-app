@@ -1,0 +1,95 @@
+{
+  "id": "swarmlabs",
+  "active": true,
+  "name": "Swarmlabs",
+  "email": "info@swarmlabs.nl",
+  "send_hour_utc": 5,
+  "language": "en",
+  "timezone": "Europe/Amsterdam",
+  "format": "deep",
+  "role_context": "As the founder of Swarmlabs, I focus on leveraging collective intelligence and AI-native approaches to optimize business operations. I am accountable for building and managing AI agents that automate tasks and create a self-sustaining company.",
+  "trajectory": "My career is heading towards establishing a fully automated business model that relies on AI agents for operational efficiency and innovation.",
+  "goals": [
+    "Develop a fully functional AI agent system that can autonomously manage business processes.",
+    "Increase the efficiency of existing workflows by 30% using AI tools.",
+    "Expand the use of collective intelligence methodologies within my organization.",
+    "Establish partnerships with other AI-focused companies to enhance technological capabilities.",
+    "Create a roadmap for scaling the self-sustaining company model over the next year."
+  ],
+  "info_needs": [
+    "Latest advancements in AI tools and technologies relevant to business optimization.",
+    "Case studies on successful implementation of AI agents in various industries.",
+    "Best practices for building and managing AI-driven teams.",
+    "Insights on collective intelligence frameworks and their application in business.",
+    "Information on potential partnerships or collaborations with AI companies.",
+    "Metrics and benchmarks for measuring the effectiveness of AI tools in business."
+  ],
+  "regions": [],
+  "topics": [
+    "collective intelligence methodologies",
+    "AI-native business optimization",
+    "automation of business processes",
+    "AI agents for operational efficiency",
+    "self-sustaining business models",
+    "latest advancements in AI tools",
+    "case studies on AI implementation",
+    "partnerships in AI technology"
+  ],
+  "watchlist": [
+    "swarmlabs",
+    "Claude",
+    "codex",
+    "factory ai",
+    "linear",
+    "OpenAI",
+    "Google AI",
+    "Microsoft AI",
+    "IBM Watson",
+    "Amazon Web Services",
+    "DeepMind",
+    "NVIDIA",
+    "Element AI",
+    "C3.ai",
+    "UiPath",
+    "Automation Anywhere",
+    "DataRobot",
+    "Zebra Medical Vision",
+    "Salesforce AI",
+    "Palantir Technologies",
+    "Collective Intelligence Institute"
+  ],
+  "priority_sources": [
+    "arxiv.org",
+    "techcrunch.com",
+    "reuters.com",
+    "forbes.com",
+    "venturebeat.com",
+    "zdnet.com",
+    "ai.googleblog.com",
+    "medium.com",
+    "hbr.org",
+    "businessinsider.com"
+  ],
+  "exclude": [],
+  "arxiv_categories": [
+    "cs.AI",
+    "cs.HC",
+    "cs.MA",
+    "cs.LG"
+  ],
+  "query_packs": [
+    {
+      "name": "AI and Business Optimization",
+      "q": "\"AI-native business optimization\" OR \"automation of business processes\" OR \"AI agents for operational efficiency\" OR \"self-sustaining business models\" OR \"collective intelligence methodologies\""
+    },
+    {
+      "name": "AI Tools and Advancements",
+      "q": "\"latest advancements in AI tools\" OR \"case studies on AI implementation\""
+    },
+    {
+      "name": "AI Partnerships and Companies",
+      "q": "\"partnerships in AI technology\" OR \"swarmlabs\" OR \"Claude\" OR \"codex\" OR \"factory ai\" OR \"linear\" OR \"OpenAI\" OR \"Google AI\" OR \"Microsoft AI\" OR \"IBM Watson\" OR \"Amazon Web Services\" OR \"DeepMind\" OR \"NVIDIA\" OR \"Element AI\" OR \"C3.ai\" OR \"UiPath\" OR \"Automation Anywhere\" OR \"DataRobot\" OR \"Zebra Medical Vision\" OR \"Salesforce AI\" OR \"Palantir Technologies\" OR \"Collective Intelligence Institute\""
+    }
+  ],
+  "feedback_log": []
+}
