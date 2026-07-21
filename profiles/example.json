@@ -4,11 +4,35 @@
   "name": "First Last",
   "email": "recipient@example.com",
   "send_hour_utc": 6,
+  "timezone": "Europe/Amsterdam",
   "language": "en",
+  "format": "standard",
   "role_context": "One or two sentences: their role, how long in it, what they are accountable for.",
+  "trajectory": "One or two sentences: where their work or career is heading.",
+  "goals": [
+    "Ship the developer-tools pricing revamp this quarter",
+    "Build a defensible view of the AI coding-assistant market"
+  ],
+  "info_needs": [
+    "Competitor product launches and pricing changes",
+    "Enterprise adoption signals for AI coding assistants",
+    "Funding rounds and M&A in developer tooling"
+  ],
   "regions": ["Netherlands", "Benelux", "Europe"],
   "topics": ["developer tools", "AI coding assistants", "enterprise software pricing"],
   "watchlist": ["JetBrains", "GitHub Copilot", "Cursor", "Microsoft"],
   "priority_sources": ["techcrunch.com", "theregister.com", "ft.com", "reuters.com"],
-  "exclude": ["crypto price speculation", "consumer gadget reviews"]
+  "exclude": ["crypto price speculation", "consumer gadget reviews"],
+  "query_packs": [
+    {
+      "name": "coding assistants",
+      "q": "\"AI coding assistants\" OR \"GitHub Copilot\" OR Cursor OR JetBrains"
+    },
+    {
+      "name": "devtools market",
+      "q": "(\"developer tools\" OR \"enterprise software pricing\") AND (Europe OR Netherlands)"
+    }
+  ],
+  "arxiv_categories": [],
+  "feedback_log": []
 }

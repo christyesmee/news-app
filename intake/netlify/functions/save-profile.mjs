@@ -171,15 +171,41 @@ function validateProfile(input) {
   const lang = clampStr(input.language, 5).toLowerCase();
   profile.language = /^[a-z]{2}(-[a-z]{2})?$/.test(lang) ? lang : "en";
 
+  // v2: store the IANA timezone (send_hour_utc stays the engine's gate; the
+  // timezone records what the user picked so the profile can be re-derived).
+  const tz = clampStr(input.timezone, 60);
+  profile.timezone = /^[A-Za-z]+(\/[A-Za-z0-9_+\-]+){0,2}$/.test(tz) ? tz : "UTC";
+
+  const fmt = clampStr(input.format, 10).toLowerCase();
+  profile.format = ["punchy", "standard", "deep"].includes(fmt) ? fmt : "standard";
+
   profile.role_context = clampStr(input.role_context, 600);
+  profile.trajectory = clampStr(input.trajectory, 400);
+  profile.goals = clampList(input.goals, 8, 160);
+  profile.info_needs = clampList(input.info_needs, 10, 160);
 
   profile.regions = clampList(input.regions, 20, 80);
   profile.topics = clampList(input.topics, 30, 80);
-  profile.watchlist = clampList(input.watchlist, 40, 80);
+  profile.watchlist = clampList(input.watchlist, 60, 80);
   profile.priority_sources = clampList(input.priority_sources, 30, 120)
     .map(sanitizeDomain)
     .filter(Boolean);
   profile.exclude = clampList(input.exclude, 30, 120);
+
+  profile.arxiv_categories = clampList(input.arxiv_categories, 8, 20)
+    .filter((c) => /^[a-zA-Z][a-zA-Z\-]*(\.[a-zA-Z\-]+)?$/.test(c));
+
+  // Themed NewsAPI queries; each q hard-capped at 450 chars (NewsAPI limit ~500).
+  profile.query_packs = (Array.isArray(input.query_packs) ? input.query_packs : [])
+    .map((p) => ({ name: clampStr(p?.name, 60) || "pack", q: clampStr(p?.q, 450) }))
+    .filter((p) => p.q)
+    .slice(0, 8);
+
+  // Tuning-loop notes; keep the most recent 10.
+  profile.feedback_log = (Array.isArray(input.feedback_log) ? input.feedback_log : [])
+    .map((f) => ({ date: clampStr(f?.date, 20), note: clampStr(f?.note, 300) }))
+    .filter((f) => f.note)
+    .slice(-10);
 
   if (profile.topics.length === 0) errors.push("at least one topic is required");
 

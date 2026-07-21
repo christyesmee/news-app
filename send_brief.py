@@ -162,39 +162,132 @@ def build_query(profile):
     return query
 
 
-def fetch_news(profile):
-    query = build_query(profile)
-    if not query:
-        print(f"!! {profile['id']}: empty query (no topics/watchlist/regions); skipping.")
-        return []
-
+def _fetch_newsapi_query(profile, query, page_size):
+    """One NewsAPI call. Returns a (possibly empty) article list."""
     date_from = (datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)).strftime("%Y-%m-%d")
     params = {
         "q": query,
         "from": date_from,
         "sortBy": "relevance",
         "language": profile.get("language", "en"),
-        "pageSize": MAX_ARTICLES,
+        "pageSize": page_size,
         "apiKey": NEWS_API_KEY,
     }
     sources = [s.strip() for s in profile.get("priority_sources", []) if s.strip()]
     if sources:
-        params["domains"] = ",".join(sources)
+        # arxiv.org never serves NewsAPI results; keep it for the arxiv adapter only.
+        newsapi_sources = [s for s in sources if s != "arxiv.org"]
+        if newsapi_sources:
+            params["domains"] = ",".join(newsapi_sources)
 
     try:
         response = requests.get("https://newsapi.org/v2/everything", params=params, timeout=30)
         data = response.json()
     except Exception as e:
-        print(f"!! Error fetching news for {profile['id']}: {e}")
+        print(f"!! NewsAPI request error for {profile['id']}: {e}")
         return []
-
     if data.get("status") != "ok":
         print(f"!! NewsAPI error for {profile['id']}: {data.get('code')} - {data.get('message')}")
         return []
+    return data.get("articles", [])
 
-    articles = data.get("articles", [])
-    print(f"-> {profile['id']}: found {len(articles)} articles")
+
+def fetch_newsapi(profile):
+    """NewsAPI adapter. Iterates the profile's themed query_packs (the NewsAPI
+    `q` parameter is capped at ~500 chars, so a 20-40 entity watchlist can never
+    be one query); falls back to the single legacy query when no packs exist."""
+    packs = [p for p in profile.get("query_packs", [])
+             if isinstance(p, dict) and p.get("q")]
+    if not packs:
+        query = build_query(profile)
+        if not query:
+            print(f"!! {profile['id']}: empty query (no packs/topics/watchlist); skipping NewsAPI.")
+            return []
+        packs = [{"name": "all", "q": query}]
+
+    per_pack = max(10, MAX_ARTICLES // len(packs))
+    articles = []
+    for pack in packs[:8]:
+        got = _fetch_newsapi_query(profile, str(pack["q"])[:450], per_pack)
+        print(f"   pack '{pack.get('name', '?')}': {len(got)} articles")
+        articles.extend(got)
     return articles
+
+
+def fetch_arxiv(profile):
+    """arXiv adapter. arxiv.org content does NOT come through NewsAPI -- without
+    this a research profile silently gets zero papers. Queries the arXiv Atom
+    API by category + top watchlist terms, last LOOKBACK_DAYS days."""
+    categories = [c.strip() for c in profile.get("arxiv_categories", []) if c.strip()]
+    if not categories:
+        return []
+
+    import xml.etree.ElementTree as ET
+
+    cat_clause = " OR ".join(f"cat:{c}" for c in categories[:8])
+    terms = [t for t in profile.get("watchlist", [])[:6] if t]
+    term_clause = " OR ".join(f'all:"{t}"' for t in terms)
+    query = f"({cat_clause})" + (f" AND ({term_clause})" if term_clause else "")
+
+    try:
+        resp = requests.get(
+            "https://export.arxiv.org/api/query",
+            params={
+                "search_query": query,
+                "sortBy": "submittedDate",
+                "sortOrder": "descending",
+                "max_results": 25,
+            },
+            timeout=30,
+        )
+        root = ET.fromstring(resp.content)
+    except Exception as e:
+        print(f"!! arXiv request error for {profile['id']}: {e}")
+        return []
+
+    ns = {"a": "http://www.w3.org/2005/Atom"}
+    cutoff = datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)
+    articles = []
+    for entry in root.findall("a:entry", ns):
+        published = (entry.findtext("a:published", "", ns) or "").strip()
+        try:
+            pub_dt = datetime.fromisoformat(published.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if pub_dt < cutoff:
+            continue
+        title = re.sub(r"\s+", " ", entry.findtext("a:title", "", ns) or "").strip()
+        url = (entry.findtext("a:id", "", ns) or "").strip()
+        summary = re.sub(r"\s+", " ", entry.findtext("a:summary", "", ns) or "").strip()
+        if title and url:
+            articles.append({
+                "title": title,
+                "url": url,
+                "urlToImage": None,
+                "description": summary[:300],
+                "source": {"name": "arXiv"},
+                "publishedAt": published,
+            })
+    return articles
+
+
+def fetch_news(profile):
+    """All source adapters, merged and deduped by URL."""
+    articles = fetch_newsapi(profile)
+    arxiv_items = fetch_arxiv(profile)
+    if arxiv_items:
+        print(f"   arxiv: {len(arxiv_items)} papers")
+    articles.extend(arxiv_items)
+
+    seen = set()
+    unique = []
+    for a in articles:
+        url = (a.get("url") or "").rstrip("/")
+        if url and url not in seen:
+            seen.add(url)
+            unique.append(a)
+    print(f"-> {profile['id']}: {len(unique)} unique articles across adapters")
+    return unique
 
 
 # --- ANALYSIS (OpenAI) ---
@@ -316,41 +409,60 @@ def critique(profile, html_content):
 def build_prompt(profile, raw_text):
     name = profile.get("name") or "the reader"
     role = profile.get("role_context", "")
+    goals = "; ".join(profile.get("goals", [])) or "(not specified)"
+    info_needs = "; ".join(profile.get("info_needs", [])) or "(not specified)"
     topics = ", ".join(profile.get("topics", [])) or "(none specified)"
     watchlist = ", ".join(profile.get("watchlist", [])) or "(none specified)"
-    regions = ", ".join(profile.get("regions", [])) or "(none specified)"
     exclude = ", ".join(profile.get("exclude", [])) or "(nothing specific)"
     language = profile.get("language", "en")
+
+    fmt = profile.get("format") or DEFAULT_FORMAT
+    budget = FORMAT_BUDGETS.get(fmt, FORMAT_BUDGETS[DEFAULT_FORMAT])
+
+    # The tuning loop: the reader's last few notes steer selection and tone.
+    feedback = [f.get("note", "") for f in profile.get("feedback_log", [])
+                if isinstance(f, dict) and f.get("note")][-3:]
+    feedback_block = ""
+    if feedback:
+        feedback_block = (
+            "### READER FEEDBACK (recent notes -- honour these):\n- "
+            + "\n- ".join(feedback) + "\n\n"
+        )
 
     return (
         f"Role: You are a senior intelligence analyst writing today's personalised daily brief for {name}.\n"
         f"About the reader: {role}\n"
+        f"Their goals (next 6-12 months): {goals}\n"
+        f"Their information needs: {info_needs}\n"
         f"Their focus topics: {topics}\n"
-        f"Their watchlist (companies / products / people to track closely): {watchlist}\n"
-        f"Their regions of interest: {regions}\n"
+        f"Their watchlist (companies / products / protocols / people to track closely): {watchlist}\n"
         f"Do NOT cover / explicitly exclude: {exclude}\n\n"
 
-        "Task: From the raw articles below, select and RANK the items most relevant to THIS reader's role and "
-        "focus. Drop anything on their exclude list or irrelevant to their work. Quality over quantity.\n\n"
+        "Task: The items below were pre-selected by a curator (WhyRelevant notes included where "
+        "available). Rank them for THIS reader and write the brief. Drop anything that on closer "
+        "reading is irrelevant or excluded. Quality over quantity.\n\n"
 
         "### OUTPUT (an HTML fragment only -- no <html>, <head> or <body> wrapper):\n"
         "1. Open with the bottom line:\n"
         "   <p><strong>Bottom line:</strong> 2-3 sentences with the single most important takeaway for them today.</p>\n"
-        "2. Then 4-6 story blocks, most important first, each formatted exactly as:\n"
+        f"2. Then about {budget['items']} story blocks (never more than {budget['items'] + 1}), "
+        "most important first, each formatted exactly as:\n"
         "   <div class='section'>\n"
         "     <div class='news-title'>HEADLINE</div>\n"
         "     <img src='IMG_URL' class='story-image'>   <!-- include ONLY when a real image URL is given, never for NO_IMAGE -->\n"
         "     <p><strong>What happened:</strong> the facts, 1-2 sentences. <a href='URL'>[1]</a></p>\n"
-        "     <p><strong>Why it matters for you:</strong> tie it directly to their role, watchlist or region.</p>\n"
+        "     <p><strong>Why it matters for you:</strong> tie it directly to their goals, watchlist or role.</p>\n"
         "     <p><strong>Watch / do:</strong> one concrete thing to monitor or act on.</p>\n"
         "   </div>\n\n"
 
         "### RULES:\n"
+        f"- Format: '{fmt}' -- keep each story block around {budget['words']} words.\n"
         "- Cite every claim with a clickable footnote <a href='URL'>[n]</a> using the article's real URL.\n"
-        "- Keep the whole brief tight: a busy person should read it in under 15 minutes.\n"
+        "- Keep the whole brief tight: a busy person should read it well inside 15 minutes.\n"
         f"- Write in the reader's language (language code: {language}).\n"
         "- Output raw HTML only. Do NOT wrap it in markdown code fences.\n\n"
 
+        f"{feedback_block}"
         f"RAW ARTICLES:\n{raw_text}"
     )
 
@@ -506,8 +618,16 @@ def dry_run(profiles, force, current_hour):
         gated = should_send(p, force, current_hour)
         print(f"\n[{p.get('id')}] active={p.get('active')} send_hour_utc={p.get('send_hour_utc')} "
               f"email={p.get('email')} -> would_send={gated}")
-        print(f"  language: {p.get('language', 'en')} | sources: {p.get('priority_sources', [])}")
-        print(f"  query: {build_query(p)}")
+        print(f"  language: {p.get('language', 'en')} | format: {p.get('format', DEFAULT_FORMAT)} "
+              f"| tz: {p.get('timezone', '-')} | sources: {p.get('priority_sources', [])}")
+        packs = p.get("query_packs", [])
+        if packs:
+            for pk in packs:
+                print(f"  pack '{pk.get('name', '?')}': {str(pk.get('q', ''))[:100]}")
+        else:
+            print(f"  query (legacy single): {build_query(p)}")
+        if p.get("arxiv_categories"):
+            print(f"  arxiv: {p['arxiv_categories']} + top watchlist terms")
 
 
 def main():
