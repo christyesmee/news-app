@@ -52,6 +52,47 @@ LOOKBACK_DAYS = 5
 MAX_ARTICLES = 40
 MAX_ARTICLES_TO_MODEL = 30
 
+# Per-format budgets: how many items the Curator keeps and roughly how many
+# words the writer spends per item.
+FORMAT_BUDGETS = {
+    "punchy": {"items": 4, "words": 60},
+    "standard": {"items": 6, "words": 90},
+    "deep": {"items": 8, "words": 130},
+}
+DEFAULT_FORMAT = "standard"
+
+
+def _stage(profile_id, name, detail=""):
+    """Stage-boundary marker; keeps every pipeline step visible in the Action log."""
+    print(f"=== STAGE: {name} ({profile_id}){' -- ' + detail if detail else ''} ===")
+
+
+def _openai_json(messages, max_tokens=1200):
+    """One OpenAI call that must return JSON. Raises with a clear message on
+    HTTP errors or unparseable output -- callers name the stage."""
+    resp = requests.post(
+        OPENAI_URL,
+        headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": OPENAI_MODEL,
+            "temperature": 0.2,
+            "max_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
+            "messages": messages,
+        },
+        timeout=90,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"OpenAI {resp.status_code}: {resp.text[:300]}")
+    content = resp.json()["choices"][0]["message"]["content"]
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", content, re.DOTALL)
+        if not match:
+            raise RuntimeError(f"model returned unparseable JSON: {content[:200]}")
+        return json.loads(match.group(0))
+
 
 # --- PROFILE LOADING ---
 def load_profiles(only=None):
@@ -157,6 +198,121 @@ def fetch_news(profile):
 
 
 # --- ANALYSIS (OpenAI) ---
+# --- CURATOR (role 4) ---
+def curate(profile, articles):
+    """Score every candidate 0-10 against the profile; keep top N per format.
+
+    Returns (shortlist, rationale_by_id). On any failure the error is logged
+    with the stage name and the top-N articles pass through unscored -- a
+    curator outage must not kill the send.
+    """
+    fmt = profile.get("format") or DEFAULT_FORMAT
+    budget = FORMAT_BUDGETS.get(fmt, FORMAT_BUDGETS[DEFAULT_FORMAT])
+    _stage(profile["id"], "CURATOR", f"{len(articles)} candidates -> top {budget['items']} ({fmt})")
+
+    candidates = []
+    for i, a in enumerate(articles[:MAX_ARTICLES_TO_MODEL]):
+        candidates.append({
+            "id": i,
+            "title": (a.get("title") or "")[:200],
+            "source": (a.get("source") or {}).get("name", ""),
+            "desc": (a.get("description") or "")[:300],
+        })
+
+    goals = profile.get("goals") or []
+    info_needs = profile.get("info_needs") or []
+    context = {
+        "role_context": profile.get("role_context", ""),
+        "goals": goals,
+        "info_needs": info_needs,
+        # v1 profiles have no goals/info_needs; topics+watchlist still anchor scoring.
+        "topics": profile.get("topics", []),
+        "watchlist": profile.get("watchlist", []),
+        "exclude": profile.get("exclude", []),
+    }
+
+    try:
+        out = _openai_json([
+            {"role": "system", "content": (
+                "You are the Curator for a personalised daily brief. Score EVERY candidate item "
+                "0-10 for relevance to THIS reader (their goals, information needs, watchlist and "
+                "topics). Score 0 for anything matching their exclude list, duplicated stories, or "
+                "generic news with no bearing on their work.\n"
+                'Return JSON: {"items":[{"id":int,"score":number,"reason":"one line"}]} '
+                "covering every candidate id exactly once."
+            )},
+            {"role": "user", "content":
+                "READER:\n" + json.dumps(context, ensure_ascii=False) +
+                "\n\nCANDIDATES:\n" + json.dumps(candidates, ensure_ascii=False)},
+        ], max_tokens=2000)
+        items = out.get("items")
+        if not isinstance(items, list):
+            raise RuntimeError("contract violation: items missing")
+        scored = []
+        for it in items:
+            try:
+                idx = int(it["id"])
+                score = float(it.get("score", 0))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if 0 <= idx < len(articles) and score > 0:
+                scored.append((score, idx, str(it.get("reason", ""))[:200]))
+        scored.sort(reverse=True)
+        keep = scored[: budget["items"]]
+        shortlist = [articles[idx] for _, idx, _ in keep]
+        rationale = {idx: reason for _, idx, reason in keep}
+        for score, idx, reason in keep:
+            print(f"   keep [{score:.0f}/10] {articles[idx].get('title', '')[:70]} -- {reason}")
+        dropped = len(candidates) - len(keep)
+        print(f"-> curator kept {len(keep)}, dropped {dropped}")
+        if not shortlist:
+            raise RuntimeError("curator scored everything 0 -- falling back to top-N")
+        return shortlist, rationale
+    except Exception as e:
+        print(f"!! STAGE CURATOR failed for {profile['id']}: {e}")
+        print(f"   falling back to first {budget['items']} articles unscored")
+        return articles[: budget["items"]], {}
+
+
+# --- CRITIC (role 5) ---
+def critique(profile, html_content):
+    """QA the draft brief against the profile. Returns (passed, notes)."""
+    _stage(profile["id"], "CRITIC")
+    checks = {
+        "role_context": profile.get("role_context", ""),
+        "goals": profile.get("goals", []),
+        "topics": profile.get("topics", []),
+        "watchlist": profile.get("watchlist", []),
+        "exclude": profile.get("exclude", []),
+        "format": profile.get("format") or DEFAULT_FORMAT,
+        "item_budget": FORMAT_BUDGETS.get(profile.get("format") or DEFAULT_FORMAT,
+                                          FORMAT_BUDGETS[DEFAULT_FORMAT])["items"],
+    }
+    try:
+        out = _openai_json([
+            {"role": "system", "content": (
+                "You are the Critic, QA-ing a personalised daily brief before it is emailed.\n"
+                "Checks: (1) every item is traceably relevant to this reader's profile; "
+                "(2) nothing matches the exclude list; (3) every item has a well-formed http(s) "
+                "link; (4) the item count is within +/-2 of the format budget; (5) tone is "
+                "professional and concrete, no filler.\n"
+                'Return JSON: {"passed": true|false, "notes": "empty when passed; otherwise the '
+                'specific problems, actionable enough to fix in one rewrite"}'
+            )},
+            {"role": "user", "content":
+                "PROFILE:\n" + json.dumps(checks, ensure_ascii=False) +
+                "\n\nDRAFT BRIEF (HTML):\n" + html_content[:12000]},
+        ], max_tokens=600)
+        passed = bool(out.get("passed"))
+        notes = str(out.get("notes", ""))[:800]
+        print(f"-> critic verdict: {'PASS' if passed else 'FAIL'}{' -- ' + notes if notes else ''}")
+        return passed, notes
+    except Exception as e:
+        print(f"!! STAGE CRITIC failed for {profile['id']}: {e}")
+        print("   treating draft as passed (critic outage must not block the send)")
+        return True, ""
+
+
 def build_prompt(profile, raw_text):
     name = profile.get("name") or "the reader"
     role = profile.get("role_context", "")
@@ -199,11 +355,11 @@ def build_prompt(profile, raw_text):
     )
 
 
-def analyze(profile, articles):
+def analyze(profile, articles, rationale=None, critic_notes=""):
     if not OPENAI_API_KEY:
         return None, "OPENAI_API_KEY is not set."
 
-    print(f"-> {profile['id']}: analysing with {OPENAI_MODEL}")
+    _stage(profile["id"], "WRITER", f"{len(articles)} items, model {OPENAI_MODEL}")
     raw_text = ""
     for i, a in enumerate(articles[:MAX_ARTICLES_TO_MODEL]):
         title = (a.get("title") or "").replace('"', "'")
@@ -211,11 +367,19 @@ def analyze(profile, articles):
         url = a.get("url", "")
         img = a.get("urlToImage") or "NO_IMAGE"
         desc = (a.get("description") or "").replace('"', "'")
+        why = ""
+        if rationale and i in rationale:
+            why = f" | WhyRelevant: {rationale[i]}"
         raw_text += (
-            f"ID: {i + 1} | Title: {title} | Source: {source} | URL: {url} | IMG: {img} | Desc: {desc}\n"
+            f"ID: {i + 1} | Title: {title} | Source: {source} | URL: {url} | IMG: {img} | Desc: {desc}{why}\n"
         )
 
     prompt = build_prompt(profile, raw_text)
+    if critic_notes:
+        prompt += (
+            "\n\n### QA NOTES FROM THE PREVIOUS DRAFT (fix ALL of these in this rewrite):\n"
+            + critic_notes
+        )
     payload = {
         "model": OPENAI_MODEL,
         "temperature": 0.4,
@@ -291,15 +455,42 @@ def send_email(profile, html_content):
 
 # --- ORCHESTRATION ---
 def process(profile):
+    """Full pipeline for one profile: FETCH -> CURATOR -> WRITER -> CRITIC -> SEND."""
     print(f"=== Processing {profile['id']} <{profile.get('email')}> ===")
+
+    _stage(profile["id"], "FETCH")
     articles = fetch_news(profile)
     if not articles:
         print(f"-> {profile['id']}: no articles; nothing sent.")
         return False
-    html, err = analyze(profile, articles)
+
+    shortlist, rationale = curate(profile, articles)
+    # rationale keys are indexes into `articles`; remap onto shortlist order.
+    remapped = {}
+    for new_i, art in enumerate(shortlist):
+        for old_i, reason in (rationale or {}).items():
+            if articles[old_i] is art:
+                remapped[new_i] = reason
+                break
+
+    html, err = analyze(profile, shortlist, rationale=remapped)
     if not html:
-        print(f"!! {profile['id']}: analysis failed:\n{err}")
+        print(f"!! STAGE WRITER failed for {profile['id']}:\n{err}")
         return False
+
+    passed, notes = critique(profile, html)
+    if not passed and notes:
+        _stage(profile["id"], "WRITER", "regenerating once with critic notes")
+        retry_html, retry_err = analyze(profile, shortlist, rationale=remapped, critic_notes=notes)
+        if retry_html:
+            retry_passed, _ = critique(profile, retry_html)
+            # Send the best draft we have: the rewrite if it passed (or at
+            # least exists); the original otherwise.
+            html = retry_html if retry_passed or retry_html else html
+        else:
+            print(f"!! regeneration failed, sending first draft: {retry_err}")
+
+    _stage(profile["id"], "SEND")
     try:
         send_email(profile, html)
     except Exception as e:

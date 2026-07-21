@@ -74,6 +74,29 @@ own `email`.
 - **Model:** brief generation uses OpenAI `gpt-4o-mini` (both halves now run on
   OpenAI; Gemini is no longer used). Change it via the `OPENAI_MODEL` env var.
 
+## Agent pipeline & cost
+
+Five staged LLM roles with strict JSON contracts (no extra infrastructure):
+
+| When | Role | Job |
+|---|---|---|
+| intake (Netlify) | **Enricher** | exhaustive entity extraction from pasted material |
+| intake (Netlify) | **Researcher** | consent-gated public web search (OpenAI `web_search`) |
+| intake (Netlify) | **Profiler** | role narrative, trajectory, goals, info needs, ≤3 gap questions |
+| intake (Netlify) | **Expander** | 8–15 topics, 20–40 watchlist, 10+ sources, query packs, arXiv cats |
+| daily run (Action) | **Curator** | scores every fetched item 0–10 vs the profile, keeps top N per format |
+| daily run (Action) | **Critic** | QA of the draft; on fail → one regeneration with its notes, send best-of |
+
+Every stage validates its JSON and fails loudly with the stage name in the log —
+never a silent skip. Failures degrade (curator → top-N unscored, critic → send
+draft), so an OpenAI outage never blocks delivery.
+
+**Cost (gpt-4o-mini, $0.15/M in, $0.60/M out):** intake ≈ 4–6 calls + 1 web
+search ≈ **€0.02–0.05 per signup**. Daily run per user ≈ 3–4 calls (curator,
+writer, critic, occasional rewrite) ≈ €0.005–0.01/day → **€0.15–0.30 per user
+per month**. Web search is the priciest single call (~€0.02); it runs once per
+intake, never daily.
+
 ## Decisions taken on the plan's open questions
 
 - **Profile persistence:** auto-commit via a fine-grained GitHub PAT (true
