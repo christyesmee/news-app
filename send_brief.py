@@ -34,8 +34,10 @@ import requests
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # Brief generation runs on a small OpenAI chat model. Override the model without
-# a code change by setting OPENAI_MODEL in the environment.
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+# a code change by setting OPENAI_MODEL in the environment. Use `or` (not a
+# getenv default) so an empty-string env var -- what GitHub Actions passes for an
+# undefined secret -- still falls back to the default instead of sending model="".
+OPENAI_MODEL = os.getenv("OPENAI_MODEL") or "gpt-4o-mini"
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
