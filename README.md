@@ -58,6 +58,7 @@ that person's role, honouring `exclude`). Brief generation runs on a small model
 | GitHub Actions  | `OPENAI_API_KEY`               | brief generation (small GPT model)                  |
 | GitHub Actions  | `OPENAI_MODEL`                 | *(optional)* override model (default `gpt-4o-mini`) |
 | GitHub Actions  | `EMAIL_USER` / `EMAIL_PASSWORD`| Gmail SMTP (app password)                           |
+| GitHub Actions  | `OPERATOR_BCC`                 | *(optional)* set `0` to stop BCC-ing the sender a copy of every brief (default on) |
 | Netlify         | `OPENAI_API_KEY`               | intake pipeline + on-screen first brief             |
 | Netlify         | `NEWS_API_KEY`                 | on-screen first brief (same key as the Action's)    |
 | Netlify         | `GITHUB_TOKEN`                 | fine-grained PAT (Contents:R/W on this repo) to commit profiles |

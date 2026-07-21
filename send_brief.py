@@ -652,19 +652,40 @@ def send_email(profile, html_content):
     if link:
         plain_text += f"\n\nChange my brief (opens a quick chat to adjust it): {link}"
 
+    recipient = profile["email"]
     msg = MIMEMultipart("alternative")
     msg["From"] = EMAIL_USER
-    msg["To"] = profile["email"]
+    msg["To"] = recipient
     msg["Subject"] = f"Your Daily Brief · {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
     msg.attach(MIMEText(plain_text, "plain"))
     msg.attach(MIMEText(final_html, "html"))
 
+    # Operator copy: unless OPERATOR_BCC=0, blind-copy the sending account so a
+    # verifiable copy of every brief lands in your own inbox -- your confirmation
+    # that the send happened and exactly what went out, independent of whether the
+    # recipient's mailbox accepts or spam-filters it. (Not added to headers, so the
+    # recipient never sees it.)
+    envelope = [recipient]
+    bcc = (os.getenv("OPERATOR_BCC", "1").lower() not in ("0", "false", "no")) and EMAIL_USER
+    if bcc and EMAIL_USER not in envelope:
+        envelope.append(EMAIL_USER)
+
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     try:
         server.login(EMAIL_USER, EMAIL_PASSWORD)
-        server.send_message(msg)
+        # send_message returns a dict of recipients the SERVER refused outright.
+        refused = server.send_message(msg, from_addr=EMAIL_USER, to_addrs=envelope)
     finally:
         server.quit()
+
+    if refused:
+        # Some/all recipients were rejected by Gmail at handoff (bad address, etc.)
+        raise RuntimeError(f"SMTP refused recipients: {refused}")
+
+    # NOTE: this confirms Gmail ACCEPTED the message for delivery -- not that it
+    # reached the inbox (spam/bounce can still happen downstream). The operator BCC
+    # is the human-verifiable confirmation.
+    print(f"vv SMTP accepted brief for {recipient}" + (f" (+ copy to {EMAIL_USER})" if bcc else ""))
 
 
 # --- ORCHESTRATION ---
