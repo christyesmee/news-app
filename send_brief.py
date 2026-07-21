@@ -615,8 +615,12 @@ def send_email(profile, html_content):
     link = tune_link(profile)
     if link:
         html_content += (
-            f"<p style='text-align:center;margin-top:28px'>"
-            f"<a href='{link}'>Tune my brief →</a></p>"
+            "<div style='text-align:center;margin:32px 0 8px'>"
+            f"<a href='{link}' style='display:inline-block;background:#00b8d4;color:#04252b;"
+            "font-weight:700;text-decoration:none;padding:13px 24px;border-radius:24px;font-size:15px'>"
+            "✏️ Change my brief</a>"
+            "<div style='font-size:12px;color:#999;margin-top:8px'>"
+            "Opens a quick chat to adjust what you get.</div></div>"
         )
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
@@ -631,7 +635,7 @@ def send_email(profile, html_content):
                f"{datetime.now(timezone.utc).strftime('%A, %B %d')}.\n\n"
     plain_text = greeting + _clean_html(html_content)
     if link:
-        plain_text += f"\n\nTune my brief: {link}"
+        plain_text += f"\n\nChange my brief (opens a quick chat to adjust it): {link}"
 
     msg = MIMEMultipart("alternative")
     msg["From"] = EMAIL_USER

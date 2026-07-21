@@ -133,6 +133,9 @@
     <!-- Conversational AI intake -->
     <section class="screen active" id="s-chat">
       <div id="chatlog" aria-live="polite"></div>
+      <div id="tune-actions" style="display:none;padding:0 12px 8px">
+        <button class="primary" id="tune-review" type="button" style="margin-top:0">Review &amp; save →</button>
+      </div>
       <form id="chatform" autocomplete="off">
         <textarea id="chat-input" rows="1" placeholder="Type your reply… (paste your bio / CV here when asked)"></textarea>
         <button type="submit" id="chat-send">Send</button>
@@ -211,6 +214,7 @@
       entityPool: [], research: "", profiler: null, answers: [], tracking: null,
       queryPacks: [], usedResearch: false, warnings: [],
       tune: null, tuneToken: "", packBasis: "",
+      tuneWorking: null, tuneNotes: [], tuneChanged: false,
     };
 
     function show(id) {
@@ -470,12 +474,67 @@
       chatAdd(text, "me");
       input.value = "";
       input.style.height = "auto";
+      if (phase === "tune") { tuneTurn(text); return; }
       if (phase === "gapq") { recordGap(text); return; }
       if (phase !== "interview") return;
       if (fbSteps) { recordFallback(text); return; }
       chatHistory.push({ role: "user", content: text });
       interviewTurn();
     });
+
+    // ---------- conversational tune (from the email button) ----------
+    const tuneHistory = [];
+    function tuneSummary(p) {
+      const parts = [(p.topics || []).length + " topics", (p.watchlist || []).length + " watchlist entries",
+        (p.format || "standard") + " format"];
+      return parts.join(", ");
+    }
+    function startTune() {
+      state.tuneWorking = JSON.parse(JSON.stringify(state.tune));
+      phase = "tune";
+      const name = state.tune.name ? ", " + state.tune.name.split(" ")[0] : "";
+      const greeting = "Welcome back" + name + "! Right now I'm tracking " + tuneSummary(state.tune) +
+        ". What would you like to change? (e.g. add a company, drop a topic, go deeper, less of something, or a new delivery time.)";
+      tuneHistory.push({ role: "assistant", content: greeting });
+      chatAdd(greeting, "bot");
+      setBusy(false);
+    }
+    async function tuneTurn(text) {
+      if (/^(save|done|finish|apply|that'?s all|that is all|nothing else|no thanks|looks good)\.?$/i.test(text)) {
+        commitTune();
+        return;
+      }
+      tuneHistory.push({ role: "user", content: text });
+      phase = "busy"; setBusy(true); typing(true);
+      try {
+        const r = await stage("tune_apply", { profile: state.tuneWorking, messages: tuneHistory });
+        typing(false);
+        if (r.ready) {
+          Object.assign(state.tuneWorking, r.profile);
+          if (r.feedback_note) state.tuneNotes.push(r.feedback_note);
+          state.tuneChanged = true;
+          chatAdd("✅ " + r.reply + "\n\nAnything else? Or tap “Review & save”.", "bot");
+          tuneHistory.push({ role: "assistant", content: r.reply });
+          $("tune-actions").style.display = "block";
+        } else {
+          chatAdd(r.reply, "bot");
+          tuneHistory.push({ role: "assistant", content: r.reply });
+        }
+      } catch (e) {
+        typing(false);
+        chatAdd("I couldn't process that just now — you can tap “Review & save” to edit the profile directly instead.", "bot");
+        $("tune-actions").style.display = "block";
+      }
+      phase = "tune";
+      setBusy(false);
+    }
+    function commitTune() {
+      state.tune = state.tuneWorking || state.tune;
+      state.queryPacks = Array.isArray(state.tune.query_packs) ? state.tune.query_packs : [];
+      showReview();
+      if (state.tuneNotes.length) $("f-feedback").value = state.tuneNotes.join("; ");
+    }
+    $("tune-review").addEventListener("click", commitTune);
 
     // ---------- timezone helpers ----------
     function tzList() {
@@ -697,7 +756,7 @@
         state.tune = body.profile;
         state.tuneToken = token;
         state.queryPacks = Array.isArray(body.profile.query_packs) ? body.profile.query_packs : [];
-        showReview();
+        startTune();   // conversational: ask what they want to change
       } catch (e) {
         s.warn(String(e.message || e));
         chatAdd("Couldn't open your tune link (" + (e.message || e) + "). Use the link from your most recent brief, or just tell me about yourself to rebuild your profile.", "bot");

@@ -116,6 +116,75 @@ const STAGES = {
     return { ready: false, reply: text };
   },
 
+  // 0b. TUNE — conversational editing of an EXISTING profile. The user arrives
+  //     from the email's "Change my brief" button and says what to change; this
+  //     returns either a clarifying question or the updated editable profile.
+  async tune_apply(body, apiKey) {
+    const cur = body.profile && typeof body.profile === "object" ? body.profile : {};
+    const editable = {
+      role_context: clamp(cur.role_context, 600),
+      trajectory: clamp(cur.trajectory, 400),
+      goals: strList(cur.goals, 8, 160),
+      info_needs: strList(cur.info_needs, 10, 160),
+      topics: strList(cur.topics, 15, 80),
+      watchlist: strList(cur.watchlist, 40, 80),
+      priority_sources: strList(cur.priority_sources, 30, 120),
+      arxiv_categories: strList(cur.arxiv_categories, 8, 20),
+      exclude: strList(cur.exclude, 30, 120),
+      format: ["punchy", "standard", "deep"].includes(String(cur.format)) ? cur.format : "standard",
+      language: /^[a-z]{2}(-[a-z]{2})?$/.test(String(cur.language || "")) ? cur.language : "en",
+    };
+    const history = asList(body.messages)
+      .filter((m) => m && typeof m.content === "string" && (m.role === "user" || m.role === "assistant"))
+      .slice(-16)
+      .map((m) => ({ role: m.role, content: clamp(m.content, 4000) }));
+
+    const out = await chatJSON(apiKey, [
+      sys(
+        "You help " + (clamp(cur.name, 120) || "the reader") + " adjust their EXISTING daily brief. " +
+        "You get their current editable profile and a chat. If their request is clear enough to act on, " +
+        "return the FULL updated editable profile — carry every field over UNCHANGED except exactly what " +
+        "they asked to change; never invent changes or drop things they didn't mention. Also give a " +
+        "one-line confirmation of what you changed. Any purely stylistic instruction that is NOT a " +
+        "concrete field (e.g. 'make it shorter', 'less funding news', 'more analytical', 'fewer items') " +
+        "goes into feedback_note, not the fields. If the request is vague, ask ONE short clarifying " +
+        "question instead of guessing.\n" +
+        'Return JSON: {"ready": true|false, "reply": "<clarifying question OR confirmation>", ' +
+        '"profile": {role_context, trajectory, goals[], info_needs[], topics[], watchlist[], ' +
+        'priority_sources[], arxiv_categories[], exclude[], format, language}, ' +
+        '"feedback_note": "<stylistic guidance or empty>"}. Include profile only when ready is true.'
+      ),
+      usr("CURRENT PROFILE:\n" + JSON.stringify(editable) + "\n\nCONVERSATION:\n" + JSON.stringify(history)),
+    ], 1800);
+
+    if (!out || typeof out.reply !== "string") throw new Error("contract violation: reply missing");
+    if (out.ready !== true) return { ready: false, reply: clamp(out.reply, 500) };
+
+    const p = out.profile || {};
+    // Never let the model wipe the whole brief: if topics/watchlist come back
+    // empty, keep the current ones. Other fields take the model's value.
+    const topics = strList(p.topics, 15, 80);
+    const watchlist = strList(p.watchlist, 40, 80);
+    return {
+      ready: true,
+      reply: clamp(out.reply, 500),
+      feedback_note: clamp(out.feedback_note, 300),
+      profile: {
+        role_context: clamp(p.role_context, 600) || editable.role_context,
+        trajectory: clamp(p.trajectory, 400) || editable.trajectory,
+        goals: strList(p.goals, 8, 160),
+        info_needs: strList(p.info_needs, 10, 160),
+        topics: topics.length ? topics : editable.topics,
+        watchlist: watchlist.length ? watchlist : editable.watchlist,
+        priority_sources: strList(p.priority_sources, 30, 120),
+        arxiv_categories: strList(p.arxiv_categories, 8, 20),
+        exclude: strList(p.exclude, 30, 120),
+        format: ["punchy", "standard", "deep"].includes(String(p.format)) ? p.format : editable.format,
+        language: /^[a-z]{2}(-[a-z]{2})?$/.test(String(p.language || "")) ? p.language : editable.language,
+      },
+    };
+  },
+
   // 1. ENRICHER — exhaustive entity extraction. Completeness over precision:
   //    losing named entities from pasted material was the v1 bug.
   async enrich(body, apiKey) {
