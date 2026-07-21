@@ -7,88 +7,94 @@
   "language": "en",
   "timezone": "Europe/Amsterdam",
   "format": "deep",
-  "role_context": "As the founder of Swarmlabs, I focus on leveraging collective intelligence and AI-native approaches to optimize business operations. I am accountable for building and managing AI agents that automate tasks and create a self-sustaining company.",
-  "trajectory": "My career is heading towards establishing a fully automated business model that relies on AI agents for operational efficiency and innovation.",
+  "role_context": "You are a technology innovator focused on developing agent swarms that operate continuously for businesses. Your role involves researching and implementing new methodologies to enhance the efficiency and capabilities of these swarms, making you accountable for the performance and innovation of swarm-based solutions.",
+  "trajectory": "Your career is heading towards becoming a leading expert in swarm technology, with a focus on expanding the application of these systems in various business contexts. You aim to position yourself at the forefront of this emerging field.",
   "goals": [
-    "Develop a fully functional AI agent system that can autonomously manage business processes.",
-    "Increase the efficiency of existing workflows by 30% using AI tools.",
-    "Expand the use of collective intelligence methodologies within my organization.",
-    "Establish partnerships with other AI-focused companies to enhance technological capabilities.",
-    "Create a roadmap for scaling the self-sustaining company model over the next year."
+    "Identify and implement at least three new methodologies for creating agent swarms within the next 6 months.",
+    "Develop a prototype of a new swarm business model to test its viability in real-world applications.",
+    "Network with at least five industry experts or thought leaders in swarm technology to gain insights and feedback.",
+    "Publish a white paper or article on innovative swarm business strategies within the next year.",
+    "Attend a relevant conference or workshop to learn about the latest advancements in swarm technology."
   ],
   "info_needs": [
-    "Latest advancements in AI tools and technologies relevant to business optimization.",
-    "Case studies on successful implementation of AI agents in various industries.",
-    "Best practices for building and managing AI-driven teams.",
-    "Insights on collective intelligence frameworks and their application in business.",
-    "Information on potential partnerships or collaborations with AI companies.",
-    "Metrics and benchmarks for measuring the effectiveness of AI tools in business."
+    "Latest research and case studies on swarm technology applications in business.",
+    "Information on emerging trends and methodologies in swarm intelligence.",
+    "Networking opportunities with professionals in the field of agent swarms.",
+    "Insights on successful swarm business models and their implementation.",
+    "Technological advancements that could enhance the functionality of agent swarms."
   ],
   "regions": [],
   "topics": [
-    "collective intelligence methodologies",
-    "AI-native business optimization",
-    "automation of business processes",
-    "AI agents for operational efficiency",
-    "self-sustaining business models",
-    "latest advancements in AI tools",
-    "case studies on AI implementation",
-    "partnerships in AI technology"
+    "agent swarms technology",
+    "swarm intelligence applications",
+    "continuous operation of agent swarms",
+    "swarm business models",
+    "emerging trends in swarm technology",
+    "methodologies for swarm efficiency",
+    "case studies on swarm implementations",
+    "networking in swarm technology"
   ],
   "watchlist": [
-    "swarmlabs",
-    "Claude",
-    "codex",
-    "factory ai",
-    "linear",
+    "agent swarms",
+    "swarm businesses",
+    "swarm intelligence",
+    "multi-agent systems",
+    "robotic swarms",
+    "autonomous agents",
+    "AI swarm technology",
+    "swarm robotics",
+    "distributed systems",
+    "cloud-based swarm solutions",
+    "swarm analytics",
+    "Swarm Systems Inc.",
+    "Swarm Technologies LLC",
+    "Swarm AI Corp.",
     "OpenAI",
-    "Google AI",
-    "Microsoft AI",
-    "IBM Watson",
-    "Amazon Web Services",
     "DeepMind",
-    "NVIDIA",
-    "Element AI",
-    "C3.ai",
-    "UiPath",
-    "Automation Anywhere",
-    "DataRobot",
-    "Zebra Medical Vision",
-    "Salesforce AI",
-    "Palantir Technologies",
-    "Collective Intelligence Institute"
+    "Boston Dynamics",
+    "MIT Media Lab",
+    "IEEE Robotics and Automation Society",
+    "Swarm Summit",
+    "International Conference on Swarm Intelligence"
   ],
   "priority_sources": [
     "arxiv.org",
     "techcrunch.com",
-    "reuters.com",
     "forbes.com",
-    "venturebeat.com",
-    "zdnet.com",
-    "ai.googleblog.com",
-    "medium.com",
-    "hbr.org",
-    "businessinsider.com"
+    "wired.com",
+    "reuters.com",
+    "nature.com",
+    "sciencedirect.com",
+    "springer.com",
+    "researchgate.net",
+    "ieee.org"
   ],
   "exclude": [],
   "arxiv_categories": [
     "cs.AI",
-    "cs.HC",
-    "cs.MA",
-    "cs.LG"
+    "cs.RO",
+    "cs.MA"
   ],
   "query_packs": [
     {
-      "name": "AI and Business Optimization",
-      "q": "\"AI-native business optimization\" OR \"automation of business processes\" OR \"AI agents for operational efficiency\" OR \"self-sustaining business models\" OR \"collective intelligence methodologies\""
+      "name": "Swarm Technology Overview",
+      "q": "\"agent swarms technology\" OR \"swarm intelligence applications\" OR \"continuous operation of agent swarms\" OR \"emerging trends in swarm technology\" OR \"methodologies for swarm efficiency\""
     },
     {
-      "name": "AI Tools and Advancements",
-      "q": "\"latest advancements in AI tools\" OR \"case studies on AI implementation\""
+      "name": "Swarm Business and Applications",
+      "q": "\"swarm business models\" OR \"case studies on swarm implementations\" OR \"swarm businesses\" OR \"AI swarm technology\" OR \"cloud-based swarm solutions\""
     },
     {
-      "name": "AI Partnerships and Companies",
-      "q": "\"partnerships in AI technology\" OR \"swarmlabs\" OR \"Claude\" OR \"codex\" OR \"factory ai\" OR \"linear\" OR \"OpenAI\" OR \"Google AI\" OR \"Microsoft AI\" OR \"IBM Watson\" OR \"Amazon Web Services\" OR \"DeepMind\" OR \"NVIDIA\" OR \"Element AI\" OR \"C3.ai\" OR \"UiPath\" OR \"Automation Anywhere\" OR \"DataRobot\" OR \"Zebra Medical Vision\" OR \"Salesforce AI\" OR \"Palantir Technologies\" OR \"Collective Intelligence Institute\""
+      "name": "Swarm Robotics and Systems",
+      "q": "\"robotic swarms\" OR \"multi-agent systems\" OR \"swarm robotics\" OR \"distributed systems\" OR \"autonomous agents\""
+    },
+    {
+      "name": "Swarm Analytics and Research",
+      "q": "\"swarm analytics\" OR \"Swarm Systems Inc.\" OR \"Swarm Technologies LLC\" OR \"Swarm AI Corp.\" OR \"OpenAI\" OR \"DeepMind\" OR \"Boston Dynamics\" OR \"MIT Media Lab\" OR \"IEEE Robotics and Automation Society\""
+    },
+    {
+      "name": "Swarm Events and Conferences",
+      "q": "\"Swarm Summit\" OR \"International Conference on Swarm Intelligence\""
     }
   ],
   "feedback_log": []
