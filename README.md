@@ -13,7 +13,7 @@ Two halves that meet at one file per user: `profiles/<id>.json`.
  intake/ (Netlify)                         repo                         GitHub Actions
  ┌──────────────────┐   commit profile   ┌──────────────┐   hourly    ┌──────────────────┐
  │ chat UI + OpenAI │ ─────────────────▶ │ profiles/    │ ──────────▶ │ send_brief.py    │
- │ chat.mjs         │  save-profile.mjs  │  <id>.json   │  cron gate  │ NewsAPI + Gemini │
+ │ chat.mjs         │  save-profile.mjs  │  <id>.json   │  cron gate  │ NewsAPI + OpenAI │
  │                  │  (GitHub API)      │              │             │ + Gmail SMTP     │
  └──────────────────┘                    └──────────────┘             └────────┬─────────┘
                                                                                │ email
@@ -25,7 +25,7 @@ Two halves that meet at one file per user: `profiles/<id>.json`.
    [`.github/workflows/brief.yml`](.github/workflows/brief.yml). Each run reads
    every profile and emails only the ones whose `send_hour_utc` matches the
    current UTC hour. That gate is how users self-configure delivery time without
-   ever touching cron. Reuses the existing NewsAPI + Gemini + Gmail-SMTP pipeline.
+   ever touching cron. Runs the NewsAPI + OpenAI + Gmail-SMTP pipeline.
 
 2. **Intake chatbot** — [`intake/`](intake/), a Netlify-hosted web app. A
    serverless function talks to the **OpenAI API**, holds a ~7-question
@@ -43,15 +43,17 @@ python send_brief.py --dry-run       # print each profile's query + who would se
 
 `profiles/example.json` is a committed reference schema; scheduled runs skip it.
 Each profile drives its own NewsAPI query (topics + watchlist OR-joined, AND
-regions, restricted to `priority_sources`) and its own Gemini prompt (ranked to
-that person's role, honouring `exclude`).
+regions, restricted to `priority_sources`) and its own OpenAI prompt (ranked to
+that person's role, honouring `exclude`). Brief generation runs on a small model
+(`gpt-4o-mini` by default; override with the `OPENAI_MODEL` env var).
 
 ## Secrets
 
 | Where           | Key                            | Purpose                                             |
 |-----------------|--------------------------------|-----------------------------------------------------|
 | GitHub Actions  | `NEWS_API_KEY`                 | NewsAPI (see caveat)                                |
-| GitHub Actions  | `GEMINI_API_KEY`               | brief generation                                    |
+| GitHub Actions  | `OPENAI_API_KEY`               | brief generation (small GPT model)                  |
+| GitHub Actions  | `OPENAI_MODEL`                 | *(optional)* override model (default `gpt-4o-mini`) |
 | GitHub Actions  | `EMAIL_USER` / `EMAIL_PASSWORD`| Gmail SMTP (app password)                           |
 | Netlify         | `OPENAI_API_KEY`               | intake chatbot                                      |
 | Netlify         | `GITHUB_TOKEN`                 | fine-grained PAT (Contents:R/W on this repo) to commit profiles |
@@ -70,7 +72,8 @@ own `email`.
 - **DST:** `send_hour_utc` is a fixed UTC hour, converted from the user's local
   pick using their browser's offset at signup. Delivery drifts one hour across a
   DST change until the profile is refreshed.
-- `google.generativeai` is deprecated in favour of `google-genai`; not migrated.
+- **Model:** brief generation uses OpenAI `gpt-4o-mini` (both halves now run on
+  OpenAI; Gemini is no longer used). Change it via the `OPENAI_MODEL` env var.
 
 ## Decisions taken on the plan's open questions
 
@@ -97,7 +100,7 @@ The ingestion is built into `send_brief.py` but dormant until you:
 
 On each run, for any profile with a `forward_token`, the engine pulls that user's
 recently forwarded mail (matched on the To/Cc/Delivered-To/Subject headers),
-extracts the text, and passes it to Gemini as a **trusted forwarded sources**
+extracts the text, and passes it to the model as a **trusted forwarded sources**
 block — summarised for that user's eyes only, never redistributed. If `IMAP_*`
 is unset or the token is empty, nothing happens and the brief runs as normal.
 

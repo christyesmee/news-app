@@ -2,8 +2,8 @@
 
 Replaces the old hard-coded agents. Reads every profile in ``profiles/`` and,
 for each one whose ``send_hour_utc`` matches the current UTC hour, builds a
-personalised NewsAPI query, has Gemini synthesise a brief tailored to that
-person's role, and emails it to them via Gmail SMTP.
+personalised NewsAPI query, has a small OpenAI chat model synthesise a brief
+tailored to that person's role, and emails it to them via Gmail SMTP.
 
 Users self-configure their delivery time by setting ``send_hour_utc`` in their
 own profile -- the workflow runs every hour and this gate decides who gets a
@@ -30,12 +30,13 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
-# google.generativeai is imported lazily inside the functions that need it so the
-# --dry-run / profile-loading paths don't require the (heavy) Gemini SDK.
-
 # --- CONFIGURATION ---
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Brief generation runs on a small OpenAI chat model. Override the model without
+# a code change by setting OPENAI_MODEL in the environment.
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
@@ -58,38 +59,6 @@ MAX_ARTICLES_TO_MODEL = 30
 # Forwarded-newsletter budget.
 MAX_FORWARDED = 8
 MAX_FORWARDED_CHARS = 12000
-
-
-# --- MODEL SELECTION (carried over from the old scripts) ---
-_MODEL_CACHE = None
-
-
-def get_working_model():
-    """Pick the best available Gemini model, preferring 1.5-pro then 1.5-flash."""
-    global _MODEL_CACHE
-    if _MODEL_CACHE:
-        return _MODEL_CACHE
-    import google.generativeai as genai
-    genai.configure(api_key=GEMINI_API_KEY)
-    try:
-        all_models = [
-            m.name.replace("models/", "")
-            for m in genai.list_models()
-            if "generateContent" in m.supported_generation_methods
-        ]
-        for m in all_models:
-            if "1.5-pro" in m:
-                _MODEL_CACHE = m
-                return m
-        for m in all_models:
-            if "1.5-flash" in m:
-                _MODEL_CACHE = m
-                return m
-        _MODEL_CACHE = all_models[0] if all_models else None
-        return _MODEL_CACHE
-    except Exception as e:
-        print(f"!! Model selection error: {e}")
-        return None
 
 
 # --- PROFILE LOADING ---
@@ -294,15 +263,7 @@ def fetch_forwarded(profile):
     return text
 
 
-# --- ANALYSIS (Gemini) ---
-SAFETY_SETTINGS = [
-    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-]
-
-
+# --- ANALYSIS (OpenAI) ---
 def build_prompt(profile, raw_text, forwarded_text=""):
     name = profile.get("name") or "the reader"
     role = profile.get("role_context", "")
@@ -358,13 +319,10 @@ def build_prompt(profile, raw_text, forwarded_text=""):
 
 
 def analyze(profile, articles, forwarded_text=""):
-    import google.generativeai as genai
+    if not OPENAI_API_KEY:
+        return None, "OPENAI_API_KEY is not set."
 
-    model_name = get_working_model()
-    if not model_name:
-        return None, "No AI models available."
-
-    print(f"-> {profile['id']}: analysing with {model_name}")
+    print(f"-> {profile['id']}: analysing with {OPENAI_MODEL}")
     raw_text = ""
     for i, a in enumerate(articles[:MAX_ARTICLES_TO_MODEL]):
         title = (a.get("title") or "").replace('"', "'")
@@ -376,11 +334,32 @@ def analyze(profile, articles, forwarded_text=""):
             f"ID: {i + 1} | Title: {title} | Source: {source} | URL: {url} | IMG: {img} | Desc: {desc}\n"
         )
 
-    model = genai.GenerativeModel(model_name)
     prompt = build_prompt(profile, raw_text, forwarded_text)
+    payload = {
+        "model": OPENAI_MODEL,
+        "temperature": 0.4,
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "You are a senior intelligence analyst. Follow the user's instructions exactly "
+                    "and output a raw HTML fragment only -- no markdown code fences, no <html> or "
+                    "<body> wrapper."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ],
+    }
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
     try:
-        response = model.generate_content(prompt, safety_settings=SAFETY_SETTINGS)
-        clean = response.text.replace("```html", "").replace("```", "")
+        resp = requests.post(OPENAI_URL, headers=headers, json=payload, timeout=90)
+        if resp.status_code != 200:
+            return None, f"OpenAI error {resp.status_code}: {resp.text[:400]}"
+        content = resp.json()["choices"][0]["message"]["content"]
+        clean = content.replace("```html", "").replace("```", "").strip()
         return clean, None
     except Exception:
         return None, traceback.format_exc()
@@ -486,7 +465,7 @@ def main():
     missing = [
         k for k, v in {
             "NEWS_API_KEY": NEWS_API_KEY,
-            "GEMINI_API_KEY": GEMINI_API_KEY,
+            "OPENAI_API_KEY": OPENAI_API_KEY,
             "EMAIL_USER": EMAIL_USER,
             "EMAIL_PASSWORD": EMAIL_PASSWORD,
         }.items() if not v

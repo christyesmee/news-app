@@ -45,9 +45,11 @@ jobs:
       - name: Send briefs
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          # Optional: override the model (defaults to gpt-4o-mini)
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
         run: |
           case "${{ github.event.inputs.mode }}" in
             force_all)
