@@ -406,7 +406,7 @@
         state.profiler = { role_context: "", trajectory: "", goals: [], info_needs: [], gap_questions: [] };
       }
 
-      const qs = (state.profiler.gap_questions || []).slice(0, 3);
+      const qs = (state.profiler.gap_questions || []).slice(0, 2);
       if (qs.length) { startGapQuestions(qs); }
       else { await finishPipeline(); }
     }

@@ -283,12 +283,22 @@ const STAGES = {
         'Return JSON: {"role_context": "2-3 sentences: role, seniority, what they are accountable for",' +
         ' "trajectory": "1-2 sentences: where their career/work is heading",' +
         ' "goals": [3-6 concrete goals], "info_needs": [4-8 kinds of information that serve those goals],' +
-        ' "gap_questions": [0-3 questions]}\n' +
-        "gap_questions: ONLY what you genuinely cannot infer, ordered by information value. " +
-        "Good candidates: the decision/goal that matters most in the next 6-12 months; hard " +
-        "exclusions; how they'd judge the brief useful after 4 weeks. NEVER ask the user to pick " +
-        "topics, sources, or watchlist entries — that is your job, not theirs. If the material " +
-        "already answers everything, return an empty gap_questions list."
+        ' "gap_questions": [0-2 questions]}\n' +
+        "gap_questions RULES — read carefully, this is where models go wrong:\n" +
+        "- Default to an EMPTY list. Only add a question if the answer would genuinely change what the " +
+        "brief tracks AND you cannot reasonably infer it from their material.\n" +
+        "- At most 2, ideally 0 or 1.\n" +
+        "- Every question MUST be specific to THIS person — reference their actual role, employer, a named " +
+        "project, or a real ambiguity in what they wrote. A stranger reading the question should be able " +
+        "to tell it was written for them.\n" +
+        "- NEVER ask generic template questions such as 'what decision matters most in the next 6-12 " +
+        "months', 'what would you like to exclude', or 'how will you judge success in 4 weeks'. These are " +
+        "banned.\n" +
+        "- NEVER ask about anything already stated in their material, and NEVER ask them to pick topics, " +
+        "sources or watchlist entries — that is your job.\n" +
+        "Example of a GOOD question (only as a style guide, do not reuse): 'You sit between HPE research " +
+        "and product — should the brief weight cutting-edge AI-networking research or commercial/market " +
+        "moves more heavily?'"
       ),
       usr(
         "MATERIAL:\n" + material +
@@ -305,7 +315,7 @@ const STAGES = {
       trajectory: clamp(out.trajectory, 400),
       goals: strList(out.goals, 6, 160),
       info_needs: strList(out.info_needs, 8, 160),
-      gap_questions: strList(out.gap_questions, 3, 200),
+      gap_questions: strList(out.gap_questions, 2, 200),
     };
   },
 
