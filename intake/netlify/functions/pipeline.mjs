@@ -411,8 +411,9 @@ const STAGES = {
     if (!packs.length) throw new Error("preview_fetch requires query_packs");
 
     const language = /^[a-z]{2}$/.test(String(body.language || "")) ? body.language : "en";
-    // Match the engine: short window, newest-first, so the preview leads with today's news.
-    const from = new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    // Match the engine: newest-first (recency prioritised), but a generous window
+    // as a safety net so niche topics/quiet days don't yield an empty preview.
+    const from = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
     const domains = strList(body.priority_sources, 20, 120)
       .filter((d) => d !== "arxiv.org")
       .join(",");

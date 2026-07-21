@@ -53,10 +53,12 @@ TEMPLATE_FILE = "email_template.html"
 # example.json is a committed reference profile; the scheduled run never emails it.
 REFERENCE_PROFILE = "example.json"
 
-# NewsAPI look-back window and article budget. Kept short and fetched
-# newest-first so each brief leads with today's news; the window still covers a
-# couple of days so weekends and NewsAPI's ~24h free-tier delay don't empty it.
-LOOKBACK_DAYS = 3
+# NewsAPI look-back window and article budget. RECENCY is handled by fetching
+# newest-first + the Curator preferring today's items; this window is only the
+# safety net for how far back we look when today is quiet (weekends, niche
+# topics, NewsAPI's ~24h free-tier delay), so it stays generous to avoid an
+# empty brief. Prioritising today != fetching only today.
+LOOKBACK_DAYS = 7
 MAX_ARTICLES = 40
 MAX_ARTICLES_TO_MODEL = 30
 
@@ -170,7 +172,7 @@ def build_query(profile):
     return query
 
 
-def _fetch_newsapi_query(profile, query, page_size):
+def _fetch_newsapi_query(profile, query, page_size, use_domains=True):
     """One NewsAPI call. Returns a (possibly empty) article list."""
     date_from = (datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)).strftime("%Y-%m-%d")
     params = {
@@ -183,8 +185,8 @@ def _fetch_newsapi_query(profile, query, page_size):
         "pageSize": page_size,
         "apiKey": NEWS_API_KEY,
     }
-    sources = [s.strip() for s in profile.get("priority_sources", []) if s.strip()]
-    if sources:
+    if use_domains:
+        sources = [s.strip() for s in profile.get("priority_sources", []) if s.strip()]
         # arxiv.org never serves NewsAPI results; keep it for the arxiv adapter only.
         newsapi_sources = [s for s in sources if s != "arxiv.org"]
         if newsapi_sources:
@@ -221,6 +223,18 @@ def fetch_newsapi(profile):
         got = _fetch_newsapi_query(profile, str(pack["q"])[:450], per_pack)
         print(f"   pack '{pack.get('name', '?')}': {len(got)} articles")
         articles.extend(got)
+
+    # An over-restrictive priority_sources list (or a quiet few days on those
+    # specific sites) must not produce an empty brief. If we found nothing within
+    # the preferred domains, retry across ALL sources.
+    has_domains = any(s.strip() and s.strip() != "arxiv.org"
+                      for s in profile.get("priority_sources", []))
+    if not articles and has_domains:
+        print(f"-> {profile['id']}: nothing within priority_sources; retrying across all sources")
+        for pack in packs[:8]:
+            got = _fetch_newsapi_query(profile, str(pack["q"])[:450], per_pack, use_domains=False)
+            print(f"   pack '{pack.get('name', '?')}' (all sources): {len(got)} articles")
+            articles.extend(got)
     return articles
 
 
