@@ -477,23 +477,30 @@
       } catch (err) {
         btn.disabled = false;
         btn.textContent = "Activate my daily brief";
-        notice(panel, "err",
-          "Couldn't save your profile just yet. Your details are below — copy them and send to the team, or try again.");
+        const d = err && err.body ? err.body : {};
+        const parts = ["Couldn't save your profile."];
+        if (d.error) parts.push(d.error + (d.status ? " (HTTP " + d.status + ")" : "") + ".");
+        if (Array.isArray(d.details) && d.details.length) parts.push(d.details.join("; ") + ".");
+        if (d.hint) parts.push(d.hint);
+        parts.push(d.cid ? "Ref: " + d.cid + "." : "");
+        parts.push("Your details are in the raw JSON below — copy them and send to the team, or fix and try again.");
+        notice(panel, "err", parts.filter(Boolean).join(" "));
       }
     }
 
-    // Phase 4 wires this to the save-profile function.
     async function saveProfile(profile) {
       const res = await fetch(SAVE_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
       });
+      const body = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const detail = await res.text().catch(() => "");
-        throw new Error("save failed: " + res.status + " " + detail);
+        const e = new Error("save failed: " + res.status);
+        e.body = body;
+        throw e;
       }
-      return res.json().catch(() => ({}));
+      return body;
     }
 
     // ---------- Wire up input ----------

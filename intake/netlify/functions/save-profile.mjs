@@ -21,25 +21,37 @@
 const GITHUB_API = "https://api.github.com";
 
 export default async (req) => {
-  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  // Correlation id: shown in the UI on failure and logged with every server-side
+  // error line, so a user report ("cid abc123") maps straight to the function log.
+  const cid = (globalThis.crypto?.randomUUID?.() || String(Math.random()).slice(2)).slice(0, 8);
+  const fail = (status, payload) => {
+    console.error(`[save-profile ${cid}]`, JSON.stringify(payload));
+    return json({ ...payload, cid }, status);
+  };
+
+  if (req.method !== "POST") return fail(405, { error: "Method not allowed" });
 
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO;
   const branch = process.env.GITHUB_BRANCH || "main";
   if (!token || !repo) {
-    return json({ error: "Server not configured (GITHUB_TOKEN / GITHUB_REPO)." }, 500);
+    return fail(500, {
+      error: "Server not configured",
+      detail: `missing env: ${[!token && "GITHUB_TOKEN", !repo && "GITHUB_REPO"].filter(Boolean).join(", ")}. ` +
+        "Set them in Netlify site env vars and REDEPLOY (env changes only apply to new deploys).",
+    });
   }
 
   let input;
   try {
     input = await req.json();
   } catch {
-    return json({ error: "Invalid JSON body" }, 400);
+    return fail(400, { error: "Invalid JSON body" });
   }
 
   const { profile, errors } = validateProfile(input);
   if (errors.length) {
-    return json({ error: "Profile validation failed", details: errors }, 422);
+    return fail(422, { error: "Profile validation failed", details: errors });
   }
 
   const path = `profiles/${profile.id}.json`;
@@ -63,10 +75,10 @@ export default async (req) => {
       sha = (await getResp.json()).sha;
     } else if (getResp.status !== 404) {
       const detail = (await getResp.text()).slice(0, 300);
-      return json({ error: "GitHub read failed", status: getResp.status, detail }, 502);
+      return fail(502, { error: "GitHub read failed", status: getResp.status, detail });
     }
 
-    const putResp = await fetch(`${GITHUB_API}/repos/${repo}/contents/${path}`, {
+    let putResp = await fetch(`${GITHUB_API}/repos/${repo}/contents/${path}`, {
       method: "PUT",
       headers,
       body: JSON.stringify({
@@ -77,21 +89,48 @@ export default async (req) => {
       }),
     });
 
+    // 409 = the file changed (or appeared) between our read and write; refetch
+    // the sha once and retry so a stale sha doesn't fail the whole intake.
+    if (putResp.status === 409) {
+      const re = await fetch(
+        `${GITHUB_API}/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,
+        { headers },
+      );
+      const freshSha = re.ok ? (await re.json()).sha : undefined;
+      putResp = await fetch(`${GITHUB_API}/repos/${repo}/contents/${path}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          message: `feat(profile): add ${profile.id}`,
+          content: contentB64,
+          branch,
+          ...(freshSha ? { sha: freshSha } : {}),
+        }),
+      });
+    }
+
     if (!putResp.ok) {
       const detail = (await putResp.text()).slice(0, 300);
-      return json({ error: "GitHub write failed", status: putResp.status, detail }, 502);
+      const hint =
+        putResp.status === 401 ? "Token rejected — is GITHUB_TOKEN valid and not expired?" :
+        putResp.status === 403 ? "Token lacks access — fine-grained PAT needs Contents: Read & Write on THIS repo." :
+        putResp.status === 404 ? `Repo or branch not found — is GITHUB_REPO '${repo}' and branch '${branch}' correct? (404 also means the token cannot see the repo.)` :
+        undefined;
+      return fail(502, { error: "GitHub write failed", status: putResp.status, detail, hint });
     }
 
     const data = await putResp.json();
+    console.log(`[save-profile ${cid}] committed ${path} (${sha ? "update" : "create"})`);
     return json({
       ok: true,
       id: profile.id,
       path,
       updated: Boolean(sha),
       commit: data?.commit?.html_url || null,
+      cid,
     });
   } catch (e) {
-    return json({ error: "Commit failed", detail: String(e) }, 502);
+    return fail(502, { error: "Commit failed", detail: String(e) });
   }
 };
 
