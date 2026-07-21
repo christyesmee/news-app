@@ -1,0 +1,14 @@
+{
+  "id": "example",
+  "active": true,
+  "name": "First Last",
+  "email": "recipient@example.com",
+  "send_hour_utc": 6,
+  "language": "en",
+  "role_context": "One or two sentences: their role, how long in it, what they are accountable for.",
+  "regions": ["Netherlands", "Benelux", "Europe"],
+  "topics": ["developer tools", "AI coding assistants", "enterprise software pricing"],
+  "watchlist": ["JetBrains", "GitHub Copilot", "Cursor", "Microsoft"],
+  "priority_sources": ["techcrunch.com", "theregister.com", "ft.com", "reuters.com"],
+  "exclude": ["crypto price speculation", "consumer gadget reviews"]
+}

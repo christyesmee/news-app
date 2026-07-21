@@ -1,2 +1,3 @@
 /API NewsAPI.org.txt
-/google apps password.txt
+/google apps password.txt__pycache__/
+*.pyc
