@@ -1,0 +1,59 @@
+name: Personalised Daily Brief
+
+# Runs at the top of every hour. Each run reads every profile in profiles/ and
+# emails only the ones whose send_hour_utc matches the current UTC hour. This is
+# how users self-configure their delivery time -- the schedule below never changes.
+#
+# Caveats to note (fine for a demo, flag for production):
+#   * GitHub's scheduled cron can be delayed several minutes under load, so a
+#     brief may arrive a little after the top of the hour.
+#   * GitHub disables scheduled workflows after 60 days of repo inactivity; a
+#     periodic commit (or a paid scheduler) keeps them alive in production.
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # top of every hour (UTC)
+
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'scheduled'
+        type: choice
+        options:
+          - scheduled     # default: only profiles whose send_hour_utc == current UTC hour
+          - force_all     # every active profile, ignore the hour gate
+          - only_example  # just the example profile, forced (smoke test)
+
+jobs:
+  send-briefs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send briefs
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: |
+          case "${{ github.event.inputs.mode }}" in
+            force_all)
+              python send_brief.py --force ;;
+            only_example)
+              python send_brief.py --only example --force ;;
+            *)
+              python send_brief.py ;;
+          esac
