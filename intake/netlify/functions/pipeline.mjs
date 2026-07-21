@@ -14,10 +14,15 @@
 //                                                exclude, language }
 //   stage=queries   topics+watchlist        -> { query_packs: [{name, q}] }
 //
+// Post-activation (the instant first brief shown on screen):
+//   stage=preview_fetch  query_packs/language/sources -> { articles: [...] }   [NewsAPI]
+//   stage=preview_write  articles + profile           -> { html }
+//
 // Every stage validates the model's JSON against its contract and fails
 // LOUDLY with the stage name and a correlation id — never a silent skip.
 //
-// Env: OPENAI_API_KEY (required), OPENAI_MODEL (optional, default gpt-4o-mini)
+// Env: OPENAI_API_KEY (required), OPENAI_MODEL (optional, default gpt-4o-mini),
+//      NEWS_API_KEY (required for preview_fetch only)
 
 const CHAT_URL = "https://api.openai.com/v1/chat/completions";
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
@@ -256,6 +261,103 @@ const STAGES = {
       .slice(0, 8);
     if (!packs.length) throw new Error("contract violation: query_packs empty");
     return { query_packs: packs };
+  },
+
+  // 6. PREVIEW FETCH — NewsAPI pull for the instant on-screen first brief.
+  //    The full engine (curator/critic/arXiv) still emails the real one.
+  async preview_fetch(body) {
+    const newsKey = process.env.NEWS_API_KEY;
+    if (!newsKey) throw new Error("NEWS_API_KEY is not configured on the server");
+
+    const packs = asList(body.query_packs)
+      .map((p) => clamp(p?.q, 450))
+      .filter(Boolean)
+      .slice(0, 2);
+    if (!packs.length) throw new Error("preview_fetch requires query_packs");
+
+    const language = /^[a-z]{2}$/.test(String(body.language || "")) ? body.language : "en";
+    const from = new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    const domains = strList(body.priority_sources, 20, 120)
+      .filter((d) => d !== "arxiv.org")
+      .join(",");
+
+    const seen = new Set();
+    const articles = [];
+    for (const q of packs) {
+      const params = new URLSearchParams({
+        q,
+        from,
+        sortBy: "relevance",
+        language,
+        pageSize: "12",
+        apiKey: newsKey,
+      });
+      if (domains) params.set("domains", domains);
+      const resp = await fetch("https://newsapi.org/v2/everything?" + params);
+      if (!resp.ok) throw new Error(`NewsAPI ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
+      const data = await resp.json();
+      if (data.status !== "ok") throw new Error(`NewsAPI: ${data.code} ${data.message}`.slice(0, 200));
+      for (const a of data.articles || []) {
+        const url = String(a.url || "").replace(/\/+$/, "");
+        if (!url || seen.has(url)) continue;
+        seen.add(url);
+        articles.push({
+          title: clamp(a.title, 200),
+          source: clamp(a.source?.name, 60),
+          url,
+          desc: clamp(a.description, 300),
+        });
+      }
+    }
+    return { articles: articles.slice(0, 18) };
+  },
+
+  // 7. PREVIEW WRITE — compact brief rendered on screen right after activation.
+  async preview_write(body, apiKey) {
+    const articles = asList(body.articles).slice(0, 18);
+    if (!articles.length) throw new Error("preview_write requires articles");
+    const p = body.profile || {};
+
+    const resp = await fetch(CHAT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: MODEL,
+        temperature: 0.4,
+        max_tokens: 1200,
+        messages: [
+          sys(
+            "You write a compact personalised news brief as an HTML FRAGMENT (no <html>/<head>/" +
+            "<body>, no markdown fences). Structure: <p><strong>Bottom line:</strong> 2 sentences" +
+            "</p> then 3-4 story blocks: <div class='section'><div class='news-title'>HEADLINE" +
+            "</div><p><strong>What happened:</strong> ... <a href='URL'>[1]</a></p><p><strong>Why " +
+            "it matters for you:</strong> ...</p></div>. Pick ONLY items relevant to the reader; " +
+            "honour their exclusions; cite every claim with the article's real URL. Write in the " +
+            "reader's language."
+          ),
+          usr(
+            "READER:\n" + JSON.stringify({
+              name: clamp(p.name, 120),
+              role_context: clamp(p.role_context, 600),
+              goals: strList(p.goals, 6, 160),
+              topics: strList(p.topics, 15, 80),
+              watchlist: strList(p.watchlist, 40, 80),
+              exclude: strList(p.exclude, 30, 120),
+              language: /^[a-z]{2}(-[a-z]{2})?$/.test(String(p.language || "")) ? p.language : "en",
+            }) +
+            "\n\nARTICLES:\n" + JSON.stringify(articles)
+          ),
+        ],
+      }),
+    });
+    if (!resp.ok) throw new Error(`OpenAI ${resp.status}: ${(await resp.text()).slice(0, 300)}`);
+    const data = await resp.json();
+    let html = data?.choices?.[0]?.message?.content ?? "";
+    html = html.replace(/```html/gi, "").replace(/```/g, "").trim();
+    // Defence in depth before the client injects it into the page.
+    html = html.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/\son\w+\s*=\s*(['"]).*?\1/gi, "");
+    if (html.length < 40) throw new Error("contract violation: empty preview html");
+    return { html };
   },
 };
 

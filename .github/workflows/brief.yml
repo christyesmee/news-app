@@ -1,8 +1,13 @@
 name: Personalised Daily Brief
 
-# Runs at the top of every hour. Each run reads every profile in profiles/ and
-# emails only the ones whose send_hour_utc matches the current UTC hour. This is
-# how users self-configure their delivery time -- the schedule below never changes.
+# Two triggers:
+#   * hourly cron -- each run reads every profile in profiles/ and emails only
+#     the ones whose send_hour_utc matches the current UTC hour. This is how
+#     users self-configure their delivery time; the schedule never changes.
+#   * push touching profiles/*.json -- the intake app commits a profile the
+#     moment a user activates (and the tune page when they save changes), so
+#     this push-trigger delivers their first / updated brief within minutes
+#     instead of making them wait for their scheduled hour.
 #
 # Caveats to note (fine for a demo, flag for production):
 #   * GitHub's scheduled cron can be delayed several minutes under load, so a
@@ -13,6 +18,11 @@ name: Personalised Daily Brief
 on:
   schedule:
     - cron: '0 * * * *'   # top of every hour (UTC)
+
+  push:
+    branches: [main]
+    paths:
+      - 'profiles/*.json'
 
   workflow_dispatch:
     inputs:
@@ -42,7 +52,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Send briefs
+      - name: Send briefs (scheduled / manual)
+        if: github.event_name != 'push'
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -64,3 +75,39 @@ jobs:
             *)
               python send_brief.py ;;
           esac
+
+      - name: Send first brief for changed profiles
+        if: github.event_name == 'push'
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          PROFILE_LINK_SECRET: ${{ secrets.PROFILE_LINK_SECRET }}
+          TUNE_BASE_URL: ${{ secrets.TUNE_BASE_URL }}
+        run: |
+          CHANGED=$(python - <<'EOF'
+          import json, os
+          event = json.load(open(os.environ["GITHUB_EVENT_PATH"]))
+          commits = event.get("commits") or []
+          if not commits and event.get("head_commit"):
+              commits = [event["head_commit"]]
+          files = set()
+          for c in commits:
+              for key in ("added", "modified"):
+                  for f in c.get(key) or []:
+                      if f.startswith("profiles/") and f.endswith(".json"):
+                          files.add(f)
+          ids = sorted(f.split("/")[-1][:-5] for f in files)
+          print(" ".join(i for i in ids if i != "example"))
+          EOF
+          )
+          if [ -z "$CHANGED" ]; then
+            echo "No user profiles changed in this push; nothing to send."
+            exit 0
+          fi
+          for id in $CHANGED; do
+            echo "=== First/updated brief for '$id' ==="
+            python send_brief.py --only "$id" --force
+          done

@@ -43,6 +43,11 @@ intake/
    time, timezone and format (Punchy / Standard / Deep) are UI controls here,
    not chat questions. Activation commits `profiles/<id>.json` via
    `save-profile` (correlation-id diagnostics on failure).
+5. **Instant first brief.** Right after activation the page renders a compact
+   first brief on screen (`preview_fetch` + `preview_write`) and states the
+   daily email schedule. In parallel, the profile commit push-triggers the
+   GitHub Action, which emails the full first brief (curator + critic + arXiv)
+   within a few minutes — nobody waits for their scheduled hour.
 
 ## Deploy on Netlify
 
@@ -50,6 +55,7 @@ intake/
 2. Environment variables (Site configuration → Environment variables), then
    **redeploy — env changes only apply to new deploys**:
    - `OPENAI_API_KEY` — pipeline (intake-time agents + web search).
+   - `NEWS_API_KEY` — the instant on-screen first brief (`preview_fetch`).
    - `GITHUB_TOKEN` — fine-grained PAT, **Contents: Read & Write** on this repo only.
    - `GITHUB_REPO` — e.g. `christyesmee/news-app`.
    - `GITHUB_BRANCH` — `main`.

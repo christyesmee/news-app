@@ -25,7 +25,10 @@ Two halves that meet at one file per user: `profiles/<id>.json`.
    [`.github/workflows/brief.yml`](.github/workflows/brief.yml). Each run reads
    every profile and emails only the ones whose `send_hour_utc` matches the
    current UTC hour. That gate is how users self-configure delivery time without
-   ever touching cron. Runs the NewsAPI + OpenAI + Gmail-SMTP pipeline.
+   ever touching cron. Runs the NewsAPI + OpenAI + Gmail-SMTP pipeline. The
+   workflow also fires on any push touching `profiles/*.json`, so a freshly
+   activated (or freshly tuned) profile gets its first/updated brief emailed
+   within minutes instead of waiting for its scheduled hour.
 
 2. **Intake chatbot** — [`intake/`](intake/), a Netlify-hosted web app. A
    serverless function talks to the **OpenAI API**, holds a ~7-question
@@ -55,7 +58,8 @@ that person's role, honouring `exclude`). Brief generation runs on a small model
 | GitHub Actions  | `OPENAI_API_KEY`               | brief generation (small GPT model)                  |
 | GitHub Actions  | `OPENAI_MODEL`                 | *(optional)* override model (default `gpt-4o-mini`) |
 | GitHub Actions  | `EMAIL_USER` / `EMAIL_PASSWORD`| Gmail SMTP (app password)                           |
-| Netlify         | `OPENAI_API_KEY`               | intake chatbot                                      |
+| Netlify         | `OPENAI_API_KEY`               | intake pipeline + on-screen first brief             |
+| Netlify         | `NEWS_API_KEY`                 | on-screen first brief (same key as the Action's)    |
 | Netlify         | `GITHUB_TOKEN`                 | fine-grained PAT (Contents:R/W on this repo) to commit profiles |
 | Netlify         | `GITHUB_REPO` / `GITHUB_BRANCH`| target repo (`owner/news-app`) and branch (`main`)  |
 | Both            | `PROFILE_LINK_SECRET`          | *(optional)* signs "Tune my brief" links — set the SAME value in Netlify and GitHub Actions |
