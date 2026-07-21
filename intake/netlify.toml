@@ -1,0 +1,24 @@
+# Netlify config for the intake app.
+#
+# Deploy note: set this site's "Base directory" to `intake` in the Netlify UI
+# (Site configuration -> Build & deploy). All paths below are relative to that
+# base, so the published site is intake/ and the functions live in
+# intake/netlify/functions/.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Friendly path: /api/chat -> the chat function; /api/save-profile -> the saver.
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/save-profile"
+  to = "/.netlify/functions/save-profile"
+  status = 200

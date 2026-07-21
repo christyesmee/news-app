@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build your Daily Brief</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --ink: #16181d;
+      --muted: #6b7280;
+      --accent: #00b8d4;
+      --accent-ink: #003844;
+      --bot: #eef1f4;
+      --me: #00b8d4;
+      --me-ink: #04252b;
+      --line: #e5e7eb;
+      --err: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+    }
+    .app {
+      width: 100%;
+      max-width: 560px;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+    }
+    header {
+      padding: 16px 18px;
+      background: #111418;
+      color: #fff;
+      border-bottom: 3px solid var(--accent);
+      flex: 0 0 auto;
+    }
+    header h1 { margin: 0; font-size: 17px; letter-spacing: .3px; }
+    header p { margin: 3px 0 0; font-size: 12px; opacity: .7; }
+
+    #log {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 10px 13px;
+      border-radius: 15px;
+      font-size: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .msg.bot { background: var(--bot); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.me { background: var(--me); color: var(--me-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg.sys { background: transparent; color: var(--muted); font-size: 12.5px; align-self: center; text-align: center; }
+    .typing { font-style: italic; color: var(--muted); }
+
+    form#composer {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+    #composer input {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 11px 15px;
+      font-size: 15px;
+      outline: none;
+    }
+    #composer input:focus { border-color: var(--accent); }
+    button {
+      border: none;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 700;
+      border-radius: 22px;
+      padding: 0 18px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: default; }
+
+    /* Review / confirmation panel */
+    .review {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1 1 auto;
+    }
+    .review h2 { font-size: 17px; margin: 0 0 4px; }
+    .review .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 5px; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 11px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    .field textarea { min-height: 54px; resize: vertical; }
+    .field .hint { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+    .formats { display: flex; flex-direction: column; gap: 7px; }
+    .formats label {
+      display: flex; gap: 9px; align-items: flex-start;
+      border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px;
+      font-size: 14px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink);
+      cursor: pointer;
+    }
+    .formats label span { color: var(--muted); font-size: 12.5px; }
+    .primary { width: 100%; padding: 13px; margin-top: 6px; }
+    .notice { font-size: 13px; padding: 10px 12px; border-radius: 9px; margin-bottom: 14px; }
+    .notice.ok { background: #e7f8ee; color: #065f46; }
+    .notice.err { background: #fdecea; color: var(--err); }
+    details.raw { margin-top: 16px; }
+    details.raw summary { font-size: 12.5px; color: var(--muted); cursor: pointer; }
+    pre { background: #0f1216; color: #d7e0ea; padding: 12px; border-radius: 9px; overflow-x: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>⚡ Build your Daily Brief</h1>
+      <p>A few quick questions and you're set.</p>
+    </header>
+
+    <div id="log" aria-live="polite"></div>
+
+    <form id="composer" autocomplete="off">
+      <input id="input" type="text" placeholder="Type your answer…" autofocus />
+      <button id="send" type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const CHAT_ENDPOINT = "/api/chat";
+    const SAVE_ENDPOINT = "/api/save-profile";
+
+    const logEl = document.getElementById("log");
+    const form = document.getElementById("composer");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("send");
+
+    // Full transcript sent to the model each turn (user + assistant only).
+    const history = [];
+    let fallbackMode = false;
+    let fallbackStep = 0;
+    const fallbackAnswers = {};
+
+    // ---- Fallback questionnaire (used only if the OpenAI proxy errors) ----
+    const FALLBACK_QUESTIONS = [
+      { key: "name",             q: "What's your name?" },
+      { key: "email",            q: "What email address should your brief go to?" },
+      { key: "role_context",     q: "In a sentence or two: your role, how long you've been in it, and what you're accountable for over the next 12 months." },
+      { key: "topics",           q: "Which topics or themes should the brief track? (comma-separated)", list: true },
+      { key: "watchlist",        q: "Any specific companies, products or people to watch closely? (comma-separated, or 'none')", list: true },
+      { key: "regions",          q: "Which regions matter to you? (comma-separated)", list: true },
+      { key: "priority_sources", q: "Any preferred sources? Bare domains like ft.com, reuters.com (comma-separated, or 'none')", list: true },
+      { key: "exclude",          q: "Anything you never want to see? (comma-separated, or 'none')", list: true },
+      { key: "language",         q: "Which language should it be written in? A 2-letter code like en or nl." },
+    ];
+
+    // ---------- UI helpers ----------
+    function addMsg(text, who) {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      div.textContent = text;
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+      return div;
+    }
+
+    function setBusy(busy) {
+      input.disabled = busy;
+      sendBtn.disabled = busy;
+      if (!busy) input.focus();
+    }
+
+    // ---------- Profile extraction ----------
+    // Defensive: strip code fences, then extract the first {...} block and parse.
+    function extractProfile(text) {
+      if (!text) return null;
+      let candidate = null;
+      const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      if (fence) candidate = fence[1].trim();
+      if (!candidate) {
+        const start = text.indexOf("{");
+        const end = text.lastIndexOf("}");
+        if (start !== -1 && end > start) candidate = text.slice(start, end + 1);
+      }
+      if (!candidate) return null;
+      try {
+        const obj = JSON.parse(candidate);
+        // Only treat it as a profile if it looks like one.
+        if (obj && typeof obj === "object" && ("topics" in obj || "send_hour_utc" in obj)) {
+          return obj;
+        }
+      } catch (_) { /* not valid JSON — treat as a normal message */ }
+      return null;
+    }
+
+    // ---------- Time helpers (DST-correct at creation time) ----------
+    function localHourToUtc(localHour) {
+      const d = new Date();
+      d.setHours(Number(localHour), 0, 0, 0);
+      return d.getUTCHours();
+    }
+    function utcHourToLocal(utcHour) {
+      const d = new Date();
+      d.setUTCHours(Number(utcHour), 0, 0, 0);
+      return d.getHours();
+    }
+    function tzLabel() {
+      try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "local time"; }
+      catch (_) { return "local time"; }
+    }
+
+    function slugify(name) {
+      const s = (name || "").toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "")
+        .trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-");
+      return s || ("user-" + Math.random().toString(36).slice(2, 8));
+    }
+    function toList(v) {
+      if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
+      return String(v || "").split(",").map((x) => x.trim())
+        .filter((x) => x && x.toLowerCase() !== "none");
+    }
+
+    // ---------- Chat flow ----------
+    async function callChat() {
+      const res = await fetch(CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history }),
+      });
+      if (!res.ok) throw new Error("chat failed: " + res.status);
+      const data = await res.json();
+      if (!data.reply) throw new Error("empty reply");
+      return data.reply;
+    }
+
+    async function botTurn() {
+      const typing = addMsg("…", "bot");
+      typing.classList.add("typing");
+      setBusy(true);
+      try {
+        const reply = await callChat();
+        typing.remove();
+        const profile = extractProfile(reply);
+        if (profile) {
+          history.push({ role: "assistant", content: reply });
+          showReview(profile);
+        } else {
+          addMsg(reply, "bot");
+          history.push({ role: "assistant", content: reply });
+          setBusy(false);
+        }
+      } catch (err) {
+        typing.remove();
+        startFallback();
+      }
+    }
+
+    // ---------- Fallback flow ----------
+    function startFallback() {
+      if (fallbackMode) { askFallback(); return; }
+      fallbackMode = true;
+      addMsg("(Our assistant is unavailable right now — I'll just walk you through it directly.)", "sys");
+      askFallback();
+    }
+    function askFallback() {
+      if (fallbackStep >= FALLBACK_QUESTIONS.length) { finishFallback(); return; }
+      addMsg(FALLBACK_QUESTIONS[fallbackStep].q, "bot");
+      setBusy(false);
+    }
+    function recordFallback(answer) {
+      const step = FALLBACK_QUESTIONS[fallbackStep];
+      fallbackAnswers[step.key] = step.list ? toList(answer) : answer.trim();
+      fallbackStep++;
+      askFallback();
+    }
+    function finishFallback() {
+      const a = fallbackAnswers;
+      const profile = {
+        id: slugify(a.name),
+        active: true,
+        name: a.name || "",
+        email: a.email || "",
+        send_hour_utc: 6,
+        language: (a.language || "en").trim().slice(0, 5) || "en",
+        role_context: a.role_context || "",
+        regions: a.regions || [],
+        topics: a.topics || [],
+        watchlist: a.watchlist || [],
+        priority_sources: a.priority_sources || [],
+        exclude: a.exclude || [],
+      };
+      showReview(profile);
+    }
+
+    // ---------- Review / confirmation ----------
+    function showReview(profile) {
+      const app = document.querySelector(".app");
+      form.remove();
+      logEl.remove();
+
+      const localDefault = utcHourToLocal(
+        Number.isInteger(profile.send_hour_utc) ? profile.send_hour_utc : 6
+      );
+
+      const panel = document.createElement("div");
+      panel.className = "review";
+      panel.innerHTML = `
+        <h2>Here's your brief profile</h2>
+        <p class="sub">Check it over, pick a delivery time and format, then activate.</p>
+        <div id="notice"></div>
+
+        <div class="field">
+          <label>Name</label>
+          <input id="f-name" type="text" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input id="f-email" type="email" />
+        </div>
+        <div class="field">
+          <label>Deliver at (${tzLabel()})</label>
+          <select id="f-hour"></select>
+          <div class="hint">Stored in UTC so it lands at your local time.</div>
+        </div>
+        <div class="field">
+          <label>Language</label>
+          <input id="f-language" type="text" maxlength="5" />
+        </div>
+        <div class="field">
+          <label>Role &amp; accountabilities</label>
+          <textarea id="f-role"></textarea>
+        </div>
+        <div class="field">
+          <label>Topics to track</label>
+          <textarea id="f-topics"></textarea>
+          <div class="hint">Comma-separated.</div>
+        </div>
+        <div class="field">
+          <label>Watchlist</label>
+          <textarea id="f-watchlist"></textarea>
+          <div class="hint">Companies, products, people. Comma-separated.</div>
+        </div>
+        <div class="field">
+          <label>Regions</label>
+          <textarea id="f-regions"></textarea>
+          <div class="hint">Comma-separated.</div>
+        </div>
+        <div class="field">
+          <label>Priority sources</label>
+          <textarea id="f-sources"></textarea>
+          <div class="hint">Bare domains, comma-separated.</div>
+        </div>
+        <div class="field">
+          <label>Exclude</label>
+          <textarea id="f-exclude"></textarea>
+          <div class="hint">Comma-separated.</div>
+        </div>
+        <div class="field">
+          <label>Format</label>
+          <div class="formats">
+            <label><input type="radio" name="fmt" value="concise" /> <div>Punchy <span>— ~4 items, minimal context</span></div></label>
+            <label><input type="radio" name="fmt" value="standard" checked /> <div>Standard <span>— 5–6 items with the “why it matters”</span></div></label>
+            <label><input type="radio" name="fmt" value="deep" /> <div>Deep <span>— 6+ items, more background</span></div></label>
+          </div>
+        </div>
+
+        <button class="primary" id="confirm" type="button">Activate my daily brief</button>
+
+        <details class="raw"><summary>View raw profile JSON</summary><pre id="raw"></pre></details>
+      `;
+      app.appendChild(panel);
+
+      // Populate fields.
+      const hourSel = panel.querySelector("#f-hour");
+      for (let h = 0; h < 24; h++) {
+        const opt = document.createElement("option");
+        opt.value = String(h);
+        opt.textContent = String(h).padStart(2, "0") + ":00";
+        if (h === localDefault) opt.selected = true;
+        hourSel.appendChild(opt);
+      }
+      panel.querySelector("#f-name").value = profile.name || "";
+      panel.querySelector("#f-email").value = profile.email || "";
+      panel.querySelector("#f-language").value = profile.language || "en";
+      panel.querySelector("#f-role").value = profile.role_context || "";
+      panel.querySelector("#f-topics").value = (profile.topics || []).join(", ");
+      panel.querySelector("#f-watchlist").value = (profile.watchlist || []).join(", ");
+      panel.querySelector("#f-regions").value = (profile.regions || []).join(", ");
+      panel.querySelector("#f-sources").value = (profile.priority_sources || []).join(", ");
+      panel.querySelector("#f-exclude").value = (profile.exclude || []).join(", ");
+
+      const rawEl = panel.querySelector("#raw");
+      const refreshRaw = () => { rawEl.textContent = JSON.stringify(buildProfile(panel, profile), null, 2); };
+      refreshRaw();
+      panel.querySelectorAll("input, select, textarea").forEach((el) =>
+        el.addEventListener("input", refreshRaw));
+
+      panel.querySelector("#confirm").addEventListener("click", () => onConfirm(panel, profile));
+    }
+
+    function buildProfile(panel, original) {
+      const fmt = (panel.querySelector('input[name="fmt"]:checked') || {}).value || "standard";
+      const depthNote = {
+        concise: " Prefers a punchy brief of about 4 items with minimal context.",
+        standard: "",
+        deep: " Prefers a deeper brief of 6+ items with more background.",
+      }[fmt];
+
+      let role = (panel.querySelector("#f-role").value || "").trim();
+      if (depthNote && !role.includes(depthNote.trim())) role = (role + depthNote).trim();
+
+      const name = panel.querySelector("#f-name").value.trim();
+      return {
+        id: original.id && original.id !== "example" ? original.id : slugify(name),
+        active: true,
+        name: name,
+        email: panel.querySelector("#f-email").value.trim(),
+        send_hour_utc: localHourToUtc(panel.querySelector("#f-hour").value),
+        language: (panel.querySelector("#f-language").value.trim() || "en").slice(0, 5),
+        role_context: role,
+        regions: toList(panel.querySelector("#f-regions").value),
+        topics: toList(panel.querySelector("#f-topics").value),
+        watchlist: toList(panel.querySelector("#f-watchlist").value),
+        priority_sources: toList(panel.querySelector("#f-sources").value),
+        exclude: toList(panel.querySelector("#f-exclude").value),
+      };
+    }
+
+    function notice(panel, kind, text) {
+      panel.querySelector("#notice").innerHTML =
+        `<div class="notice ${kind}">${text}</div>`;
+    }
+
+    async function onConfirm(panel, original) {
+      const profile = buildProfile(panel, original);
+      if (!profile.name) { notice(panel, "err", "Please add your name."); return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(profile.email)) {
+        notice(panel, "err", "That email doesn't look right — please check it."); return;
+      }
+      if (profile.topics.length === 0) {
+        notice(panel, "err", "Add at least one topic to track."); return;
+      }
+
+      const btn = panel.querySelector("#confirm");
+      btn.disabled = true;
+      btn.textContent = "Activating…";
+      try {
+        await saveProfile(profile);
+        notice(panel, "ok",
+          `You're all set. Your first brief will arrive around ${panel.querySelector("#f-hour").selectedOptions[0].textContent} ${tzLabel()}.`);
+        btn.textContent = "✓ Activated";
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = "Activate my daily brief";
+        notice(panel, "err",
+          "Couldn't save your profile just yet. Your details are below — copy them and send to the team, or try again.");
+      }
+    }
+
+    // Phase 4 wires this to the save-profile function.
+    async function saveProfile(profile) {
+      const res = await fetch(SAVE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+      });
+      if (!res.ok) {
+        const detail = await res.text().catch(() => "");
+        throw new Error("save failed: " + res.status + " " + detail);
+      }
+      return res.json().catch(() => ({}));
+    }
+
+    // ---------- Wire up input ----------
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addMsg(text, "me");
+      input.value = "";
+      if (fallbackMode) {
+        recordFallback(text);
+      } else {
+        history.push({ role: "user", content: text });
+        botTurn();
+      }
+    });
+
+    // ---------- Kickoff ----------
+    // Seed the very first assistant question.
+    history.push({ role: "user", content: "Hi, I'd like to set up my daily brief." });
+    botTurn();
+  })();
+  </script>
+</body>
+</html>
