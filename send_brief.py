@@ -42,6 +42,12 @@ OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
+# Tune-my-brief loop: when both are set, every email footer gets a signed
+# "Tune my brief" link (HMAC of the profile id -- no passwords). TUNE_BASE_URL
+# is the deployed intake site, e.g. https://newsappig.netlify.app
+PROFILE_LINK_SECRET = os.getenv("PROFILE_LINK_SECRET")
+TUNE_BASE_URL = (os.getenv("TUNE_BASE_URL") or "").rstrip("/")
+
 PROFILES_DIR = "profiles"
 TEMPLATE_FILE = "email_template.html"
 # example.json is a committed reference profile; the scheduled run never emails it.
@@ -322,6 +328,9 @@ def curate(profile, articles):
         "topics": profile.get("topics", []),
         "watchlist": profile.get("watchlist", []),
         "exclude": profile.get("exclude", []),
+        # The tuning loop: recent reader notes shift what scores well.
+        "recent_reader_feedback": [f.get("note", "") for f in profile.get("feedback_log", [])
+                                   if isinstance(f, dict) and f.get("note")][-3:],
     }
 
     try:
@@ -531,12 +540,30 @@ def _clean_html(raw_html):
     return text.strip()
 
 
+def tune_link(profile):
+    """Signed tune-my-brief URL for this profile, or '' when not configured."""
+    if not (PROFILE_LINK_SECRET and TUNE_BASE_URL):
+        return ""
+    import hmac
+    import hashlib
+    token = hmac.new(PROFILE_LINK_SECRET.encode(), profile["id"].encode(),
+                     hashlib.sha256).hexdigest()[:32]
+    return f"{TUNE_BASE_URL}/?tune={profile['id']}&token={token}"
+
+
 def send_email(profile, html_content):
     try:
         with open(TEMPLATE_FILE, encoding="utf-8") as f:
             template = f.read()
     except FileNotFoundError:
         template = "<html><body>{{DATE}}{{CONTENT}}</body></html>"
+
+    link = tune_link(profile)
+    if link:
+        html_content += (
+            f"<p style='text-align:center;margin-top:28px'>"
+            f"<a href='{link}'>Tune my brief →</a></p>"
+        )
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
     name = (profile.get("name") or "").strip()
@@ -549,6 +576,8 @@ def send_email(profile, html_content):
     greeting = f"Good morning{', ' + name if name else ''}. Here is your daily brief for " \
                f"{datetime.now(timezone.utc).strftime('%A, %B %d')}.\n\n"
     plain_text = greeting + _clean_html(html_content)
+    if link:
+        plain_text += f"\n\nTune my brief: {link}"
 
     msg = MIMEMultipart("alternative")
     msg["From"] = EMAIL_USER

@@ -50,6 +50,11 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           # Optional: override the model (defaults to gpt-4o-mini)
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          # Optional: enable the signed "Tune my brief" footer link.
+          # PROFILE_LINK_SECRET must match the Netlify env var of the same name;
+          # TUNE_BASE_URL is the deployed intake site URL.
+          PROFILE_LINK_SECRET: ${{ secrets.PROFILE_LINK_SECRET }}
+          TUNE_BASE_URL: ${{ secrets.TUNE_BASE_URL }}
         run: |
           case "${{ github.event.inputs.mode }}" in
             force_all)

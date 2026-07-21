@@ -58,9 +58,22 @@ that person's role, honouring `exclude`). Brief generation runs on a small model
 | Netlify         | `OPENAI_API_KEY`               | intake chatbot                                      |
 | Netlify         | `GITHUB_TOKEN`                 | fine-grained PAT (Contents:R/W on this repo) to commit profiles |
 | Netlify         | `GITHUB_REPO` / `GITHUB_BRANCH`| target repo (`owner/news-app`) and branch (`main`)  |
+| Both            | `PROFILE_LINK_SECRET`          | *(optional)* signs "Tune my brief" links — set the SAME value in Netlify and GitHub Actions |
+| GitHub Actions  | `TUNE_BASE_URL`                | *(optional)* the deployed intake URL, e.g. `https://newsappig.netlify.app` |
 
 `RECIPIENT_EMAIL` from the old setup is no longer used — each profile carries its
 own `email`.
+
+## Tuning loop ("what if the user is not content?")
+
+When `PROFILE_LINK_SECRET` + `TUNE_BASE_URL` are set, every brief's footer gets
+a **"Tune my brief →"** link — the intake page in tune mode, authenticated by a
+signed token in the URL (HMAC of the profile id; no passwords). The user sees
+their current profile pre-filled, edits anything, and can leave a free-text
+note ("more X / less Y / too long"). Saving commits the updated profile; notes
+append to `feedback_log`, and the writer + curator honour the last 3 notes on
+every subsequent run. Reply-by-email parsing is deliberately out of scope for
+v2 (needs inbox polling); the footer link covers the need.
 
 ## Caveats (fine for a demo, address before charging money)
 

@@ -54,6 +54,19 @@ export default async (req) => {
     return fail(422, { error: "Profile validation failed", details: errors });
   }
 
+  // Tune-mode saves carry the signed token from the email link; verify it when
+  // present. (The token authenticates the tune flow -- it is never stored.)
+  const secret = process.env.PROFILE_LINK_SECRET;
+  if (input.tune_token != null && secret) {
+    const { createHmac, timingSafeEqual } = await import("node:crypto");
+    const expected = createHmac("sha256", secret).update(profile.id).digest("hex").slice(0, 32);
+    const a = Buffer.from(String(input.tune_token));
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
+      return fail(403, { error: "Invalid tune link token" });
+    }
+  }
+
   const path = `profiles/${profile.id}.json`;
   const contentB64 = Buffer.from(JSON.stringify(profile, null, 2) + "\n", "utf8").toString("base64");
   const headers = {

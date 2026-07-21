@@ -22,3 +22,8 @@
   from = "/api/save-profile"
   to = "/.netlify/functions/save-profile"
   status = 200
+
+[[redirects]]
+  from = "/api/get-profile"
+  to = "/.netlify/functions/get-profile"
+  status = 200

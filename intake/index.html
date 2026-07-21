@@ -274,6 +274,11 @@
         <input id="f-language" type="text" maxlength="5" />
         <div class="hint">2-letter code, e.g. en, nl.</div>
       </div>
+      <div class="field" id="feedback-field" style="display:none">
+        <label>Tune it: what should change?</label>
+        <textarea id="f-feedback" placeholder="e.g. more on standards bodies, less funding news, shorter items"></textarea>
+        <div class="hint">Free text — your next briefs honour the last 3 notes.</div>
+      </div>
       <div class="field">
         <label>Format</label>
         <div class="formats">
@@ -306,6 +311,8 @@
       material: "", name: "", email: "", company: "",
       entityPool: [], research: "", profiler: null, answers: [], tracking: null,
       queryPacks: [], usedResearch: false, warnings: [],
+      // tune mode (opened from the signed link in an email footer)
+      tune: null, tuneToken: "", packBasis: "",
     };
 
     function show(id) {
@@ -546,12 +553,20 @@
 
     // ---------- B4: review ----------
     function showReview() {
-      const t = state.tracking || poolToTracking(state.entityPool);
-      const p = state.profiler || {};
-      $("r-src").textContent = state.usedResearch ? " + public web research" : "";
+      const tune = state.tune;
+      const t = tune || state.tracking || poolToTracking(state.entityPool);
+      const p = tune || state.profiler || {};
+      $("r-src").textContent = tune ? "" : (state.usedResearch ? " + public web research" : "");
+      if (tune) {
+        document.querySelector("#s-review h2").textContent = "Tune your brief";
+        document.querySelector("#s-review .sub").textContent =
+          "This is your current profile. Change anything, leave a note below, and save.";
+        $("feedback-field").style.display = "";
+        $("confirm").textContent = "Save my brief settings";
+      }
 
-      $("f-name").value = state.name;
-      $("f-email").value = state.email;
+      $("f-name").value = tune ? (tune.name || "") : state.name;
+      $("f-email").value = tune ? (tune.email || "") : state.email;
       $("f-role").value = p.role_context || "";
       $("f-trajectory").value = p.trajectory || "";
       $("f-goals").value = (p.goals || []).join("\n");
@@ -562,25 +577,35 @@
       $("f-arxiv").value = (t.arxiv_categories || []).join(", ");
       $("f-exclude").value = (t.exclude || []).join(", ");
       $("f-language").value = t.language || "en";
+      state.packBasis = ($("f-topics").value + "|" + $("f-watchlist").value).toLowerCase();
 
+      const tz = (tune && tune.timezone) || browserTz();
+      let selHour = 7;
+      if (tune && Number.isInteger(tune.send_hour_utc)) {
+        const d = new Date();
+        d.setUTCHours(tune.send_hour_utc, 0, 0, 0);
+        selHour = hourInTz(tz, d);
+      }
       const hourSel = $("f-hour");
       hourSel.innerHTML = "";
       for (let h = 0; h < 24; h++) {
         const o = document.createElement("option");
         o.value = String(h);
         o.textContent = String(h).padStart(2, "0") + ":00";
-        if (h === 7) o.selected = true;
+        if (h === selHour) o.selected = true;
         hourSel.appendChild(o);
       }
       const tzSel = $("f-tz");
       tzSel.innerHTML = "";
-      const mine = browserTz();
       for (const z of tzList()) {
         const o = document.createElement("option");
         o.value = z; o.textContent = z;
-        if (z === mine) o.selected = true;
+        if (z === tz) o.selected = true;
         tzSel.appendChild(o);
       }
+      const fmt = (tune && tune.format) || "standard";
+      const fmtRadio = document.querySelector('input[name="fmt"][value="' + fmt + '"]');
+      if (fmtRadio) fmtRadio.checked = true;
 
       if (state.warnings.length) {
         notice($("notice"), "warn",
@@ -598,8 +623,13 @@
       const tz = $("f-tz").value || "UTC";
       const localHour = Number($("f-hour").value || 7);
       const fmt = (document.querySelector('input[name="fmt"]:checked') || {}).value || "standard";
+      // Tune mode keeps the original id (renaming must never fork a second
+      // profile) and carries the feedback log forward, appending today's note.
+      const log = state.tune ? (state.tune.feedback_log || []).slice() : [];
+      const note = state.tune ? $("f-feedback").value.trim() : "";
+      if (note) log.push({ date: new Date().toISOString().slice(0, 10), note: note });
       return {
-        id: slugify($("f-name").value),
+        id: state.tune ? state.tune.id : slugify($("f-name").value),
         active: true,
         name: $("f-name").value.trim(),
         email: $("f-email").value.trim(),
@@ -618,7 +648,7 @@
         arxiv_categories: toList($("f-arxiv").value),
         exclude: toList($("f-exclude").value),
         query_packs: state.queryPacks,
-        feedback_log: [],
+        feedback_log: log,
       };
     }
 
@@ -629,22 +659,30 @@
         notice($("notice"), "err", "That email doesn't look right — please check it."); return;
       }
       if (profile.topics.length === 0) { notice($("notice"), "err", "Add at least one topic to track."); return; }
-      // Re-pack queries if the user edited topics/watchlist after the pipeline ran.
-      profile.query_packs = state.queryPacks.length
-        ? state.queryPacks : packQueries(profile.topics, profile.watchlist);
+      // Re-pack queries when topics/watchlist changed since the packs were
+      // built (covers both pipeline edits and tune-mode edits).
+      const basis = (profile.topics.join(", ") + "|" + profile.watchlist.join(", ")).toLowerCase();
+      if (!state.queryPacks.length || basis !== state.packBasis) {
+        profile.query_packs = packQueries(profile.topics, profile.watchlist);
+      } else {
+        profile.query_packs = state.queryPacks;
+      }
+      if (state.tuneToken) profile.tune_token = state.tuneToken;
 
       const btn = $("confirm");
       btn.disabled = true;
       btn.textContent = "Activating…";
       try {
         await saveProfile(profile);
-        notice($("notice"), "ok",
-          "You're all set. Your first brief arrives around " +
-          String($("f-hour").value).padStart(2, "0") + ":00 " + profile.timezone + ".");
-        btn.textContent = "✓ Activated";
+        notice($("notice"), "ok", state.tune
+          ? "Saved. Your next brief uses the updated profile" +
+            ($("f-feedback").value.trim() ? " and honours your note." : ".")
+          : "You're all set. Your first brief arrives around " +
+            String($("f-hour").value).padStart(2, "0") + ":00 " + profile.timezone + ".");
+        btn.textContent = state.tune ? "✓ Saved" : "✓ Activated";
       } catch (err) {
         btn.disabled = false;
-        btn.textContent = "Activate my daily brief";
+        btn.textContent = state.tune ? "Save my brief settings" : "Activate my daily brief";
         const d = err && err.body ? err.body : {};
         const parts = ["Couldn't save your profile."];
         if (d.error) parts.push(d.error + (d.status ? " (HTTP " + d.status + ")" : "") + ".");
@@ -669,6 +707,34 @@
         throw e;
       }
       return body;
+    }
+
+    // ---------- Phase E: tune mode (signed link from the email footer) ----------
+    async function bootTune(id, token) {
+      show("s-progress");
+      $("steps").innerHTML = "";
+      step("Loading your profile…");
+      try {
+        const res = await fetch("/api/get-profile?id=" + encodeURIComponent(id) +
+                                "&token=" + encodeURIComponent(token));
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || !body.ok) throw new Error(body.error || "HTTP " + res.status);
+        stepDone("");
+        state.tune = body.profile;
+        state.tuneToken = token;
+        state.queryPacks = Array.isArray(body.profile.query_packs) ? body.profile.query_packs : [];
+        showReview();
+      } catch (e) {
+        stepWarn(String(e.message || e));
+        show("s-material");
+        notice($("m-notice"), "err",
+          "Couldn't open your tune link (" + (e.message || e) + "). " +
+          "Use the link from your most recent brief, or rebuild your profile below.");
+      }
+    }
+    const params = new URLSearchParams(location.search);
+    if (params.get("tune") && params.get("token")) {
+      bootTune(params.get("tune").toLowerCase(), params.get("token"));
     }
 
     // ---------- B1: kickoff ----------
