@@ -1,0 +1,91 @@
+{
+  "id": "esmee-mulder",
+  "active": true,
+  "name": "Esmee Mulder",
+  "email": "esmeemulder1998@gmail.com",
+  "send_hour_utc": 5,
+  "language": "en",
+  "timezone": "Europe/Amsterdam",
+  "format": "deep",
+  "role_context": "Esmée Mulder is a Product Owner at Hewlett Packard Enterprise (HPE), responsible for translating fundamental research into applied research and ultimately into market-ready products. She plays a critical role in bridging the gap between research and product development, ensuring that innovative ideas are effectively brought to market.",
+  "trajectory": "Esmée is focused on advancing her career in product management, particularly in the realm of AI and networking technologies. She aims to enhance her expertise in translating complex research into practical applications that drive business value.",
+  "goals": [
+    "Develop a deeper understanding of AI technologies and their applications in networking.",
+    "Strengthen collaboration with research teams to streamline the transition from research to product development.",
+    "Identify and implement best practices for product management in the tech industry.",
+    "Expand her professional network within the AI and networking sectors.",
+    "Explore opportunities for leadership roles in product management within the next 1-2 years."
+  ],
+  "info_needs": [
+    "Latest trends and advancements in AI technologies relevant to networking.",
+    "Case studies on successful product management strategies in tech companies.",
+    "Networking opportunities with professionals in AI and product management.",
+    "Insights on effective collaboration techniques between research and product teams.",
+    "Information on leadership development programs tailored for product managers."
+  ],
+  "regions": [],
+  "topics": [
+    "AI technologies in networking",
+    "Product management best practices in tech",
+    "Research to product development strategies",
+    "Market dynamics in AI and networking",
+    "Customer needs in niche markets",
+    "Leadership development for product managers",
+    "Collaboration techniques between research and product teams",
+    "Trends in AI infrastructure and edge computing"
+  ],
+  "watchlist": [
+    "Esmée Mulder",
+    "Hewlett Packard Enterprise",
+    "NVIDIA",
+    "Cisco Systems",
+    "Arista Networks",
+    "Dell Technologies",
+    "Juniper Networks",
+    "AI Factory portfolio",
+    "MWC 2026",
+    "AI-enhanced networking solutions",
+    "TechCrunch",
+    "Reuters",
+    "HPE Newsroom",
+    "ITPro",
+    "AP News",
+    "Gartner",
+    "Forrester Research",
+    "McKinsey & Company",
+    "Harvard Business Review",
+    "IEEE",
+    "ACM",
+    "ICML."
+  ],
+  "priority_sources": [
+    "hpe.com",
+    "techcrunch.com",
+    "reuters.com",
+    "itpro.com",
+    "apnews.com",
+    "gartner.com",
+    "forrester.com",
+    "hbr.org",
+    "ieee.org",
+    "acm.org",
+    "arxiv.org"
+  ],
+  "exclude": [],
+  "arxiv_categories": [
+    "cs.AI",
+    "cs.NI",
+    "cs.HC"
+  ],
+  "query_packs": [
+    {
+      "name": "pack-1",
+      "q": "\"Esmée Mulder\" OR \"Hewlett Packard Enterprise\" OR NVIDIA OR \"Cisco Systems\" OR \"Arista Networks\" OR \"Dell Technologies\" OR \"Juniper Networks\" OR \"AI Factory portfolio\" OR \"MWC 2026\" OR \"AI-enhanced networking solutions\" OR TechCrunch OR Reuters OR \"HPE Newsroom\" OR ITPro OR \"AP News\" OR Gartner OR \"Forrester Research\" OR \"McKinsey & Company\" OR \"Harvard Business Review\" OR IEEE OR ACM OR ICML."
+    },
+    {
+      "name": "pack-2",
+      "q": "\"AI technologies in networking\" OR \"Product management best practices in tech\" OR \"Research to product development strategies\" OR \"Market dynamics in AI and networking\" OR \"Customer needs in niche markets\" OR \"Leadership development for product managers\" OR \"Collaboration techniques between research and product teams\" OR \"Trends in AI infrastructure and edge computing\""
+    }
+  ],
+  "feedback_log": []
+}
