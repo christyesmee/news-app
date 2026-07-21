@@ -53,8 +53,10 @@ TEMPLATE_FILE = "email_template.html"
 # example.json is a committed reference profile; the scheduled run never emails it.
 REFERENCE_PROFILE = "example.json"
 
-# NewsAPI look-back window and article budget.
-LOOKBACK_DAYS = 5
+# NewsAPI look-back window and article budget. Kept short and fetched
+# newest-first so each brief leads with today's news; the window still covers a
+# couple of days so weekends and NewsAPI's ~24h free-tier delay don't empty it.
+LOOKBACK_DAYS = 3
 MAX_ARTICLES = 40
 MAX_ARTICLES_TO_MODEL = 30
 
@@ -174,7 +176,9 @@ def _fetch_newsapi_query(profile, query, page_size):
     params = {
         "q": query,
         "from": date_from,
-        "sortBy": "relevance",
+        # Newest-first so the freshest (today's) stories are always in the
+        # candidate pool; the Curator then ranks by relevance + recency.
+        "sortBy": "publishedAt",
         "language": profile.get("language", "en"),
         "pageSize": page_size,
         "apiKey": NEWS_API_KEY,
@@ -363,12 +367,14 @@ def curate(profile, articles):
     budget = FORMAT_BUDGETS.get(fmt, FORMAT_BUDGETS[DEFAULT_FORMAT])
     _stage(profile["id"], "CURATOR", f"{len(articles)} candidates -> top {budget['items']} ({fmt})")
 
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     candidates = []
     for i, a in enumerate(articles[:MAX_ARTICLES_TO_MODEL]):
         candidates.append({
             "id": i,
             "title": (a.get("title") or "")[:200],
             "source": (a.get("source") or {}).get("name", ""),
+            "date": (a.get("publishedAt") or "")[:10],
             "desc": (a.get("description") or "")[:300],
         })
 
@@ -390,16 +396,22 @@ def curate(profile, articles):
     try:
         out = _openai_json([
             {"role": "system", "content": (
-                "You are the Curator for a personalised daily brief. Score EVERY candidate item "
-                "0-10 for relevance to THIS reader (their goals, information needs, watchlist and "
-                "topics). Score 0 for anything matching their exclude list, duplicated stories, or "
-                "generic news with no bearing on their work.\n"
+                "You are the Curator for a personalised DAILY brief. Score EVERY candidate item "
+                "0-10 for how much it belongs in TODAY's brief for THIS reader.\n"
+                f"Today is {today}. This is a daily news brief, so RECENCY matters as much as fit: "
+                "strongly prefer items published today or in the last 24 hours. Only include an older "
+                "item (2-3 days) if it is highly relevant AND still timely; never let a stale item "
+                "outrank a fresh, on-topic one. Use each candidate's 'date' field.\n"
+                "Score relevance against their goals, information needs, watchlist and topics. Score 0 "
+                "for anything matching their exclude list, duplicated stories, or generic news with no "
+                "bearing on their work.\n"
                 'Return JSON: {"items":[{"id":int,"score":number,"reason":"one line"}]} '
-                "covering every candidate id exactly once."
+                "covering every candidate id exactly once. Fold recency into the score."
             )},
             {"role": "user", "content":
                 "READER:\n" + json.dumps(context, ensure_ascii=False) +
-                "\n\nCANDIDATES:\n" + json.dumps(candidates, ensure_ascii=False)},
+                "\n\nCANDIDATES (each has a 'date' = publish date):\n" +
+                json.dumps(candidates, ensure_ascii=False)},
         ], max_tokens=2000)
         items = out.get("items")
         if not isinstance(items, list):
@@ -519,6 +531,8 @@ def build_prompt(profile, raw_text):
         "   </div>\n\n"
 
         "### RULES:\n"
+        "- This is a DAILY brief: lead with the freshest news (today's, then most recent). Each item "
+        "shows a Date -- order the brief newest-first and drop anything that reads as stale.\n"
         f"- Format: '{fmt}' -- keep each story block around {budget['words']} words.\n"
         "- Cite every claim with a clickable footnote <a href='URL'>[n]</a> using the article's real URL.\n"
         "- Keep the whole brief tight: a busy person should read it well inside 15 minutes.\n"
@@ -542,11 +556,12 @@ def analyze(profile, articles, rationale=None, critic_notes=""):
         url = a.get("url", "")
         img = a.get("urlToImage") or "NO_IMAGE"
         desc = (a.get("description") or "").replace('"', "'")
+        date = (a.get("publishedAt") or "")[:10]
         why = ""
         if rationale and i in rationale:
             why = f" | WhyRelevant: {rationale[i]}"
         raw_text += (
-            f"ID: {i + 1} | Title: {title} | Source: {source} | URL: {url} | IMG: {img} | Desc: {desc}{why}\n"
+            f"ID: {i + 1} | Date: {date} | Title: {title} | Source: {source} | URL: {url} | IMG: {img} | Desc: {desc}{why}\n"
         )
 
     prompt = build_prompt(profile, raw_text)
