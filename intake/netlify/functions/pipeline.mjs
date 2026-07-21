@@ -269,10 +269,12 @@ const STAGES = {
     const newsKey = process.env.NEWS_API_KEY;
     if (!newsKey) throw new Error("NEWS_API_KEY is not configured on the server");
 
+    // Fetch all packs (up to 4) so deep briefs have enough candidates to fill
+    // ~8 items; standard/punchy need fewer but extra candidates never hurt.
     const packs = asList(body.query_packs)
       .map((p) => clamp(p?.q, 450))
       .filter(Boolean)
-      .slice(0, 2);
+      .slice(0, 4);
     if (!packs.length) throw new Error("preview_fetch requires query_packs");
 
     const language = /^[a-z]{2}$/.test(String(body.language || "")) ? body.language : "en";
@@ -309,14 +311,17 @@ const STAGES = {
         });
       }
     }
-    return { articles: articles.slice(0, 18) };
+    return { articles: articles.slice(0, 30) };
   },
 
   // 7. PREVIEW WRITE — compact brief rendered on screen right after activation.
+  //    Honours the reader's chosen format so a "deep" brief shows ~8 items.
   async preview_write(body, apiKey) {
-    const articles = asList(body.articles).slice(0, 18);
+    const articles = asList(body.articles).slice(0, 30);
     if (!articles.length) throw new Error("preview_write requires articles");
     const p = body.profile || {};
+    const budgets = { punchy: 4, standard: 6, deep: 8 };
+    const items = budgets[String(p.format)] || 6;
 
     const resp = await fetch(CHAT_URL, {
       method: "POST",
@@ -324,16 +329,17 @@ const STAGES = {
       body: JSON.stringify({
         model: MODEL,
         temperature: 0.4,
-        max_tokens: 1200,
+        max_tokens: 2600,
         messages: [
           sys(
-            "You write a compact personalised news brief as an HTML FRAGMENT (no <html>/<head>/" +
-            "<body>, no markdown fences). Structure: <p><strong>Bottom line:</strong> 2 sentences" +
-            "</p> then 3-4 story blocks: <div class='section'><div class='news-title'>HEADLINE" +
-            "</div><p><strong>What happened:</strong> ... <a href='URL'>[1]</a></p><p><strong>Why " +
-            "it matters for you:</strong> ...</p></div>. Pick ONLY items relevant to the reader; " +
-            "honour their exclusions; cite every claim with the article's real URL. Write in the " +
-            "reader's language."
+            "You write a personalised news brief as an HTML FRAGMENT (no <html>/<head>/<body>, no " +
+            "markdown fences). Structure: <p><strong>Bottom line:</strong> 2 sentences</p> then " +
+            `EXACTLY ${items} story blocks (this is a '${p.format || "standard"}' brief): ` +
+            "<div class='section'><div class='news-title'>HEADLINE</div><p><strong>What happened:" +
+            "</strong> ... <a href='URL'>[1]</a></p><p><strong>Why it matters for you:</strong> ..." +
+            "</p></div>. Choose the most relevant items for the reader; honour their exclusions; " +
+            `cite every claim with the article's real URL. If fewer than ${items} articles are ` +
+            "genuinely relevant, use as many as are. Write in the reader's language."
           ),
           usr(
             "READER:\n" + JSON.stringify({
@@ -343,6 +349,7 @@ const STAGES = {
               topics: strList(p.topics, 15, 80),
               watchlist: strList(p.watchlist, 40, 80),
               exclude: strList(p.exclude, 30, 120),
+              format: clamp(p.format, 10) || "standard",
               language: /^[a-z]{2}(-[a-z]{2})?$/.test(String(p.language || "")) ? p.language : "en",
             }) +
             "\n\nARTICLES:\n" + JSON.stringify(articles)

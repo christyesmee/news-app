@@ -263,7 +263,7 @@ def fetch_arxiv(profile):
         if pub_dt < cutoff:
             continue
         title = re.sub(r"\s+", " ", entry.findtext("a:title", "", ns) or "").strip()
-        url = (entry.findtext("a:id", "", ns) or "").strip()
+        url = (entry.findtext("a:id", "", ns) or "").strip().replace("http://", "https://", 1)
         summary = re.sub(r"\s+", " ", entry.findtext("a:summary", "", ns) or "").strip()
         if title and url:
             articles.append({
@@ -277,6 +277,10 @@ def fetch_arxiv(profile):
     return articles
 
 
+def _norm_url(u):
+    return (u or "").strip().rstrip("/")
+
+
 def fetch_news(profile):
     """All source adapters, merged and deduped by URL."""
     articles = fetch_newsapi(profile)
@@ -288,12 +292,62 @@ def fetch_news(profile):
     seen = set()
     unique = []
     for a in articles:
-        url = (a.get("url") or "").rstrip("/")
+        url = _norm_url(a.get("url"))
         if url and url not in seen:
             seen.add(url)
             unique.append(a)
     print(f"-> {profile['id']}: {len(unique)} unique articles across adapters")
     return unique
+
+
+# --- SENT HISTORY (no-repeat news across days) ---
+HISTORY_DIR = "history"
+HISTORY_RETENTION_DAYS = 30
+
+
+def _history_path(profile_id):
+    return os.path.join(HISTORY_DIR, f"{profile_id}.json")
+
+
+def load_sent_urls(profile_id):
+    """URLs already emailed to this profile within the retention window."""
+    path = _history_path(profile_id)
+    if not os.path.exists(path):
+        return set()
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        return {_norm_url(e.get("url")) for e in data.get("sent", []) if e.get("url")}
+    except Exception as e:
+        print(f"!! {profile_id}: could not read sent-history: {e}")
+        return set()
+
+
+def record_sent_urls(profile_id, urls):
+    """Append today's sent URLs to the profile's history and prune old ones."""
+    path = _history_path(profile_id)
+    entries = []
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                entries = json.load(f).get("sent", [])
+        except Exception:
+            entries = []
+
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=HISTORY_RETENTION_DAYS)).strftime("%Y-%m-%d")
+    have = {_norm_url(e.get("url")) for e in entries if e.get("url")}
+    for u in urls:
+        nu = _norm_url(u)
+        if nu and nu not in have:
+            entries.append({"url": nu, "date": today})
+            have.add(nu)
+    entries = [e for e in entries if str(e.get("date", "9999")) >= cutoff]
+
+    os.makedirs(HISTORY_DIR, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"sent": entries}, f, indent=2)
+    print(f"-> {profile_id}: sent-history now holds {len(entries)} URL(s)")
 
 
 # --- ANALYSIS (OpenAI) ---
@@ -605,6 +659,19 @@ def process(profile):
         print(f"-> {profile['id']}: no articles; nothing sent.")
         return False
 
+    # No-repeat: drop anything already emailed to this reader in the last
+    # HISTORY_RETENTION_DAYS, so each brief is genuinely new.
+    already_sent = load_sent_urls(profile["id"])
+    if already_sent:
+        fresh = [a for a in articles if _norm_url(a.get("url")) not in already_sent]
+        dropped = len(articles) - len(fresh)
+        if dropped:
+            print(f"-> {profile['id']}: dropped {dropped} already-sent article(s)")
+        articles = fresh
+    if not articles:
+        print(f"-> {profile['id']}: no NEW articles today (all already sent); nothing sent.")
+        return False
+
     shortlist, rationale = curate(profile, articles)
     # rationale keys are indexes into `articles`; remap onto shortlist order.
     remapped = {}
@@ -637,6 +704,9 @@ def process(profile):
     except Exception as e:
         print(f"!! {profile['id']}: failed to send email: {e}")
         return False
+    # Record what we just sent so tomorrow's brief won't repeat it. Record the
+    # curated shortlist (what actually went into the brief).
+    record_sent_urls(profile["id"], [a.get("url") for a in shortlist])
     print(f"vv {profile['id']}: brief sent to {profile['email']}")
     return True
 

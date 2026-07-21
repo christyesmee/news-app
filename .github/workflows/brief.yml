@@ -39,10 +39,14 @@ on:
 jobs:
   send-briefs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # to commit the updated sent-history back to the repo
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so the push diff (before..after) works
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -87,27 +91,45 @@ jobs:
           PROFILE_LINK_SECRET: ${{ secrets.PROFILE_LINK_SECRET }}
           TUNE_BASE_URL: ${{ secrets.TUNE_BASE_URL }}
         run: |
-          CHANGED=$(python - <<'EOF'
-          import json, os
-          event = json.load(open(os.environ["GITHUB_EVENT_PATH"]))
-          commits = event.get("commits") or []
-          if not commits and event.get("head_commit"):
-              commits = [event["head_commit"]]
-          files = set()
-          for c in commits:
-              for key in ("added", "modified"):
-                  for f in c.get(key) or []:
-                      if f.startswith("profiles/") and f.endswith(".json"):
-                          files.add(f)
-          ids = sorted(f.split("/")[-1][:-5] for f in files)
-          print(" ".join(i for i in ids if i != "example"))
-          EOF
-          )
-          if [ -z "$CHANGED" ]; then
+          # Detect changed profiles from git, NOT the push event payload: commits
+          # created via the GitHub Contents API (how the intake commits profiles)
+          # arrive with empty added/modified arrays, so the payload approach
+          # silently finds nothing. git diff is authoritative.
+          BEFORE='${{ github.event.before }}'
+          AFTER='${{ github.sha }}'
+          if git rev-parse --verify --quiet "$BEFORE^{commit}" >/dev/null 2>&1; then
+            CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- 'profiles/*.json')
+          else
+            # New branch / unknown before sha: fall back to the tip commit's files.
+            CHANGED=$(git show --name-only --pretty=format: "$AFTER" -- 'profiles/*.json')
+          fi
+          IDS=$(printf '%s\n' "$CHANGED" \
+            | sed -n 's#^profiles/\(.*\)\.json$#\1#p' \
+            | grep -vx 'example' | sort -u)
+          if [ -z "$IDS" ]; then
             echo "No user profiles changed in this push; nothing to send."
             exit 0
           fi
-          for id in $CHANGED; do
+          echo "Changed profiles: $IDS"
+          for id in $IDS; do
             echo "=== First/updated brief for '$id' ==="
             python send_brief.py --only "$id" --force
           done
+
+      - name: Persist sent-history
+        if: always()
+        run: |
+          # The engine writes history/<id>.json after each send; commit any
+          # changes so tomorrow's run knows what was already delivered. Pushes
+          # made with GITHUB_TOKEN do not retrigger workflows, and history/ is
+          # not in the push path filter, so there is no trigger loop.
+          if [ -n "$(git status --porcelain history/ 2>/dev/null)" ]; then
+            git config user.name "news-app-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add history/
+            git commit -m "chore: update sent-history [skip ci]"
+            git pull --rebase --autostash origin main || true
+            git push || echo "history push skipped (non-fatal)"
+          else
+            echo "No sent-history changes."
+          fi
