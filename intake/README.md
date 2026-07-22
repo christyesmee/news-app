@@ -75,6 +75,21 @@ them. POST-only, so an email link-scanner can never delete an account.
    - `GITHUB_BRANCH` — `main`.
    - `OPENAI_MODEL` — optional, default `gpt-4o-mini`.
 
+## Health check (diagnose a broken signup)
+
+Open **`/api/health`** on the deployed site (e.g. `https://<site>.netlify.app/api/health`).
+It's read-only and returns JSON showing whether `save-profile` can actually
+commit — which env vars are present (booleans only, never their values), and
+whether `GITHUB_TOKEN` can **read** the repo, has **write** (push) access, and
+whether the target branch exists.
+
+`{"ok": true, ...}` means new signups will save and trigger their welcome email.
+If a signup fails but the on-screen brief never appears, check here first — the
+most common cause is an **expired fine-grained PAT** (`tokenValid: false`,
+status 401): regenerate it, update `GITHUB_TOKEN` in Netlify, and **redeploy**.
+Remember the email is sent by the GitHub Action on the profile commit, not by
+the intake — no commit (failed save) means no email.
+
 ## Notes
 
 - Serverless timeout: each stage is one call and fits the default 10s window on

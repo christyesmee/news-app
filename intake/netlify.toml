@@ -32,3 +32,8 @@
   from = "/api/delete-profile"
   to = "/.netlify/functions/delete-profile"
   status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
