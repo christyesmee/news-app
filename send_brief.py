@@ -627,7 +627,7 @@ def _fallback_clusters(articles, budget, sent_topics=None):
     Curator LLM call fails."""
     sent_topics = sent_topics or []
     seen, picked = set(), []
-    research_cap = max(1, budget["items"] // 3)
+    research_cap = max(1, budget["items"] // 2)
     research_used = 0
     for a in articles:
         key = _title_key(a)
@@ -693,7 +693,10 @@ def curate(profile, articles):
         "recent_reader_feedback": [f.get("note", "") for f in profile.get("feedback_log", [])
                                    if isinstance(f, dict) and f.get("note")][-3:],
     }
-    research_cap = max(1, budget["items"] // 3)
+    # Research (arXiv) may fill up to half the brief -- enough that a heavy-arXiv
+    # day still reaches the item budget, but news always leads and never gets
+    # crowded out.
+    research_cap = max(1, budget["items"] // 2)
 
     try:
         out = _openai_json([
@@ -701,6 +704,10 @@ def curate(profile, articles):
                 "You are the Curator for a personalised DAILY brief. Your job is to turn a pile of "
                 "candidate articles into a RANKED list of distinct story-TOPICS for THIS reader.\n"
                 f"Today is {today}.\n"
+                f"AIM: return up to {budget['items']} distinct topics and FILL that budget whenever "
+                "there are that many genuinely-relevant, genuinely-new stories -- do not stop at three "
+                "or four if more good, distinct material exists. Only return fewer when the candidates "
+                "genuinely don't support more (after clustering and the no-repeat rule).\n"
                 "STEP 1 -- CLUSTER: group candidates that are about the SAME underlying story into one "
                 "topic (e.g. six articles about one company's cyber-attack are ONE topic). For each "
                 "topic pick a single best representative article: the most substantive one, and among "
@@ -833,7 +840,7 @@ def critique_ranking(profile, ranked, articles, budget):
         "topics": profile.get("topics", []),
         "watchlist": profile.get("watchlist", []),
         "format_items": budget["items"],
-        "research_cap": max(1, budget["items"] // 3),
+        "research_cap": max(1, budget["items"] // 2),
     }
     try:
         out = _openai_json([
@@ -845,9 +852,13 @@ def critique_ranking(profile, ranked, articles, budget):
                 "topics to at most research_cap and never at the very top unless truly the day's biggest "
                 "item. (3) Are any two entries actually the same story? Drop the weaker duplicate. "
                 "(4) Drop anything off-profile or stale.\n"
+                "Do NOT trim for brevity: KEEP every relevant, distinct, on-profile topic the Curator "
+                "gave you (the reader chose format_items per day and wants a full brief). Only drop an "
+                "item for a concrete reason above -- duplicate, off-profile, or stale -- never just to "
+                "make the list shorter.\n"
                 'Return JSON: {"ranked_ids":[int,...],"notes":"one line on what you changed and why"} '
-                "-- ranked_ids is the final order, best first, a subset/reordering of the proposed ids "
-                "(use the topic 'id' values). Keep the strongest items; you may shorten the list."
+                "-- ranked_ids is the final order, best first (use the topic 'id' values). Keep as many "
+                "items as pass the checks."
             )},
             {"role": "user", "content":
                 "READER:\n" + json.dumps(context, ensure_ascii=False) +
@@ -1189,9 +1200,13 @@ def process(profile):
         retry_html, retry_err = analyze(profile, shortlist, rationale=rationale, critic_notes=notes)
         if retry_html:
             retry_passed, _ = critique(profile, retry_html)
-            # Send the best draft we have: the rewrite if it passed (or at
-            # least exists); the original otherwise.
-            html = retry_html if retry_passed or retry_html else html
+            # Only adopt the rewrite if it actually PASSED. A regeneration can
+            # over-correct (e.g. drop a story the critic wrongly doubted),
+            # ending up worse than the first draft -- never ship that.
+            if retry_passed:
+                html = retry_html
+            else:
+                print("   rewrite did not pass either; keeping the first draft")
         else:
             print(f"!! regeneration failed, sending first draft: {retry_err}")
 
