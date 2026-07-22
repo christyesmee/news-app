@@ -295,25 +295,129 @@ def fetch_arxiv(profile):
     return articles
 
 
+# Google News RSS locale by 2-letter language (hl / gl / ceid).
+_GNEWS_LOCALE = {
+    "en": ("en-US", "US", "US:en"), "nl": ("nl", "NL", "NL:nl"),
+    "de": ("de", "DE", "DE:de"), "fr": ("fr", "FR", "FR:fr"),
+    "es": ("es", "ES", "ES:es"), "it": ("it", "IT", "IT:it"),
+    "pt": ("pt-PT", "PT", "PT:pt"), "sv": ("sv", "SE", "SE:sv"),
+}
+
+
+def fetch_googlenews(profile):
+    """Google News RSS adapter -- free, no key, ~real-time. Complements NewsAPI
+    with broad current coverage (snippets only; links are Google redirects). Runs
+    across all sources (no domain restriction) as the broad real-time source."""
+    import urllib.parse
+    import email.utils
+    import xml.etree.ElementTree as ET
+
+    packs = [p for p in profile.get("query_packs", []) if isinstance(p, dict) and p.get("q")]
+    if not packs:
+        q = build_query(profile)
+        if not q:
+            return []
+        packs = [{"name": "all", "q": q}]
+
+    lang = (profile.get("language") or "en").split("-")[0].lower()
+    hl, gl, ceid = _GNEWS_LOCALE.get(lang, _GNEWS_LOCALE["en"])
+    cutoff = datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)
+
+    articles = []
+    for pack in packs[:8]:
+        # Google News search supports OR/quotes and when:Nd for recency.
+        q = f"{str(pack['q'])[:250]} when:{LOOKBACK_DAYS}d"
+        url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(q)
+               + f"&hl={hl}&gl={gl}&ceid={ceid}")
+        try:
+            resp = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0 (news-app)"})
+            root = ET.fromstring(resp.content)
+        except Exception as e:
+            print(f"!! Google News error for {profile['id']}: {e}")
+            continue
+
+        count = 0
+        for item in root.findall(".//item"):
+            title = (item.findtext("title") or "").strip()
+            link = (item.findtext("link") or "").strip()
+            pub = (item.findtext("pubDate") or "").strip()
+            src_el = item.find("source")
+            source = ((src_el.text if src_el is not None else "") or "Google News").strip()
+
+            iso = ""
+            try:
+                dt = email.utils.parsedate_to_datetime(pub)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                if dt < cutoff:
+                    continue
+                iso = dt.astimezone(timezone.utc).isoformat()
+            except Exception:
+                pass
+
+            # Google titles are usually "Headline - Source"; trim the source suffix.
+            if source and title.endswith(f" - {source}"):
+                title = title[: -(len(source) + 3)].strip()
+            if title and link:
+                articles.append({
+                    "title": title,
+                    "url": link,
+                    "urlToImage": None,
+                    "description": _clean_html(item.findtext("description") or "")[:300],
+                    "source": {"name": source},
+                    "publishedAt": iso,
+                })
+                count += 1
+        print(f"   gnews pack '{pack.get('name', '?')}': {count} articles")
+    return articles
+
+
 def _norm_url(u):
     return (u or "").strip().rstrip("/")
 
 
+def _title_key(a):
+    """Normalised title, used to dedupe the same story across sources
+    (a Google-redirect URL and a publisher URL never match on URL alone)."""
+    t = re.sub(r"[^a-z0-9 ]", "", (a.get("title") or "").lower())
+    return re.sub(r"\s+", " ", t).strip()[:60]
+
+
+def _pub_ts(a):
+    try:
+        return datetime.fromisoformat((a.get("publishedAt") or "").replace("Z", "+00:00")).timestamp()
+    except Exception:
+        return 0.0
+
+
 def fetch_news(profile):
-    """All source adapters, merged and deduped by URL."""
+    """All source adapters, merged, deduped (URL + title) and newest-first."""
     articles = fetch_newsapi(profile)
+
+    gnews = fetch_googlenews(profile)
+    if gnews:
+        print(f"   google news: {len(gnews)} items")
+    articles.extend(gnews)
+
     arxiv_items = fetch_arxiv(profile)
     if arxiv_items:
         print(f"   arxiv: {len(arxiv_items)} papers")
     articles.extend(arxiv_items)
 
-    seen = set()
-    unique = []
+    seen_url, seen_title, unique = set(), set(), []
     for a in articles:
         url = _norm_url(a.get("url"))
-        if url and url not in seen:
-            seen.add(url)
-            unique.append(a)
+        tkey = _title_key(a)
+        if (url and url in seen_url) or (tkey and tkey in seen_title):
+            continue
+        if url:
+            seen_url.add(url)
+        if tkey:
+            seen_title.add(tkey)
+        unique.append(a)
+
+    # Freshest across ALL sources first, so the Curator sees today's news up top.
+    unique.sort(key=_pub_ts, reverse=True)
     print(f"-> {profile['id']}: {len(unique)} unique articles across adapters")
     return unique
 

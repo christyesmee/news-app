@@ -44,8 +44,20 @@ python send_brief.py --only <id>     # a single profile (profiles/<id>.json)
 python send_brief.py --dry-run       # print each profile's query + who would send; no API calls, no email
 ```
 
+### News sources (adapters, merged + deduped + newest-first)
+
+Fetching is adapter-based; each profile's query packs run against all of them and
+the results are merged, deduped (by URL *and* normalised title, so the same story
+from two sources collapses to one) and sorted newest-first:
+
+- **NewsAPI** — curated, restricted to the profile's `priority_sources` (with an
+  all-sources retry if those return nothing). Needs `NEWS_API_KEY`.
+- **Google News RSS** — free, no key, ~real-time, broad coverage. Complements
+  NewsAPI and isn't delayed the way NewsAPI's free tier is.
+- **arXiv** — papers, when the profile has `arxiv_categories`.
+
 `profiles/example.json` is a committed reference schema; scheduled runs skip it.
-Each profile drives its own NewsAPI query (topics + watchlist OR-joined, AND
+Each profile drives its own query (topics + watchlist OR-joined, AND
 regions, restricted to `priority_sources`) and its own OpenAI prompt (ranked to
 that person's role, honouring `exclude`). Brief generation runs on a small model
 (`gpt-4o-mini` by default; override with the `OPENAI_MODEL` env var).
