@@ -882,6 +882,8 @@ def critique_ranking(profile, ranked, articles, budget):
 def critique(profile, html_content):
     """QA the draft brief against the profile. Returns (passed, notes)."""
     _stage(profile["id"], "CRITIC")
+    budget_items = FORMAT_BUDGETS.get(profile.get("format") or DEFAULT_FORMAT,
+                                      FORMAT_BUDGETS[DEFAULT_FORMAT])["items"]
     checks = {
         "role_context": profile.get("role_context", ""),
         "goals": profile.get("goals", []),
@@ -889,8 +891,7 @@ def critique(profile, html_content):
         "watchlist": profile.get("watchlist", []),
         "exclude": profile.get("exclude", []),
         "format": profile.get("format") or DEFAULT_FORMAT,
-        "item_budget": FORMAT_BUDGETS.get(profile.get("format") or DEFAULT_FORMAT,
-                                          FORMAT_BUDGETS[DEFAULT_FORMAT])["items"],
+        "item_ceiling": budget_items,
     }
     try:
         out = _openai_json([
@@ -899,8 +900,14 @@ def critique(profile, html_content):
                 "Checks: (1) every item is traceably relevant to this reader's profile; "
                 "(2) nothing matches the exclude list; (3) every item has a well-formed http(s) "
                 "link -- news.google.com/rss/... redirect links are VALID and must NOT be flagged "
-                "(they resolve to the publisher); (4) the item count is within +/-2 of the format "
-                "budget; (5) tone is professional and concrete, no filler.\n"
+                "(they resolve to the publisher); (4) no two items cover the SAME story (a topic "
+                "must appear at most once); (5) tone is professional and concrete, no filler.\n"
+                "IMPORTANT about item count: 'item_ceiling' is a MAXIMUM, not a target. The items "
+                "were already de-duplicated (one per story) and filtered to genuinely-new topics, so "
+                "FEWER items than the ceiling is correct and expected on a quiet day -- NEVER fail a "
+                "brief for having too few items, and NEVER ask to pad it with filler or less-relevant "
+                "stories. Only flag the count if it EXCEEDS the ceiling. A tight, all-relevant brief "
+                "of a few items passes.\n"
                 'Return JSON: {"passed": true|false, "notes": "empty when passed; otherwise the '
                 'specific problems, actionable enough to fix in one rewrite"}'
             )},
@@ -960,7 +967,8 @@ def build_prompt(profile, raw_text):
         "### OUTPUT (an HTML fragment only -- no <html>, <head> or <body> wrapper):\n"
         "1. Open with the bottom line:\n"
         "   <p><strong>Bottom line:</strong> 2-3 sentences with the single most important takeaway for them today.</p>\n"
-        f"2. Then about {budget['items']} story blocks (never more than {budget['items'] + 1}), "
+        f"2. Then ONE story block per item you were given (up to {budget['items']}; write only as many "
+        "as there are items -- never invent, pad, or repeat a story to reach a number; fewer is fine), "
         "most important first, each formatted exactly as:\n"
         "   <div class='section'>\n"
         "     <div class='news-title'>HEADLINE</div>\n"
