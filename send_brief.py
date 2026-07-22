@@ -580,8 +580,9 @@ def critique(profile, html_content):
                 "You are the Critic, QA-ing a personalised daily brief before it is emailed.\n"
                 "Checks: (1) every item is traceably relevant to this reader's profile; "
                 "(2) nothing matches the exclude list; (3) every item has a well-formed http(s) "
-                "link; (4) the item count is within +/-2 of the format budget; (5) tone is "
-                "professional and concrete, no filler.\n"
+                "link -- news.google.com/rss/... redirect links are VALID and must NOT be flagged "
+                "(they resolve to the publisher); (4) the item count is within +/-2 of the format "
+                "budget; (5) tone is professional and concrete, no filler.\n"
                 'Return JSON: {"passed": true|false, "notes": "empty when passed; otherwise the '
                 'specific problems, actionable enough to fix in one rewrite"}'
             )},
