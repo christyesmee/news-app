@@ -422,14 +422,23 @@ def fetch_news(profile):
     return unique
 
 
-# --- IMAGE ENRICHMENT (every article in the email gets a picture) ---
+# --- IMAGE ENRICHMENT (every article gets a picture that fits its topic) ---
+def _is_direct_url(url):
+    """A publisher article URL we can scrape for a real image. Google News
+    redirect links and arXiv abstract pages don't expose a usable og:image."""
+    if not url:
+        return False
+    return "news.google.com" not in url and "arxiv.org" not in url
+
+
 def _extract_og_image(url):
-    """Best-effort Open Graph / Twitter image from a direct article URL. Google
-    News redirect links are skipped (they don't expose a usable image)."""
-    if not url or "news.google.com" in url:
+    """Best-effort Open Graph / Twitter image from a direct article URL -- the
+    article's OWN photo, so it always fits the story."""
+    if not _is_direct_url(url):
         return None
     try:
-        resp = requests.get(url, timeout=6, headers={"User-Agent": "Mozilla/5.0 (news-app)"})
+        resp = requests.get(url, timeout=6, headers={"User-Agent": "Mozilla/5.0 (news-app)"},
+                            allow_redirects=True)
         html = resp.text[:150000]
     except Exception:
         return None
@@ -443,19 +452,56 @@ def _extract_og_image(url):
     return None
 
 
+_STOPWORDS = {
+    "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "at", "by",
+    "with", "from", "as", "is", "are", "be", "new", "says", "will", "how",
+    "why", "what", "this", "that", "its", "it", "after", "over", "into", "amid",
+}
+
+
+def _topical_query(a):
+    """A few salient keywords from the story so the stock-image search returns a
+    picture that actually matches the topic (not random)."""
+    label = (a.get("_topic_label") or "").strip()
+    if label:
+        return label
+    title = a.get("title") or ""
+    title = re.sub(r"\s+-\s+[^-]+$", "", title)  # trim "Headline - Source"
+    words = re.findall(r"[A-Za-z0-9']+", title)
+    keep = [w for w in words if w.lower() not in _STOPWORDS and len(w) > 2]
+    # Lead with proper nouns / capitalised entities, then top up with the other
+    # content words so the query is specific even when few words are capitalised.
+    proper = [w for w in keep if w[:1].isupper()]
+    picked, seen = [], set()
+    for w in proper + keep:
+        lw = w.lower()
+        if lw not in seen:
+            seen.add(lw)
+            picked.append(w)
+        if len(picked) >= 5:
+            break
+    return " ".join(picked) or (title[:60])
+
+
 def _fallback_image(a):
-    """Deterministic neutral photo so a story without a source image still shows
-    one (Google News / arXiv items don't carry an image)."""
+    """A TOPICAL photo when the source carries none: the story's own keywords are
+    encoded into the image URL, so the recipient's mail client resolves a picture
+    that actually fits the article (not a random stock photo). Deterministic
+    (``lock``) so the same story always shows the same image, and resolved
+    client-side -- no engine-side fetch, so nothing here can fail the send."""
     import hashlib
-    seed = hashlib.md5((a.get("url") or a.get("title") or "x").encode("utf-8")).hexdigest()[:12]
-    return f"https://picsum.photos/seed/{seed}/640/360"
+    q = _topical_query(a)
+    tags = ",".join(re.findall(r"[A-Za-z0-9]+", q)[:3]).lower() or "news,headline"
+    lock = int(hashlib.md5((a.get("url") or a.get("title") or "x").encode("utf-8")).hexdigest()[:6], 16)
+    return f"https://loremflickr.com/640/360/{tags}?lock={lock}"
 
 
 def enrich_images(articles):
-    """Guarantee every article has an image URL: source image -> og:image ->
-    neutral fallback. Runs only on the curated shortlist (a handful of items),
-    so the extra fetches are bounded."""
-    real, og, fb = 0, 0, 0
+    """Guarantee every article has an image that fits its topic:
+    source image -> the article's own og:image -> a topical photo matched on the
+    story's keywords. Runs only on the curated shortlist (a handful of items),
+    so the og:image fetches are bounded."""
+    real, og, topical = 0, 0, 0
     for a in articles:
         if a.get("urlToImage"):
             real += 1
@@ -465,74 +511,162 @@ def enrich_images(articles):
             og += 1
         else:
             img = _fallback_image(a)
-            fb += 1
+            topical += 1
         a["urlToImage"] = img
-    print(f"   images: {real} from source, {og} via og:image, {fb} fallback")
+    print(f"   images: {real} from source, {og} via og:image, {topical} topical fallback")
     return articles
 
 
-# --- SENT HISTORY (no-repeat news across days) ---
+# --- SENT HISTORY (no-repeat news across days; topic memory for follow-ups) ---
 HISTORY_DIR = "history"
-HISTORY_RETENTION_DAYS = 30
+HISTORY_RETENTION_DAYS = 7
 
 
 def _history_path(profile_id):
     return os.path.join(HISTORY_DIR, f"{profile_id}.json")
 
 
-def load_sent_urls(profile_id):
-    """URLs already emailed to this profile within the retention window."""
+def _load_history(profile_id):
     path = _history_path(profile_id)
     if not os.path.exists(path):
-        return set()
+        return {"sent": [], "topics": []}
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
-        return {_norm_url(e.get("url")) for e in data.get("sent", []) if e.get("url")}
+        return {"sent": data.get("sent", []), "topics": data.get("topics", [])}
     except Exception as e:
         print(f"!! {profile_id}: could not read sent-history: {e}")
-        return set()
+        return {"sent": [], "topics": []}
 
 
-def record_sent_urls(profile_id, urls):
-    """Append today's sent URLs to the profile's history and prune old ones."""
-    path = _history_path(profile_id)
-    entries = []
-    if os.path.exists(path):
-        try:
-            with open(path, encoding="utf-8") as f:
-                entries = json.load(f).get("sent", [])
-        except Exception:
-            entries = []
+def load_sent_urls(profile_id):
+    """URLs already emailed to this profile within the retention window."""
+    data = _load_history(profile_id)
+    return {_norm_url(e.get("url")) for e in data["sent"] if e.get("url")}
+
+
+def load_sent_topics(profile_id):
+    """Topics already covered in the last HISTORY_RETENTION_DAYS, each with the
+    most recent date it was sent. Powers the cross-day follow-up rule: a topic
+    may only reappear if there is genuinely newer news on it."""
+    data = _load_history(profile_id)
+    latest = {}
+    for t in data["topics"]:
+        label = (t.get("label") or "").strip()
+        date = str(t.get("date") or "")
+        if not label:
+            continue
+        if label not in latest or date > latest[label]:
+            latest[label] = date
+    return [{"label": k, "date": v} for k, v in latest.items()]
+
+
+def record_sent(profile_id, sent_items):
+    """Append today's sent URLs and topics to the profile's history and prune
+    anything older than the retention window.
+
+    ``sent_items`` is a list of ``{"url": ..., "topic": ...}`` for the items
+    that actually went into today's brief.
+    """
+    data = _load_history(profile_id)
+    url_entries = data["sent"]
+    topic_entries = data["topics"]
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     cutoff = (datetime.now(timezone.utc) - timedelta(days=HISTORY_RETENTION_DAYS)).strftime("%Y-%m-%d")
-    have = {_norm_url(e.get("url")) for e in entries if e.get("url")}
-    for u in urls:
-        nu = _norm_url(u)
-        if nu and nu not in have:
-            entries.append({"url": nu, "date": today})
-            have.add(nu)
-    entries = [e for e in entries if str(e.get("date", "9999")) >= cutoff]
+
+    have_urls = {_norm_url(e.get("url")) for e in url_entries if e.get("url")}
+    for it in sent_items:
+        nu = _norm_url(it.get("url"))
+        if nu and nu not in have_urls:
+            url_entries.append({"url": nu, "date": today})
+            have_urls.add(nu)
+        topic = (it.get("topic") or "").strip()
+        if topic:
+            topic_entries.append({"label": topic, "date": today, "url": nu})
+
+    url_entries = [e for e in url_entries if str(e.get("date", "9999")) >= cutoff]
+    topic_entries = [e for e in topic_entries if str(e.get("date", "9999")) >= cutoff]
 
     os.makedirs(HISTORY_DIR, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump({"sent": entries}, f, indent=2)
-    print(f"-> {profile_id}: sent-history now holds {len(entries)} URL(s)")
+    with open(path := _history_path(profile_id), "w", encoding="utf-8") as f:
+        json.dump({"sent": url_entries, "topics": topic_entries}, f, indent=2)
+    print(f"-> {profile_id}: sent-history now holds {len(url_entries)} URL(s), "
+          f"{len({e['label'] for e in topic_entries})} topic(s)")
 
 
 # --- ANALYSIS (OpenAI) ---
-# --- CURATOR (role 4) ---
-def curate(profile, articles):
-    """Score every candidate 0-10 against the profile; keep top N per format.
+def _is_research(a):
+    """Whether an item is an academic/preprint (arXiv) rather than a news story.
+    Used to keep the brief from getting too research-heavy."""
+    src = (a.get("source") or {}).get("name", "").lower()
+    url = (a.get("url") or "").lower()
+    return "arxiv" in src or "arxiv.org" in url
 
-    Returns (shortlist, rationale_by_id). On any failure the error is logged
-    with the stage name and the top-N articles pass through unscored -- a
-    curator outage must not kill the send.
+
+def _sent_topic_conflict(article, sent_topics):
+    """Last-sent date of a recent topic this article clearly rehashes, else None.
+    A token-overlap heuristic used by the LLM-outage fallback so it still honours
+    the no-repeat rule (the LLM path does this far more precisely)."""
+    ttoks = {w for w in re.findall(r"[a-z0-9]+", (article.get("title") or "").lower())
+             if w not in _STOPWORDS and len(w) > 3}
+    hit = None
+    for t in sent_topics:
+        ltoks = {w for w in re.findall(r"[a-z0-9]+", (t.get("label") or "").lower())
+                 if w not in _STOPWORDS and len(w) > 3}
+        if ltoks and len(ttoks & ltoks) >= 2:
+            d = str(t.get("date") or "")
+            if hit is None or d > hit:
+                hit = d
+    return hit
+
+
+def _fallback_clusters(articles, budget, sent_topics=None):
+    """Cluster-free safety net: dedupe by normalised title, honour the cross-day
+    no-repeat rule, keep the freshest N with a research cap. Used only when the
+    Curator LLM call fails."""
+    sent_topics = sent_topics or []
+    seen, picked = set(), []
+    research_cap = max(1, budget["items"] // 3)
+    research_used = 0
+    for a in articles:
+        key = _title_key(a)
+        if key in seen:
+            continue
+        # Skip a story we already sent this week unless this article is newer.
+        prior = _sent_topic_conflict(a, sent_topics)
+        if prior and (a.get("publishedAt") or "")[:10] <= prior:
+            continue
+        if _is_research(a):
+            if research_used >= research_cap:
+                continue
+            research_used += 1
+        seen.add(key)
+        a["_topic_label"] = re.sub(r"\s+-\s+[^-]+$", "", (a.get("title") or ""))[:80]
+        picked.append(a)
+        if len(picked) >= budget["items"]:
+            break
+    return picked
+
+
+# --- CURATOR (role 4): cluster the week's news into topics, rank by profile ---
+def curate(profile, articles):
+    """Cluster candidates into distinct story-topics, keep ONE representative per
+    topic, and rank the topics by relevance to THIS reader.
+
+    A big story that spawns six articles becomes a single item -- the reader
+    sees each topic at most once. A topic already covered in the last 7 days is
+    only allowed back if there is genuinely NEWER news on it (the cross-day
+    follow-up rule), not a leftover from when it first broke.
+
+    Returns (shortlist, rationale) where shortlist is one article per kept topic
+    (ranked, freshest-relevant first) and each shortlist article carries a
+    ``_topic_label``. On any failure a deterministic clustered fallback is used
+    -- a curator outage must not kill the send.
     """
     fmt = profile.get("format") or DEFAULT_FORMAT
     budget = FORMAT_BUDGETS.get(fmt, FORMAT_BUDGETS[DEFAULT_FORMAT])
-    _stage(profile["id"], "CURATOR", f"{len(articles)} candidates -> top {budget['items']} ({fmt})")
+    _stage(profile["id"], "CURATOR", f"{len(articles)} candidates -> top {budget['items']} topics ({fmt})")
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     candidates = []
@@ -542,15 +676,15 @@ def curate(profile, articles):
             "title": (a.get("title") or "")[:200],
             "source": (a.get("source") or {}).get("name", ""),
             "date": (a.get("publishedAt") or "")[:10],
-            "desc": (a.get("description") or "")[:300],
+            "kind": "research" if _is_research(a) else "news",
+            "desc": (a.get("description") or "")[:240],
         })
 
-    goals = profile.get("goals") or []
-    info_needs = profile.get("info_needs") or []
+    sent_topics = load_sent_topics(profile["id"])
     context = {
         "role_context": profile.get("role_context", ""),
-        "goals": goals,
-        "info_needs": info_needs,
+        "goals": profile.get("goals") or [],
+        "info_needs": profile.get("info_needs") or [],
         # v1 profiles have no goals/info_needs; topics+watchlist still anchor scoring.
         "topics": profile.get("topics", []),
         "watchlist": profile.get("watchlist", []),
@@ -559,54 +693,189 @@ def curate(profile, articles):
         "recent_reader_feedback": [f.get("note", "") for f in profile.get("feedback_log", [])
                                    if isinstance(f, dict) and f.get("note")][-3:],
     }
+    research_cap = max(1, budget["items"] // 3)
 
     try:
         out = _openai_json([
             {"role": "system", "content": (
-                "You are the Curator for a personalised DAILY brief. Score EVERY candidate item "
-                "0-10 for how much it belongs in TODAY's brief for THIS reader.\n"
-                f"Today is {today}. This is a daily news brief, so RECENCY matters as much as fit: "
-                "strongly prefer items published today or in the last 24 hours. Only include an older "
-                "item (2-3 days) if it is highly relevant AND still timely; never let a stale item "
-                "outrank a fresh, on-topic one. Use each candidate's 'date' field.\n"
-                "Score relevance against their goals, information needs, watchlist and topics. Score 0 "
-                "for anything matching their exclude list, duplicated stories, or generic news with no "
-                "bearing on their work.\n"
-                'Return JSON: {"items":[{"id":int,"score":number,"reason":"one line"}]} '
-                "covering every candidate id exactly once. Fold recency into the score."
+                "You are the Curator for a personalised DAILY brief. Your job is to turn a pile of "
+                "candidate articles into a RANKED list of distinct story-TOPICS for THIS reader.\n"
+                f"Today is {today}.\n"
+                "STEP 1 -- CLUSTER: group candidates that are about the SAME underlying story into one "
+                "topic (e.g. six articles about one company's cyber-attack are ONE topic). For each "
+                "topic pick a single best representative article: the most substantive one, and among "
+                "similar ones the FRESHEST (use 'date').\n"
+                "STEP 2 -- RANK: order the topics by how much they matter to this reader today, folding "
+                "in recency -- a fresh on-topic story outranks a stale one; strongly prefer items from "
+                "today or the last 24-48h. Drop anything matching their exclude list or with no bearing "
+                "on their work.\n"
+                "STEP 3 -- BALANCE: this is a NEWS brief, not a research digest. Keep academic/preprint "
+                f"('research') topics to at most {research_cap} of the final list; news leads.\n"
+                "STEP 4 -- NO REPEATS ACROSS DAYS: you are given 'already_sent_topics' (label + the date "
+                "each was last emailed). If a candidate topic is the SAME ongoing story as one of those, "
+                "only keep it when its representative article is NEWER than that date AND carries a "
+                "genuine development (set is_followup=true and say what's new in 'reason'). If it is just "
+                "the same news again with nothing new, DROP it.\n"
+                'Return JSON: {"topics":[{"label":"short topic name","best_id":int,'
+                '"member_ids":[int,...],"score":number,"kind":"news|research",'
+                '"is_followup":true|false,"reason":"one line: why it matters to THIS reader (and, if a '
+                'follow-up, what is new)"}]}. '
+                "Order 'topics' best-first. 'label' must be specific enough to recognise the same story "
+                "again tomorrow. Every best_id and member_id must be a candidate id."
             )},
             {"role": "user", "content":
                 "READER:\n" + json.dumps(context, ensure_ascii=False) +
-                "\n\nCANDIDATES (each has a 'date' = publish date):\n" +
+                "\n\nALREADY_SENT_TOPICS (last 7 days -- do not repeat unless genuinely newer):\n" +
+                json.dumps(sent_topics, ensure_ascii=False) +
+                "\n\nCANDIDATES (each has 'date' = publish date, 'kind' = news|research):\n" +
                 json.dumps(candidates, ensure_ascii=False)},
-        ], max_tokens=2000)
-        items = out.get("items")
-        if not isinstance(items, list):
-            raise RuntimeError("contract violation: items missing")
-        scored = []
-        for it in items:
-            try:
-                idx = int(it["id"])
-                score = float(it.get("score", 0))
-            except (KeyError, TypeError, ValueError):
-                continue
-            if 0 <= idx < len(articles) and score > 0:
-                scored.append((score, idx, str(it.get("reason", ""))[:200]))
-        scored.sort(reverse=True)
-        keep = scored[: budget["items"]]
-        shortlist = [articles[idx] for _, idx, _ in keep]
-        rationale = {idx: reason for _, idx, reason in keep}
-        for score, idx, reason in keep:
-            print(f"   keep [{score:.0f}/10] {articles[idx].get('title', '')[:70]} -- {reason}")
-        dropped = len(candidates) - len(keep)
-        print(f"-> curator kept {len(keep)}, dropped {dropped}")
-        if not shortlist:
-            raise RuntimeError("curator scored everything 0 -- falling back to top-N")
-        return shortlist, rationale
+        ], max_tokens=2500)
+
+        topics = out.get("topics")
+        if not isinstance(topics, list) or not topics:
+            raise RuntimeError("contract violation: topics missing")
     except Exception as e:
+        # Only a genuine LLM/parse outage falls back -- never the "nothing new"
+        # case below, which is a legitimate decision, not a failure.
         print(f"!! STAGE CURATOR failed for {profile['id']}: {e}")
-        print(f"   falling back to first {budget['items']} articles unscored")
-        return articles[: budget["items"]], {}
+        print(f"   falling back to clustered top-{budget['items']}")
+        shortlist = _fallback_clusters(articles, budget, sent_topics)
+        return shortlist, {i: "" for i in range(len(shortlist))}
+
+    # The Curator LLM succeeded. Enforce the rules in code (it advises; we enforce).
+    sent_by_label = {t["label"].lower(): t["date"] for t in sent_topics}
+    clean, used_ids = [], set()
+    for t in topics:
+        try:
+            bid = int(t["best_id"])
+            score = float(t.get("score", 0))
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not (0 <= bid < len(articles)) or bid in used_ids or score <= 0:
+            continue
+        label = str(t.get("label", "")).strip()[:80] or (articles[bid].get("title") or "")[:80]
+        kind = "research" if (t.get("kind") == "research" or _is_research(articles[bid])) else "news"
+        reason = str(t.get("reason", ""))[:200]
+        is_followup = bool(t.get("is_followup"))
+
+        # Cross-day follow-up rule: if this topic was sent before, its
+        # representative must be NEWER than the last send, else it is a leftover.
+        prior = sent_by_label.get(label.lower())
+        if prior:
+            rep_date = (articles[bid].get("publishedAt") or "")[:10]
+            if rep_date <= prior:
+                print(f"   skip (already covered, no newer news) {label[:60]}")
+                continue
+            is_followup = True
+
+        used_ids.add(bid)
+        clean.append({"id": bid, "label": label, "score": score, "kind": kind,
+                      "reason": reason, "is_followup": is_followup})
+
+    if not clean:
+        # The reader has genuinely already seen every relevant story this week;
+        # re-sending a rehash would break the one-topic promise. Send nothing.
+        print(f"-> {profile['id']}: no genuinely new topics today; nothing to send")
+        return [], {}
+
+    clean.sort(key=lambda c: c["score"], reverse=True)
+
+    # Ranking deliberation: a second agent reviews balance / dedup / order.
+    clean = critique_ranking(profile, clean, articles, budget)
+
+    # Enforce the research cap after ranking, then trim to the format budget.
+    final, research_used = [], 0
+    for c in clean:
+        if c["kind"] == "research":
+            if research_used >= research_cap:
+                continue
+            research_used += 1
+        final.append(c)
+        if len(final) >= budget["items"]:
+            break
+
+    shortlist, rationale = [], {}
+    for a in articles:
+        a.pop("_topic_label", None)  # avoid stale labels leaking across profiles
+    for pos, c in enumerate(final):
+        art = articles[c["id"]]
+        art["_topic_label"] = c["label"]
+        shortlist.append(art)
+        rationale[pos] = c["reason"]
+        tag = " (follow-up)" if c["is_followup"] else ""
+        print(f"   keep [{c['score']:.0f}/10] {c['kind']}{tag}: {c['label'][:60]} -- {art.get('title','')[:50]}")
+    print(f"-> curator kept {len(shortlist)} topic(s) from {len(candidates)} candidates "
+          f"({research_used} research)")
+    return shortlist, rationale
+
+
+# --- RANKING CRITIC (role 4b): deliberates with the Curator on priority ---
+def critique_ranking(profile, ranked, articles, budget):
+    """A second agent reviews the Curator's ranked topics and can reorder or drop
+    them -- the two 'talk' about what deserves priority for this reader. Returns
+    the (possibly) revised ranked list; on any failure the input is returned
+    unchanged so a critic outage never blocks the send."""
+    if len(ranked) < 2:
+        return ranked
+    _stage(profile["id"], "RANK-CRITIC", f"{len(ranked)} topics")
+
+    proposal = [{
+        "id": c["id"],
+        "label": c["label"],
+        "score": c["score"],
+        "kind": c["kind"],
+        "date": (articles[c["id"]].get("publishedAt") or "")[:10],
+        "reason": c["reason"],
+    } for c in ranked]
+    context = {
+        "role_context": profile.get("role_context", ""),
+        "goals": profile.get("goals") or [],
+        "topics": profile.get("topics", []),
+        "watchlist": profile.get("watchlist", []),
+        "format_items": budget["items"],
+        "research_cap": max(1, budget["items"] // 3),
+    }
+    try:
+        out = _openai_json([
+            {"role": "system", "content": (
+                "You are the Ranking Critic. The Curator proposed a ranked list of story-topics for "
+                "this reader's daily brief. Review it as a second opinion and return the FINAL ranking.\n"
+                "Judge: (1) is the most important, most decision-relevant story for THIS reader at the "
+                "top? Reorder if not. (2) Is it too research-heavy? News should lead; keep 'research' "
+                "topics to at most research_cap and never at the very top unless truly the day's biggest "
+                "item. (3) Are any two entries actually the same story? Drop the weaker duplicate. "
+                "(4) Drop anything off-profile or stale.\n"
+                'Return JSON: {"ranked_ids":[int,...],"notes":"one line on what you changed and why"} '
+                "-- ranked_ids is the final order, best first, a subset/reordering of the proposed ids "
+                "(use the topic 'id' values). Keep the strongest items; you may shorten the list."
+            )},
+            {"role": "user", "content":
+                "READER:\n" + json.dumps(context, ensure_ascii=False) +
+                "\n\nPROPOSED RANKING (best-first as the Curator sees it):\n" +
+                json.dumps(proposal, ensure_ascii=False)},
+        ], max_tokens=800)
+
+        order = out.get("ranked_ids")
+        if not isinstance(order, list) or not order:
+            return ranked
+        by_id = {c["id"]: c for c in ranked}
+        revised, seen = [], set()
+        for rid in order:
+            try:
+                rid = int(rid)
+            except (TypeError, ValueError):
+                continue
+            if rid in by_id and rid not in seen:
+                revised.append(by_id[rid])
+                seen.add(rid)
+        if not revised:
+            return ranked
+        notes = str(out.get("notes", ""))[:200]
+        print(f"-> rank-critic: {len(ranked)} -> {len(revised)} topic(s){' -- ' + notes if notes else ''}")
+        return revised
+    except Exception as e:
+        print(f"!! STAGE RANK-CRITIC failed for {profile['id']}: {e} -- keeping curator order")
+        return ranked
 
 
 # --- CRITIC (role 5) ---
@@ -681,9 +950,12 @@ def build_prompt(profile, raw_text):
         f"Their watchlist (companies / products / protocols / people to track closely): {watchlist}\n"
         f"Do NOT cover / explicitly exclude: {exclude}\n\n"
 
-        "Task: The items below were pre-selected by a curator (WhyRelevant notes included where "
-        "available). Rank them for THIS reader and write the brief. Drop anything that on closer "
-        "reading is irrelevant or excluded. Quality over quantity.\n\n"
+        "Task: The items below were selected AND ranked by a curator and a ranking critic "
+        "(WhyRelevant notes included where available). Each item is a DISTINCT story-topic -- they are "
+        "already de-duplicated, so write exactly ONE block per item and never merge or split them, and "
+        "never cover the same story twice. Keep the given order: it is the deliberated priority for THIS "
+        "reader. You may drop an item only if on closer reading it is clearly irrelevant or excluded. "
+        "Quality over quantity.\n\n"
 
         "### OUTPUT (an HTML fragment only -- no <html>, <head> or <body> wrapper):\n"
         "1. Open with the bottom line:\n"
@@ -886,20 +1158,19 @@ def process(profile):
         print(f"-> {profile['id']}: no NEW articles today (all already sent); nothing sent.")
         return False
 
+    # The Curator clusters into topics (one item per story) and the Ranking
+    # Critic deliberates on priority; rationale is already indexed by shortlist
+    # position, and each shortlist article carries its `_topic_label`.
     shortlist, rationale = curate(profile, articles)
-    # rationale keys are indexes into `articles`; remap onto shortlist order.
-    remapped = {}
-    for new_i, art in enumerate(shortlist):
-        for old_i, reason in (rationale or {}).items():
-            if articles[old_i] is art:
-                remapped[new_i] = reason
-                break
+    if not shortlist:
+        print(f"-> {profile['id']}: nothing genuinely new to send today.")
+        return False
 
-    # Ensure every item in the brief has a picture.
+    # Ensure every item in the brief has a picture that fits its topic.
     _stage(profile["id"], "IMAGES")
     enrich_images(shortlist)
 
-    html, err = analyze(profile, shortlist, rationale=remapped)
+    html, err = analyze(profile, shortlist, rationale=rationale)
     if not html:
         print(f"!! STAGE WRITER failed for {profile['id']}:\n{err}")
         return False
@@ -907,7 +1178,7 @@ def process(profile):
     passed, notes = critique(profile, html)
     if not passed and notes:
         _stage(profile["id"], "WRITER", "regenerating once with critic notes")
-        retry_html, retry_err = analyze(profile, shortlist, rationale=remapped, critic_notes=notes)
+        retry_html, retry_err = analyze(profile, shortlist, rationale=rationale, critic_notes=notes)
         if retry_html:
             retry_passed, _ = critique(profile, retry_html)
             # Send the best draft we have: the rewrite if it passed (or at
@@ -922,9 +1193,12 @@ def process(profile):
     except Exception as e:
         print(f"!! {profile['id']}: failed to send email: {e}")
         return False
-    # Record what we just sent so tomorrow's brief won't repeat it. Record the
-    # curated shortlist (what actually went into the brief).
-    record_sent_urls(profile["id"], [a.get("url") for a in shortlist])
+    # Record URLs AND topics so tomorrow's brief won't repeat either: the same
+    # URL never returns, and a topic only returns if there is genuinely newer
+    # news on it (the cross-day follow-up rule).
+    record_sent(profile["id"], [
+        {"url": a.get("url"), "topic": a.get("_topic_label", "")} for a in shortlist
+    ])
     print(f"vv {profile['id']}: brief sent to {profile['email']}")
     return True
 

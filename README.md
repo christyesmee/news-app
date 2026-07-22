@@ -113,18 +113,38 @@ Five staged LLM roles with strict JSON contracts (no extra infrastructure):
 | intake (Netlify) | **Researcher** | consent-gated public web search (OpenAI `web_search`) |
 | intake (Netlify) | **Profiler** | role narrative, trajectory, goals, info needs, ≤3 gap questions |
 | intake (Netlify) | **Expander** | 8–15 topics, 20–40 watchlist, 10+ sources, query packs, arXiv cats |
-| daily run (Action) | **Curator** | scores every fetched item 0–10 vs the profile, keeps top N per format |
+| daily run (Action) | **Curator** | clusters the week's candidates into distinct story-topics, keeps ONE representative per topic, ranks by profile relevance + recency, caps research items |
+| daily run (Action) | **Ranking Critic** | second opinion on the Curator's ranking — reorders for priority, drops duplicate topics, keeps news leading over research |
+| daily run (Action) | **Writer** | writes one block per ranked topic, in the deliberated order, each with a topic-matched image |
 | daily run (Action) | **Critic** | QA of the draft; on fail → one regeneration with its notes, send best-of |
 
 Every stage validates its JSON and fails loudly with the stage name in the log —
-never a silent skip. Failures degrade (curator → top-N unscored, critic → send
-draft), so an OpenAI outage never blocks delivery.
+never a silent skip. Failures degrade (curator → clustered top-N, ranking critic
+→ curator order, critic → send draft), so an OpenAI outage never blocks delivery.
+
+### One topic per brief, and no repeats across days
+
+The Curator **clusters** candidates so a big story that spawns six articles
+appears **once**, not six times. Per-profile history (`history/<id>.json`,
+committed back by the workflow) keeps a **7-day** memory of both the URLs *and
+the topics* already sent. A topic may reappear on a later day **only if there is
+genuinely newer news on it** (the representative article is dated after the last
+time that topic went out) — a real follow-up, never a leftover. The brief also
+stays news-led: academic/preprint (arXiv) items are capped at roughly a third of
+the list.
+
+### Topic-matched images
+
+Every item gets a picture that fits the story, not random stock: the source
+image → the article's own Open Graph image → a **keyword-encoded topical photo**
+built from the story's own entities (resolved by the recipient's mail client, so
+it never depends on an engine-side fetch).
 
 **Cost (gpt-4o-mini, $0.15/M in, $0.60/M out):** intake ≈ 4–6 calls + 1 web
-search ≈ **€0.02–0.05 per signup**. Daily run per user ≈ 3–4 calls (curator,
-writer, critic, occasional rewrite) ≈ €0.005–0.01/day → **€0.15–0.30 per user
-per month**. Web search is the priciest single call (~€0.02); it runs once per
-intake, never daily.
+search ≈ **€0.02–0.05 per signup**. Daily run per user ≈ 4–5 calls (curator,
+ranking critic, writer, critic, occasional rewrite) ≈ €0.007–0.012/day →
+**€0.20–0.36 per user per month**. Web search is the priciest single call
+(~€0.02); it runs once per intake, never daily.
 
 ## Decisions taken on the plan's open questions
 
