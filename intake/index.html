@@ -190,6 +190,15 @@
       <details class="raw"><summary>View raw profile JSON</summary><pre id="raw"></pre></details>
     </section>
 
+    <!-- Unsubscribe (from the email link) -->
+    <section class="screen" id="s-unsub">
+      <h2>Unsubscribe</h2>
+      <p class="sub" id="unsub-sub">This stops your daily brief and permanently deletes your saved profile and data. This can't be undone.</p>
+      <div id="unsub-notice"></div>
+      <button class="primary" id="unsub-confirm" type="button" style="background:#ef4444;color:#fff">Unsubscribe &amp; delete my data</button>
+      <button class="primary" id="unsub-cancel" type="button" style="background:#fff;color:var(--muted);border:1px solid var(--line);margin-top:10px">Keep my brief</button>
+    </section>
+
     <!-- Instant first brief, shown right after activation -->
     <section class="screen" id="s-first">
       <h2>✓ You're all set</h2>
@@ -764,10 +773,47 @@
       }
     }
 
+    // ---------- unsubscribe (from the email link) ----------
+    function bootUnsub(id, token) {
+      show("s-unsub");
+      $("unsub-confirm").addEventListener("click", async () => {
+        const btn = $("unsub-confirm");
+        btn.disabled = true;
+        btn.textContent = "Removing…";
+        try {
+          const res = await fetch("/api/delete-profile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, token: token }),
+          });
+          const body = await res.json().catch(() => ({}));
+          if (!res.ok || !body.ok) throw new Error(body.error || ("HTTP " + res.status));
+          $("unsub-sub").textContent = "";
+          notice($("unsub-notice"), "ok",
+            "Done — you've been unsubscribed and your profile and data have been deleted. Sorry to see you go.");
+          btn.style.display = "none";
+          $("unsub-cancel").style.display = "none";
+        } catch (e) {
+          btn.disabled = false;
+          btn.textContent = "Unsubscribe & delete my data";
+          notice($("unsub-notice"), "err",
+            "Couldn't unsubscribe (" + (e.message || e) + "). Please use the link from your most recent email and try again.");
+        }
+      });
+      $("unsub-cancel").addEventListener("click", () => {
+        $("unsub-sub").textContent = "";
+        notice($("unsub-notice"), "ok", "No changes made — you'll keep getting your daily brief.");
+        $("unsub-confirm").style.display = "none";
+        $("unsub-cancel").style.display = "none";
+      });
+    }
+
     // ---------- kickoff ----------
     const params = new URLSearchParams(location.search);
     if (params.get("tune") && params.get("token")) {
       bootTune(params.get("tune").toLowerCase(), params.get("token"));
+    } else if (params.get("unsubscribe") && params.get("token")) {
+      bootUnsub(params.get("unsubscribe").toLowerCase(), params.get("token"));
     } else {
       startChat();
     }

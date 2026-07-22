@@ -779,15 +779,21 @@ def _clean_html(raw_html):
     return text.strip()
 
 
-def tune_link(profile):
-    """Signed tune-my-brief URL for this profile, or '' when not configured."""
+def _signed_link(profile, action):
+    """Signed {action}-my-brief URL for this profile, or '' when not configured.
+    The HMAC token authenticates that the holder controls this profile (no
+    passwords); the same token serves both tune and unsubscribe."""
     if not (PROFILE_LINK_SECRET and TUNE_BASE_URL):
         return ""
     import hmac
     import hashlib
     token = hmac.new(PROFILE_LINK_SECRET.encode(), profile["id"].encode(),
                      hashlib.sha256).hexdigest()[:32]
-    return f"{TUNE_BASE_URL}/?tune={profile['id']}&token={token}"
+    return f"{TUNE_BASE_URL}/?{action}={profile['id']}&token={token}"
+
+
+def tune_link(profile):
+    return _signed_link(profile, "tune")
 
 
 def send_email(profile, html_content):
@@ -798,6 +804,7 @@ def send_email(profile, html_content):
         template = "<html><body>{{DATE}}{{CONTENT}}</body></html>"
 
     link = tune_link(profile)
+    unsub = _signed_link(profile, "unsubscribe")
     if link:
         html_content += (
             "<div style='text-align:center;margin:32px 0 8px'>"
@@ -806,6 +813,12 @@ def send_email(profile, html_content):
             "✏️ Change my brief</a>"
             "<div style='font-size:12px;color:#999;margin-top:8px'>"
             "Opens a quick chat to adjust what you get.</div></div>"
+        )
+    if unsub:
+        html_content += (
+            "<div style='text-align:center;margin:14px 0 4px'>"
+            f"<a href='{unsub}' style='color:#999;font-size:12px;text-decoration:underline'>"
+            "Unsubscribe &amp; delete my data</a></div>"
         )
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
@@ -821,6 +834,8 @@ def send_email(profile, html_content):
     plain_text = greeting + _clean_html(html_content)
     if link:
         plain_text += f"\n\nChange my brief (opens a quick chat to adjust it): {link}"
+    if unsub:
+        plain_text += f"\n\nUnsubscribe & delete my data: {unsub}"
 
     recipient = profile["email"]
     msg = MIMEMultipart("alternative")

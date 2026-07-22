@@ -12,7 +12,16 @@ intake/
   netlify/functions/pipeline.mjs      staged agent pipeline (Enricher → Researcher →
                                       Profiler → Expander → Query-packer), OpenAI
   netlify/functions/save-profile.mjs  validates + commits profiles/<id>.json via GitHub API
+  netlify/functions/get-profile.mjs   serves the profile for the tune page (signed link)
+  netlify/functions/delete-profile.mjs unsubscribe: deletes profile + history (signed link, POST-only)
 ```
+
+The email footer carries two signed links (when `PROFILE_LINK_SECRET` is set):
+**"Change my brief"** (tune) and **"Unsubscribe & delete my data"**. The latter
+opens a confirmation screen and, only on an explicit click, POSTs to
+`delete-profile`, which removes `profiles/<id>.json` and `history/<id>.json` —
+so the user's account and data are fully erased and the engine stops emailing
+them. POST-only, so an email link-scanner can never delete an account.
 
 ## Flow
 
