@@ -422,6 +422,55 @@ def fetch_news(profile):
     return unique
 
 
+# --- IMAGE ENRICHMENT (every article in the email gets a picture) ---
+def _extract_og_image(url):
+    """Best-effort Open Graph / Twitter image from a direct article URL. Google
+    News redirect links are skipped (they don't expose a usable image)."""
+    if not url or "news.google.com" in url:
+        return None
+    try:
+        resp = requests.get(url, timeout=6, headers={"User-Agent": "Mozilla/5.0 (news-app)"})
+        html = resp.text[:150000]
+    except Exception:
+        return None
+    for pat in (
+        r'<meta[^>]+(?:property|name)=["\'](?:og:image|og:image:url|twitter:image)["\'][^>]+content=["\']([^"\']+)["\']',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\'](?:og:image|twitter:image)["\']',
+    ):
+        m = re.search(pat, html, re.IGNORECASE)
+        if m and m.group(1).strip().startswith("http"):
+            return m.group(1).strip()
+    return None
+
+
+def _fallback_image(a):
+    """Deterministic neutral photo so a story without a source image still shows
+    one (Google News / arXiv items don't carry an image)."""
+    import hashlib
+    seed = hashlib.md5((a.get("url") or a.get("title") or "x").encode("utf-8")).hexdigest()[:12]
+    return f"https://picsum.photos/seed/{seed}/640/360"
+
+
+def enrich_images(articles):
+    """Guarantee every article has an image URL: source image -> og:image ->
+    neutral fallback. Runs only on the curated shortlist (a handful of items),
+    so the extra fetches are bounded."""
+    real, og, fb = 0, 0, 0
+    for a in articles:
+        if a.get("urlToImage"):
+            real += 1
+            continue
+        img = _extract_og_image(a.get("url"))
+        if img:
+            og += 1
+        else:
+            img = _fallback_image(a)
+            fb += 1
+        a["urlToImage"] = img
+    print(f"   images: {real} from source, {og} via og:image, {fb} fallback")
+    return articles
+
+
 # --- SENT HISTORY (no-repeat news across days) ---
 HISTORY_DIR = "history"
 HISTORY_RETENTION_DAYS = 30
@@ -643,13 +692,15 @@ def build_prompt(profile, raw_text):
         "most important first, each formatted exactly as:\n"
         "   <div class='section'>\n"
         "     <div class='news-title'>HEADLINE</div>\n"
-        "     <img src='IMG_URL' class='story-image'>   <!-- include ONLY when a real image URL is given, never for NO_IMAGE -->\n"
+        "     <img src='IMG_URL' class='story-image'>   <!-- REQUIRED: every story block MUST open with its image, using the item's IMG value verbatim -->\n"
         "     <p><strong>What happened:</strong> the facts, 1-2 sentences. <a href='URL'>[1]</a></p>\n"
         "     <p><strong>Why it matters for you:</strong> tie it directly to their goals, watchlist or role.</p>\n"
         "     <p><strong>Watch / do:</strong> one concrete thing to monitor or act on.</p>\n"
         "   </div>\n\n"
 
         "### RULES:\n"
+        "- EVERY story block MUST include its image as the first element: <img src='IMG_URL' "
+        "class='story-image'> using that item's IMG value exactly. No story without a picture.\n"
         "- This is a DAILY brief: lead with the freshest news (today's, then most recent). Each item "
         "shows a Date -- order the brief newest-first and drop anything that reads as stale.\n"
         f"- Format: '{fmt}' -- keep each story block around {budget['words']} words.\n"
@@ -779,32 +830,21 @@ def send_email(profile, html_content):
     msg.attach(MIMEText(plain_text, "plain"))
     msg.attach(MIMEText(final_html, "html"))
 
-    # Operator copy: unless OPERATOR_BCC=0, blind-copy the sending account so a
-    # verifiable copy of every brief lands in your own inbox -- your confirmation
-    # that the send happened and exactly what went out, independent of whether the
-    # recipient's mailbox accepts or spam-filters it. (Not added to headers, so the
-    # recipient never sees it.)
-    envelope = [recipient]
-    bcc = (os.getenv("OPERATOR_BCC", "1").lower() not in ("0", "false", "no")) and EMAIL_USER
-    if bcc and EMAIL_USER not in envelope:
-        envelope.append(EMAIL_USER)
-
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     try:
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         # send_message returns a dict of recipients the SERVER refused outright.
-        refused = server.send_message(msg, from_addr=EMAIL_USER, to_addrs=envelope)
+        refused = server.send_message(msg)
     finally:
         server.quit()
 
     if refused:
-        # Some/all recipients were rejected by Gmail at handoff (bad address, etc.)
+        # Recipient was rejected by Gmail at handoff (bad address, etc.).
         raise RuntimeError(f"SMTP refused recipients: {refused}")
 
-    # NOTE: this confirms Gmail ACCEPTED the message for delivery -- not that it
-    # reached the inbox (spam/bounce can still happen downstream). The operator BCC
-    # is the human-verifiable confirmation.
-    print(f"vv SMTP accepted brief for {recipient}" + (f" (+ copy to {EMAIL_USER})" if bcc else ""))
+    # NOTE: confirms Gmail ACCEPTED the message -- not that it reached the inbox
+    # (spam/bounce can still happen downstream, out of our control).
+    print(f"vv SMTP accepted brief for {recipient}")
 
 
 # --- ORCHESTRATION ---
@@ -839,6 +879,10 @@ def process(profile):
             if articles[old_i] is art:
                 remapped[new_i] = reason
                 break
+
+    # Ensure every item in the brief has a picture.
+    _stage(profile["id"], "IMAGES")
+    enrich_images(shortlist)
 
     html, err = analyze(profile, shortlist, rationale=remapped)
     if not html:
