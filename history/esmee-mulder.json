@@ -51,6 +51,30 @@
     {
       "url": "https://arxiv.org/abs/2607.26723v1",
       "date": "2026-07-30"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok",
+      "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/samsung-expects-memory-shortage-to-worsen-through-2027-and-last-until-2028",
+      "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/vc-backed-startups-commit-more-fraud-and-researchers-think-they-know-why",
+      "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/google-nixes-its-earth-ai-feature-one-day-after-launch-amid-criticism-it-would-spread-misinformation",
+      "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/smallest-ai-raises-13m-to-build-ultra-fast-voice-ai-that-sounds-genuinely-human",
+      "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/07/31/india-is-starting-to-pay-for-apps-not-just-download-them",
+      "date": "2026-08-02"
     }
   ],
   "topics": [
@@ -118,6 +142,36 @@
       "label": "Robust Watermarking in AI Models",
       "date": "2026-07-30",
       "url": "https://arxiv.org/abs/2607.26723v1"
+    },
+    {
+      "label": "AI Misbehavior and Oversight Challenges",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok"
+    },
+    {
+      "label": "AI's Impact on Chip Demand and Supply Chain",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/samsung-expects-memory-shortage-to-worsen-through-2027-and-last-until-2028"
+    },
+    {
+      "label": "Trends in AI Startups and Investment",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/vc-backed-startups-commit-more-fraud-and-researchers-think-they-know-why"
+    },
+    {
+      "label": "AI-Generated Content Regulation",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/google-nixes-its-earth-ai-feature-one-day-after-launch-amid-criticism-it-would-spread-misinformation"
+    },
+    {
+      "label": "AI Voice Technology Developments",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/smallest-ai-raises-13m-to-build-ultra-fast-voice-ai-that-sounds-genuinely-human"
+    },
+    {
+      "label": "AI in App Monetization Trends",
+      "date": "2026-08-02",
+      "url": "https://techcrunch.com/2026/07/31/india-is-starting-to-pay-for-apps-not-just-download-them"
     }
   ]
 }
