@@ -1,34 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/07/27/satya-nadella-says-companies-that-trust-one-ai-for-everything-may-not-survive",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/microsoft-launches-its-first-cyber-model-and-a-new-agentic-cybersecurity-system",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/threads-users-can-now-chat-with-meta-ai-in-their-dms",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/googles-ai-search-is-rapidly-becoming-the-default-new-data-shows",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/cursor-makes-its-biggest-india-push-yet-ahead-of-spacex-acquisition-with-localized-pricing",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/ilya-sutskevers-safe-superintelligence-partners-with-nvidia-to-scale-its-ai-research",
-      "date": "2026-07-29"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/27/power-up-your-ai-infrastructure-a-first-look-at-the-smart-systems-stage-agenda-at-techcrunch-disrupt-2026",
-      "date": "2026-07-29"
-    },
-    {
       "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents",
       "date": "2026-07-30"
     },
@@ -75,44 +47,41 @@
     {
       "url": "https://techcrunch.com/2026/07/31/india-is-starting-to-pay-for-apps-not-just-download-them",
       "date": "2026-08-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/open-weight-ai-models-are-catching-up-to-the-frontier-the-safety-gap-remains",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/nvidia-doesnt-mess-around-a-week-after-open-ai-industry-group-formed-its-already-showing-progress",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/texas-halts-new-data-centers-as-governor-calls-for-audits",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/android-app-developers-may-be-unwittingly-sharing-their-users-location-data-with-advertisers",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/anthropic-signs-10-billion-deal-with-ai-cloud-startup-volta",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/04/meet-wrinkles-an-ai-app-that-uncovers-the-hidden-stories-of-the-places-around-you",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.01891v1",
+      "date": "2026-08-06"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.00742v1",
+      "date": "2026-08-06"
     }
   ],
   "topics": [
-    {
-      "label": "AI's Role in Business Strategy and Survival",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/satya-nadella-says-companies-that-trust-one-ai-for-everything-may-not-survive"
-    },
-    {
-      "label": "AI Cybersecurity Innovations by Microsoft",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/microsoft-launches-its-first-cyber-model-and-a-new-agentic-cybersecurity-system"
-    },
-    {
-      "label": "Meta's AI Integration in Social Media",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/threads-users-can-now-chat-with-meta-ai-in-their-dms"
-    },
-    {
-      "label": "Google's Dominance in AI Search Technologies",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/googles-ai-search-is-rapidly-becoming-the-default-new-data-shows"
-    },
-    {
-      "label": "AI and Localization Strategies in Tech",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/cursor-makes-its-biggest-india-push-yet-ahead-of-spacex-acquisition-with-localized-pricing"
-    },
-    {
-      "label": "NVIDIA's Partnership for AI Research Scaling",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/ilya-sutskevers-safe-superintelligence-partners-with-nvidia-to-scale-its-ai-research"
-    },
-    {
-      "label": "Emerging Trends in AI Infrastructure",
-      "date": "2026-07-29",
-      "url": "https://techcrunch.com/2026/07/27/power-up-your-ai-infrastructure-a-first-look-at-the-smart-systems-stage-agenda-at-techcrunch-disrupt-2026"
-    },
     {
       "label": "Cyera's Acquisition of Oasis Security for AI Safety",
       "date": "2026-07-30",
@@ -172,6 +141,46 @@
       "label": "AI in App Monetization Trends",
       "date": "2026-08-02",
       "url": "https://techcrunch.com/2026/07/31/india-is-starting-to-pay-for-apps-not-just-download-them"
+    },
+    {
+      "label": "Open-weight AI Models and Safety Concerns",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/open-weight-ai-models-are-catching-up-to-the-frontier-the-safety-gap-remains"
+    },
+    {
+      "label": "Nvidia's Progress in AI Governance Initiatives",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/nvidia-doesnt-mess-around-a-week-after-open-ai-industry-group-formed-its-already-showing-progress"
+    },
+    {
+      "label": "Texas Data Center Development Halt",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/texas-halts-new-data-centers-as-governor-calls-for-audits"
+    },
+    {
+      "label": "AI and Location Data Privacy Risks",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/android-app-developers-may-be-unwittingly-sharing-their-users-location-data-with-advertisers"
+    },
+    {
+      "label": "AI Cloud Partnerships and Market Dynamics",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/anthropic-signs-10-billion-deal-with-ai-cloud-startup-volta"
+    },
+    {
+      "label": "AI-Powered Local Storytelling App Launch",
+      "date": "2026-08-06",
+      "url": "https://techcrunch.com/2026/08/04/meet-wrinkles-an-ai-app-that-uncovers-the-hidden-stories-of-the-places-around-you"
+    },
+    {
+      "label": "Energy-Efficient LLM Serving Innovations",
+      "date": "2026-08-06",
+      "url": "https://arxiv.org/abs/2608.01891v1"
+    },
+    {
+      "label": "Multi-tenant Kubernetes Use Cases for AI",
+      "date": "2026-08-06",
+      "url": "https://arxiv.org/abs/2608.00742v1"
     }
   ]
 }
