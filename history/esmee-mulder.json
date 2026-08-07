@@ -1,30 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents",
-      "date": "2026-07-30"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/28/bot-detection-startup-spur-nabs-200m-from-insight",
-      "date": "2026-07-30"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/28/fish-audio-raises-50m-seed-to-build-ai-voice-models-for-creators-and-enterprises",
-      "date": "2026-07-30"
-    },
-    {
-      "url": "https://techcrunch.com/2026/07/28/data-centers-may-face-temporary-power-cuts-to-prevent-blackouts-on-largest-us-grid",
-      "date": "2026-07-30"
-    },
-    {
-      "url": "https://arxiv.org/abs/2607.26491v1",
-      "date": "2026-07-30"
-    },
-    {
-      "url": "https://arxiv.org/abs/2607.26723v1",
-      "date": "2026-07-30"
-    },
-    {
       "url": "https://techcrunch.com/2026/07/31/openai-reportedly-finds-evidence-that-more-of-its-agents-ran-amok",
       "date": "2026-08-02"
     },
@@ -79,39 +55,37 @@
     {
       "url": "https://arxiv.org/abs/2608.00742v1",
       "date": "2026-08-06"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/meta-launches-muse-code-an-ai-agent-for-large-code-bases",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/shopify-says-ai-search-is-driving-more-traffic-and-sales-not-replacing-google",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/anthropic-is-hiring-an-ai-chip-design-team",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/trumps-doj-gains-oversight-of-openais-green-card-employee-sponsorships",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/nikita-bier-steps-down-as-xs-head-of-product",
+      "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders",
+      "date": "2026-08-07"
     }
   ],
   "topics": [
-    {
-      "label": "Cyera's Acquisition of Oasis Security for AI Safety",
-      "date": "2026-07-30",
-      "url": "https://techcrunch.com/2026/07/28/cyera-agrees-to-acquire-oasis-security-for-1b-to-safeguard-proliferating-ai-agents"
-    },
-    {
-      "label": "Funding for AI Bot Detection Technology",
-      "date": "2026-07-30",
-      "url": "https://techcrunch.com/2026/07/28/bot-detection-startup-spur-nabs-200m-from-insight"
-    },
-    {
-      "label": "AI Voice Models for Creators and Enterprises",
-      "date": "2026-07-30",
-      "url": "https://techcrunch.com/2026/07/28/fish-audio-raises-50m-seed-to-build-ai-voice-models-for-creators-and-enterprises"
-    },
-    {
-      "label": "Emerging Trends in AI and Data Center Power Management",
-      "date": "2026-07-30",
-      "url": "https://techcrunch.com/2026/07/28/data-centers-may-face-temporary-power-cuts-to-prevent-blackouts-on-largest-us-grid"
-    },
-    {
-      "label": "Cross-Layer Evaluation for Energy-Efficient LLM Serving",
-      "date": "2026-07-30",
-      "url": "https://arxiv.org/abs/2607.26491v1"
-    },
-    {
-      "label": "Robust Watermarking in AI Models",
-      "date": "2026-07-30",
-      "url": "https://arxiv.org/abs/2607.26723v1"
-    },
     {
       "label": "AI Misbehavior and Oversight Challenges",
       "date": "2026-08-02",
@@ -181,6 +155,41 @@
       "label": "Multi-tenant Kubernetes Use Cases for AI",
       "date": "2026-08-06",
       "url": "https://arxiv.org/abs/2608.00742v1"
+    },
+    {
+      "label": "Meta's New AI Coding Agent Muse Code",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/meta-launches-muse-code-an-ai-agent-for-large-code-bases"
+    },
+    {
+      "label": "AI's Role in Driving Shopify Sales Growth",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/shopify-says-ai-search-is-driving-more-traffic-and-sales-not-replacing-google"
+    },
+    {
+      "label": "Anthropic's AI Chip Design Team Formation",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/anthropic-is-hiring-an-ai-chip-design-team"
+    },
+    {
+      "label": "Trump's DOJ Oversight of OpenAI's Hiring Practices",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/trumps-doj-gains-oversight-of-openais-green-card-employee-sponsorships"
+    },
+    {
+      "label": "Jeff Dean and AI Researchers Leaving Google",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup"
+    },
+    {
+      "label": "Nikita Bier Steps Down as X's Head of Product",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/nikita-bier-steps-down-as-xs-head-of-product"
+    },
+    {
+      "label": "Klaviyo's Acquisition of Elias Torres\u2019 Agency",
+      "date": "2026-08-07",
+      "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders"
     }
   ]
 }
