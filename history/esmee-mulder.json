@@ -83,6 +83,34 @@
     {
       "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders",
       "date": "2026-08-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/exclusive-mirendil-inks-100m-google-cloud-deal-to-scale-self-improving-ai",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/openais-new-ai-smart-speaker-will-reportedly-sell-for-between-300-and-400",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/ex-spotify-employees-raise-10m-to-bring-the-ai-behind-its-recommendations-to-e-commerce",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/tesla-and-spacex-will-invest-16-8b-to-start-building-terafab-chip-factory-in-texas",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/defense-tech-hadrian-raises-1-37b-at-8b-valuation",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/google-wallet-now-lets-parents-set-up-secure-balances-for-their-kids",
+      "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking",
+      "date": "2026-08-08"
     }
   ],
   "topics": [
@@ -190,6 +218,41 @@
       "label": "Klaviyo's Acquisition of Elias Torres\u2019 Agency",
       "date": "2026-08-07",
       "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders"
+    },
+    {
+      "label": "Mirendil's $100M+ Google Cloud Deal for Self-Improving AI",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/exclusive-mirendil-inks-100m-google-cloud-deal-to-scale-self-improving-ai"
+    },
+    {
+      "label": "OpenAI's AI Smart Speaker Launch",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/openais-new-ai-smart-speaker-will-reportedly-sell-for-between-300-and-400"
+    },
+    {
+      "label": "Ex-Spotify Employees' AI for E-commerce",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/ex-spotify-employees-raise-10m-to-bring-the-ai-behind-its-recommendations-to-e-commerce"
+    },
+    {
+      "label": "Tesla and SpaceX's Terafab Chip Factory Announcement",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/tesla-and-spacex-will-invest-16-8b-to-start-building-terafab-chip-factory-in-texas"
+    },
+    {
+      "label": "Hadrian's $1.37B Funding for Automated Defense Manufacturing",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/defense-tech-hadrian-raises-1-37b-at-8b-valuation"
+    },
+    {
+      "label": "Google's New Wallet Feature for Kids",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/google-wallet-now-lets-parents-set-up-secure-balances-for-their-kids"
+    },
+    {
+      "label": "Gen Z Dating Apps Using AI Matchmaking",
+      "date": "2026-08-08",
+      "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking"
     }
   ]
 }
