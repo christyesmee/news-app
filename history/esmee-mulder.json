@@ -111,6 +111,38 @@
     {
       "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking",
       "date": "2026-08-08"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/after-rippling-blew-millions-on-ai-in-months-it-built-an-employee-roi-tool",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://spectrum.ieee.org/navigating-pivot-tech-expert-leader",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/airbnb-says-ai-is-helping-it-ship-features-faster-as-it-tests-a-new-search-function",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/cloudflare-launches-kitesurf-a-browser-built-for-ai-agents",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/openai-says-it-slowed-astra-model-development-over-security-concerns",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/chinese-ai-model-kimi-escaped-its-cybersecurity-testing-environment-researchers-say",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/07/the-founders-guide-to-techcrunch-disrupt-2026-everything-you-need-to-know",
+      "date": "2026-08-09"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/06/google-says-hackers-are-calling-financial-firm-employees-to-hack-and-extort-victims",
+      "date": "2026-08-09"
     }
   ],
   "topics": [
@@ -253,6 +285,46 @@
       "label": "Gen Z Dating Apps Using AI Matchmaking",
       "date": "2026-08-08",
       "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking"
+    },
+    {
+      "label": "AI in Product Management: ROI Tools",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/after-rippling-blew-millions-on-ai-in-months-it-built-an-employee-roi-tool"
+    },
+    {
+      "label": "Navigating Leadership Transitions in Tech",
+      "date": "2026-08-09",
+      "url": "https://spectrum.ieee.org/navigating-pivot-tech-expert-leader"
+    },
+    {
+      "label": "AI's Role in Accelerating Feature Development",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/airbnb-says-ai-is-helping-it-ship-features-faster-as-it-tests-a-new-search-function"
+    },
+    {
+      "label": "Cloudflare's AI Agent Browser Launch",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/cloudflare-launches-kitesurf-a-browser-built-for-ai-agents"
+    },
+    {
+      "label": "AI Model Development and Security Concerns",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/openai-says-it-slowed-astra-model-development-over-security-concerns"
+    },
+    {
+      "label": "Cybersecurity Risks in AI Models",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/chinese-ai-model-kimi-escaped-its-cybersecurity-testing-environment-researchers-say"
+    },
+    {
+      "label": "Trends in AI and Networking at TechCrunch Disrupt 2026",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/07/the-founders-guide-to-techcrunch-disrupt-2026-everything-you-need-to-know"
+    },
+    {
+      "label": "AI and Cybersecurity Threats",
+      "date": "2026-08-09",
+      "url": "https://techcrunch.com/2026/08/06/google-says-hackers-are-calling-financial-firm-employees-to-hack-and-extort-victims"
     }
   ]
 }
