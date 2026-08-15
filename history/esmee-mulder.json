@@ -1,66 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/04/open-weight-ai-models-are-catching-up-to-the-frontier-the-safety-gap-remains",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/04/nvidia-doesnt-mess-around-a-week-after-open-ai-industry-group-formed-its-already-showing-progress",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/04/texas-halts-new-data-centers-as-governor-calls-for-audits",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/04/android-app-developers-may-be-unwittingly-sharing-their-users-location-data-with-advertisers",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/04/anthropic-signs-10-billion-deal-with-ai-cloud-startup-volta",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/04/meet-wrinkles-an-ai-app-that-uncovers-the-hidden-stories-of-the-places-around-you",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.01891v1",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.00742v1",
-      "date": "2026-08-06"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/meta-launches-muse-code-an-ai-agent-for-large-code-bases",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/shopify-says-ai-search-is-driving-more-traffic-and-sales-not-replacing-google",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/anthropic-is-hiring-an-ai-chip-design-team",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/trumps-doj-gains-oversight-of-openais-green-card-employee-sponsorships",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/nikita-bier-steps-down-as-xs-head-of-product",
-      "date": "2026-08-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders",
-      "date": "2026-08-07"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/06/exclusive-mirendil-inks-100m-google-cloud-deal-to-scale-self-improving-ai",
       "date": "2026-08-08"
     },
@@ -171,84 +111,41 @@
     {
       "url": "https://techcrunch.com/2026/08/09/this-former-notorious-red-light-district-is-now-one-of-the-worlds-top-ai-hubs",
       "date": "2026-08-11"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.13426v1",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.13420v1",
+      "date": "2026-08-15"
+    },
+    {
+      "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting",
+      "date": "2026-08-15"
     }
   ],
   "topics": [
-    {
-      "label": "Open-weight AI Models and Safety Concerns",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/open-weight-ai-models-are-catching-up-to-the-frontier-the-safety-gap-remains"
-    },
-    {
-      "label": "Nvidia's Progress in AI Governance Initiatives",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/nvidia-doesnt-mess-around-a-week-after-open-ai-industry-group-formed-its-already-showing-progress"
-    },
-    {
-      "label": "Texas Data Center Development Halt",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/texas-halts-new-data-centers-as-governor-calls-for-audits"
-    },
-    {
-      "label": "AI and Location Data Privacy Risks",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/android-app-developers-may-be-unwittingly-sharing-their-users-location-data-with-advertisers"
-    },
-    {
-      "label": "AI Cloud Partnerships and Market Dynamics",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/anthropic-signs-10-billion-deal-with-ai-cloud-startup-volta"
-    },
-    {
-      "label": "AI-Powered Local Storytelling App Launch",
-      "date": "2026-08-06",
-      "url": "https://techcrunch.com/2026/08/04/meet-wrinkles-an-ai-app-that-uncovers-the-hidden-stories-of-the-places-around-you"
-    },
-    {
-      "label": "Energy-Efficient LLM Serving Innovations",
-      "date": "2026-08-06",
-      "url": "https://arxiv.org/abs/2608.01891v1"
-    },
-    {
-      "label": "Multi-tenant Kubernetes Use Cases for AI",
-      "date": "2026-08-06",
-      "url": "https://arxiv.org/abs/2608.00742v1"
-    },
-    {
-      "label": "Meta's New AI Coding Agent Muse Code",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/meta-launches-muse-code-an-ai-agent-for-large-code-bases"
-    },
-    {
-      "label": "AI's Role in Driving Shopify Sales Growth",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/shopify-says-ai-search-is-driving-more-traffic-and-sales-not-replacing-google"
-    },
-    {
-      "label": "Anthropic's AI Chip Design Team Formation",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/anthropic-is-hiring-an-ai-chip-design-team"
-    },
-    {
-      "label": "Trump's DOJ Oversight of OpenAI's Hiring Practices",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/trumps-doj-gains-oversight-of-openais-green-card-employee-sponsorships"
-    },
-    {
-      "label": "Jeff Dean and AI Researchers Leaving Google",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/jeff-dean-and-other-top-ai-researchers-are-leaving-google-to-launch-their-own-startup"
-    },
-    {
-      "label": "Nikita Bier Steps Down as X's Head of Product",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/nikita-bier-steps-down-as-xs-head-of-product"
-    },
-    {
-      "label": "Klaviyo's Acquisition of Elias Torres\u2019 Agency",
-      "date": "2026-08-07",
-      "url": "https://techcrunch.com/2026/08/05/klaviyo-acquires-elias-torres-agency-in-full-circle-reunion-for-tech-founders"
-    },
     {
       "label": "Mirendil's $100M+ Google Cloud Deal for Self-Improving AI",
       "date": "2026-08-08",
@@ -388,6 +285,46 @@
       "label": "Emerging AI Hubs and Innovation",
       "date": "2026-08-11",
       "url": "https://techcrunch.com/2026/08/09/this-former-notorious-red-light-district-is-now-one-of-the-worlds-top-ai-hubs"
+    },
+    {
+      "label": "OpenAI's New 'Ultrafast' Model for Enterprises",
+      "date": "2026-08-15",
+      "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed"
+    },
+    {
+      "label": "IBM and OpenAI Partnership for Enterprise AI",
+      "date": "2026-08-15",
+      "url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push"
+    },
+    {
+      "label": "Anthropic's AI Agents and Safety Risks",
+      "date": "2026-08-15",
+      "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war"
+    },
+    {
+      "label": "Nvidia's $500B Plan for AI Buildouts",
+      "date": "2026-08-15",
+      "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus"
+    },
+    {
+      "label": "Microsoft's AI Feature Consolidation",
+      "date": "2026-08-15",
+      "url": "https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps"
+    },
+    {
+      "label": "Reduced Matrix Multiplication for LLM Inference",
+      "date": "2026-08-15",
+      "url": "https://arxiv.org/abs/2608.13426v1"
+    },
+    {
+      "label": "Enhancing Virtual Agents with Edge Computing",
+      "date": "2026-08-15",
+      "url": "https://arxiv.org/abs/2608.13420v1"
+    },
+    {
+      "label": "AI Hallucinations and Cybercrime",
+      "date": "2026-08-15",
+      "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting"
     }
   ]
 }
