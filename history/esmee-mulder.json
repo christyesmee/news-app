@@ -1,34 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/06/exclusive-mirendil-inks-100m-google-cloud-deal-to-scale-self-improving-ai",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/openais-new-ai-smart-speaker-will-reportedly-sell-for-between-300-and-400",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/ex-spotify-employees-raise-10m-to-bring-the-ai-behind-its-recommendations-to-e-commerce",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/tesla-and-spacex-will-invest-16-8b-to-start-building-terafab-chip-factory-in-texas",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/defense-tech-hadrian-raises-1-37b-at-8b-valuation",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/google-wallet-now-lets-parents-set-up-secure-balances-for-their-kids",
-      "date": "2026-08-08"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking",
-      "date": "2026-08-08"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/07/after-rippling-blew-millions-on-ai-in-months-it-built-an-employee-roi-tool",
       "date": "2026-08-09"
     },
@@ -143,44 +115,41 @@
     {
       "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting",
       "date": "2026-08-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/14/thrives-joshua-kushner-chides-silicon-valley-vcs-over-ai-euphoria",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/14/self-driving-trucks-are-officially-testing-on-california-highways",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/14/google-will-now-allow-users-to-remove-visible-watermark-from-its-ai-generations",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/14/hyperscalers-might-regret-embracing-natural-gas-if-new-forecast-proves-correct",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://www.itpro.com/business/leadership/tricentis-names-erika-dean-as-chief-information-security-officer",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.10385v1",
+      "date": "2026-08-16"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.09225v1",
+      "date": "2026-08-16"
     }
   ],
   "topics": [
-    {
-      "label": "Mirendil's $100M+ Google Cloud Deal for Self-Improving AI",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/exclusive-mirendil-inks-100m-google-cloud-deal-to-scale-self-improving-ai"
-    },
-    {
-      "label": "OpenAI's AI Smart Speaker Launch",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/openais-new-ai-smart-speaker-will-reportedly-sell-for-between-300-and-400"
-    },
-    {
-      "label": "Ex-Spotify Employees' AI for E-commerce",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/ex-spotify-employees-raise-10m-to-bring-the-ai-behind-its-recommendations-to-e-commerce"
-    },
-    {
-      "label": "Tesla and SpaceX's Terafab Chip Factory Announcement",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/tesla-and-spacex-will-invest-16-8b-to-start-building-terafab-chip-factory-in-texas"
-    },
-    {
-      "label": "Hadrian's $1.37B Funding for Automated Defense Manufacturing",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/defense-tech-hadrian-raises-1-37b-at-8b-valuation"
-    },
-    {
-      "label": "Google's New Wallet Feature for Kids",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/google-wallet-now-lets-parents-set-up-secure-balances-for-their-kids"
-    },
-    {
-      "label": "Gen Z Dating Apps Using AI Matchmaking",
-      "date": "2026-08-08",
-      "url": "https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking"
-    },
     {
       "label": "AI in Product Management: ROI Tools",
       "date": "2026-08-09",
@@ -325,6 +294,46 @@
       "label": "AI Hallucinations and Cybercrime",
       "date": "2026-08-15",
       "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting"
+    },
+    {
+      "label": "AI Euphoria and Investment Discipline",
+      "date": "2026-08-16",
+      "url": "https://techcrunch.com/2026/08/14/thrives-joshua-kushner-chides-silicon-valley-vcs-over-ai-euphoria"
+    },
+    {
+      "label": "Self-Driving Trucks Testing in California",
+      "date": "2026-08-16",
+      "url": "https://techcrunch.com/2026/08/14/self-driving-trucks-are-officially-testing-on-california-highways"
+    },
+    {
+      "label": "Google's AI Watermark Removal Feature",
+      "date": "2026-08-16",
+      "url": "https://techcrunch.com/2026/08/14/google-will-now-allow-users-to-remove-visible-watermark-from-its-ai-generations"
+    },
+    {
+      "label": "AI Model Deployment Cost Management",
+      "date": "2026-08-16",
+      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs"
+    },
+    {
+      "label": "AI's Impact on Data Center Costs",
+      "date": "2026-08-16",
+      "url": "https://techcrunch.com/2026/08/14/hyperscalers-might-regret-embracing-natural-gas-if-new-forecast-proves-correct"
+    },
+    {
+      "label": "AI in Cybersecurity: New Developments",
+      "date": "2026-08-16",
+      "url": "https://www.itpro.com/business/leadership/tricentis-names-erika-dean-as-chief-information-security-officer"
+    },
+    {
+      "label": "Emerging AI Research Trends",
+      "date": "2026-08-16",
+      "url": "https://arxiv.org/abs/2608.10385v1"
+    },
+    {
+      "label": "AI and Multi-Tenant Inference Security",
+      "date": "2026-08-16",
+      "url": "https://arxiv.org/abs/2608.09225v1"
     }
   ]
 }
