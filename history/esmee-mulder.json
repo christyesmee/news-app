@@ -1,26 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/08/planned-amazon-data-center-could-become-the-biggest-climate-polluter-in-the-u-s",
-      "date": "2026-08-10"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/07/computer-maker-framework-notifies-all-customers-of-a-data-breach",
-      "date": "2026-08-10"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/08/openai-acquires-presentation-startup-nextslide",
-      "date": "2026-08-10"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/07/security-researchers-scanned-the-polish-web-and-found-courts-hospitals-and-airports-at-risk-of-hacks",
-      "date": "2026-08-10"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.06723v1",
-      "date": "2026-08-10"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/09/embattled-hedge-fund-situational-awareness-invests-400m-in-chip-startup-source-foundry",
       "date": "2026-08-11"
     },
@@ -143,34 +123,29 @@
     {
       "url": "https://techcrunch.com/2026/08/14/uber-and-pony-ai-plan-to-bring-2000-robotaxis-to-europe",
       "date": "2026-08-17"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b",
+      "date": "2026-08-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust",
+      "date": "2026-08-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/16/why-people-arent-buying-mark-zuckerbergs-ai-future",
+      "date": "2026-08-18"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOZ1EzbjlyNEpvN192dXAxcGtjY3VneDd6ZHZpV04tQ1I4TkwwQzRDejFETnFXOXVQc3ZVYndaSjB0YUdrb3VLSlNLa0RnMlI2bXhGNGk4OWxCMGRqOEVyUXZvTFhORl81SjVHeGhBcWJic0I1bzdKTkgzb0pyam9PaVdVdVYyRlFRVmdZSEtmcHR3MmRPWlFlSGlHQl9Ec00xU2tUTERMdmVyRDlOc3BzamRnLWw?oc=5",
+      "date": "2026-08-18"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.15410v1",
+      "date": "2026-08-18"
     }
   ],
   "topics": [
-    {
-      "label": "AI and Networking Trends at TechCrunch Disrupt 2026",
-      "date": "2026-08-10",
-      "url": "https://techcrunch.com/2026/08/08/planned-amazon-data-center-could-become-the-biggest-climate-polluter-in-the-u-s"
-    },
-    {
-      "label": "Data Breaches and Cybersecurity Risks in Tech",
-      "date": "2026-08-10",
-      "url": "https://techcrunch.com/2026/08/07/computer-maker-framework-notifies-all-customers-of-a-data-breach"
-    },
-    {
-      "label": "OpenAI's Strategic Acquisitions and Market Impact",
-      "date": "2026-08-10",
-      "url": "https://techcrunch.com/2026/08/08/openai-acquires-presentation-startup-nextslide"
-    },
-    {
-      "label": "Emerging Cybersecurity Threats in AI Models",
-      "date": "2026-08-10",
-      "url": "https://techcrunch.com/2026/08/07/security-researchers-scanned-the-polish-web-and-found-courts-hospitals-and-airports-at-risk-of-hacks"
-    },
-    {
-      "label": "Research on Large Language Models and Inference Efficiency",
-      "date": "2026-08-10",
-      "url": "https://arxiv.org/abs/2608.06723v1"
-    },
     {
       "label": "Investment Trends in AI Chip Startups",
       "date": "2026-08-11",
@@ -325,6 +300,31 @@
       "label": "AI and Autonomous Vehicles",
       "date": "2026-08-17",
       "url": "https://techcrunch.com/2026/08/14/uber-and-pony-ai-plan-to-bring-2000-robotaxis-to-europe"
+    },
+    {
+      "label": "Stripe's Acquisition of OpenRouter and AI Gateway Innovations",
+      "date": "2026-08-18",
+      "url": "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b"
+    },
+    {
+      "label": "AI Backlash and Trust Issues in Technology",
+      "date": "2026-08-18",
+      "url": "https://techcrunch.com/2026/08/16/anthropic-ceo-says-ai-backlash-is-fundamentally-a-crisis-of-trust"
+    },
+    {
+      "label": "Challenges in AI Adoption and Market Perception",
+      "date": "2026-08-18",
+      "url": "https://techcrunch.com/2026/08/16/why-people-arent-buying-mark-zuckerbergs-ai-future"
+    },
+    {
+      "label": "AI Server Competition and Supply Chain Dynamics",
+      "date": "2026-08-18",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOZ1EzbjlyNEpvN192dXAxcGtjY3VneDd6ZHZpV04tQ1I4TkwwQzRDejFETnFXOXVQc3ZVYndaSjB0YUdrb3VLSlNLa0RnMlI2bXhGNGk4OWxCMGRqOEVyUXZvTFhORl81SjVHeGhBcWJic0I1bzdKTkgzb0pyam9PaVdVdVYyRlFRVmdZSEtmcHR3MmRPWlFlSGlHQl9Ec00xU2tUTERMdmVyRDlOc3BzamRnLWw?oc=5"
+    },
+    {
+      "label": "Benchmarking AI for Disaster Response at the Edge",
+      "date": "2026-08-18",
+      "url": "https://arxiv.org/abs/2608.15410v1"
     }
   ]
 }
