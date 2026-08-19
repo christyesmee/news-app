@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/09/embattled-hedge-fund-situational-awareness-invests-400m-in-chip-startup-source-foundry",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/anthropic-is-turning-claude-codes-auto-mode-on-by-default",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/the-ai-safety-test-is-becoming-a-safety-risk",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/this-adversarial-pattern-can-prevent-surveillance-cameras-from-detecting-you",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/historian-jill-lepore-says-the-tech-industry-is-led-by-bad-readers-who-are-undermining-democracy",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/techcrunch-mobility-zoox-prepares-for-launch-and-ubers-av-empire",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/08/x-replaces-misaligned-revenue-sharing-program-with-original-content-rewards",
-      "date": "2026-08-11"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/09/this-former-notorious-red-light-district-is-now-one-of-the-worlds-top-ai-hubs",
-      "date": "2026-08-11"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed",
       "date": "2026-08-15"
     },
@@ -143,49 +111,41 @@
     {
       "url": "https://arxiv.org/abs/2608.15410v1",
       "date": "2026-08-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/amazon-once-an-online-bookseller-is-destroying-rare-books-to-train-ai-models",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/unprecedented-number-of-apple-users-received-recent-spyware-alert-say-investigators",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/ai-automation-startup-relay-shuts-down-staff-joins-googles-chrome-team",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://www.forrester.com/blogs/forresters-global-net-promoter-score-rankings-reveal-a-turn-in-customer-loyalty",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/17/uber-adds-zipline-drones-to-its-eats-delivery-network",
+      "date": "2026-08-19"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.17071v1",
+      "date": "2026-08-19"
     }
   ],
   "topics": [
-    {
-      "label": "Investment Trends in AI Chip Startups",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/embattled-hedge-fund-situational-awareness-invests-400m-in-chip-startup-source-foundry"
-    },
-    {
-      "label": "Advancements in AI Coding Tools",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/anthropic-is-turning-claude-codes-auto-mode-on-by-default"
-    },
-    {
-      "label": "AI Safety and Cybersecurity Risks",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/the-ai-safety-test-is-becoming-a-safety-risk"
-    },
-    {
-      "label": "AI and Surveillance Technology",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/this-adversarial-pattern-can-prevent-surveillance-cameras-from-detecting-you"
-    },
-    {
-      "label": "AI in Cybersecurity Testing",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/historian-jill-lepore-says-the-tech-industry-is-led-by-bad-readers-who-are-undermining-democracy"
-    },
-    {
-      "label": "Trends in AI and Transportation",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/techcrunch-mobility-zoox-prepares-for-launch-and-ubers-av-empire"
-    },
-    {
-      "label": "AI's Impact on Content Creation Platforms",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/08/x-replaces-misaligned-revenue-sharing-program-with-original-content-rewards"
-    },
-    {
-      "label": "Emerging AI Hubs and Innovation",
-      "date": "2026-08-11",
-      "url": "https://techcrunch.com/2026/08/09/this-former-notorious-red-light-district-is-now-one-of-the-worlds-top-ai-hubs"
-    },
     {
       "label": "OpenAI's New 'Ultrafast' Model for Enterprises",
       "date": "2026-08-15",
@@ -325,6 +285,46 @@
       "label": "Benchmarking AI for Disaster Response at the Edge",
       "date": "2026-08-18",
       "url": "https://arxiv.org/abs/2608.15410v1"
+    },
+    {
+      "label": "AI Revenue Growth and Market Dynamics",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b"
+    },
+    {
+      "label": "AI Chip Market Shifts and Investments",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud"
+    },
+    {
+      "label": "AI and Data Privacy Concerns",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/amazon-once-an-online-bookseller-is-destroying-rare-books-to-train-ai-models"
+    },
+    {
+      "label": "AI in Cybersecurity and User Safety",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/unprecedented-number-of-apple-users-received-recent-spyware-alert-say-investigators"
+    },
+    {
+      "label": "AI Automation and Industry Changes",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/ai-automation-startup-relay-shuts-down-staff-joins-googles-chrome-team"
+    },
+    {
+      "label": "Customer Loyalty Trends in Tech",
+      "date": "2026-08-19",
+      "url": "https://www.forrester.com/blogs/forresters-global-net-promoter-score-rankings-reveal-a-turn-in-customer-loyalty"
+    },
+    {
+      "label": "Innovations in AI Delivery Systems",
+      "date": "2026-08-19",
+      "url": "https://techcrunch.com/2026/08/17/uber-adds-zipline-drones-to-its-eats-delivery-network"
+    },
+    {
+      "label": "AI Frameworks for Optimization",
+      "date": "2026-08-19",
+      "url": "https://arxiv.org/abs/2608.17071v1"
     }
   ]
 }
