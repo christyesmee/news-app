@@ -175,6 +175,34 @@
     {
       "url": "https://spectrum.ieee.org/arctic-iceberg-drones",
       "date": "2026-08-20"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/waymos-cheaper-next-gen-robotaxi-is-now-open-to-all-riders-in-these-three-cities",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/ai-was-supposed-to-win-people-over-by-now-it-hasnt",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/researchers-complain-that-openai-revoked-their-access-to-limited-cyber-program",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/terrapowers-nuclear-reactor-has-a-secret-weapon-for-powering-ai-data-centers",
+      "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required",
+      "date": "2026-08-21"
     }
   ],
   "topics": [
@@ -397,6 +425,41 @@
       "label": "Drones with Claws for Arctic Exploration",
       "date": "2026-08-20",
       "url": "https://spectrum.ieee.org/arctic-iceberg-drones"
+    },
+    {
+      "label": "Stripe's Strategic Move with OpenRouter",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity"
+    },
+    {
+      "label": "Waymo's Next-Gen Robotaxi Launch",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/waymos-cheaper-next-gen-robotaxi-is-now-open-to-all-riders-in-these-three-cities"
+    },
+    {
+      "label": "OpenAI's New Privacy Protections for Enterprises",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections"
+    },
+    {
+      "label": "AI Adoption Challenges and Consumer Sentiment",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/ai-was-supposed-to-win-people-over-by-now-it-hasnt"
+    },
+    {
+      "label": "AI's Role in Cybersecurity and User Safety",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/researchers-complain-that-openai-revoked-their-access-to-limited-cyber-program"
+    },
+    {
+      "label": "TerraPower's Nuclear Advantage for AI Data Centers",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/terrapowers-nuclear-reactor-has-a-secret-weapon-for-powering-ai-data-centers"
+    },
+    {
+      "label": "Amazon's Expansion of AI-Powered Services",
+      "date": "2026-08-21",
+      "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required"
     }
   ]
 }
