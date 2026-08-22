@@ -203,6 +203,34 @@
     {
       "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required",
       "date": "2026-08-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/ai-data-startup-micro1-reaches-500m-gross-run-rate-amid-ai-training-boom",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/openai-is-gaining-on-anthropic-with-business-users-new-data-indicates",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/ramp-launches-its-own-ai-model-router-called-router",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/video/learn-what-vcs-actually-want-from-a-founder-whos-raised-1b",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/google-gives-publishers-a-new-way-to-fight-ai-driven-traffic-losses",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/20/tesla-uber-and-waymo-all-get-the-ok-to-operate-thousands-of-robotaxis-in-nevada",
+      "date": "2026-08-22"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.19535v1",
+      "date": "2026-08-22"
     }
   ],
   "topics": [
@@ -460,6 +488,41 @@
       "label": "Amazon's Expansion of AI-Powered Services",
       "date": "2026-08-21",
       "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required"
+    },
+    {
+      "label": "AI Data Startup Growth Amid Training Boom",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/2026/08/20/ai-data-startup-micro1-reaches-500m-gross-run-rate-amid-ai-training-boom"
+    },
+    {
+      "label": "OpenAI vs Anthropic in Enterprise AI Market",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/2026/08/20/openai-is-gaining-on-anthropic-with-business-users-new-data-indicates"
+    },
+    {
+      "label": "AI Model Routing Innovations",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/2026/08/20/ramp-launches-its-own-ai-model-router-called-router"
+    },
+    {
+      "label": "AI in Product Management: Lessons from Founders",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/video/learn-what-vcs-actually-want-from-a-founder-whos-raised-1b"
+    },
+    {
+      "label": "Google's New Tools for Publishers Against AI Traffic Losses",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/2026/08/20/google-gives-publishers-a-new-way-to-fight-ai-driven-traffic-losses"
+    },
+    {
+      "label": "Tesla, Uber, and Waymo's Robotaxi Operations in Nevada",
+      "date": "2026-08-22",
+      "url": "https://techcrunch.com/2026/08/20/tesla-uber-and-waymo-all-get-the-ok-to-operate-thousands-of-robotaxis-in-nevada"
+    },
+    {
+      "label": "Trends in AI and Data Center Innovations",
+      "date": "2026-08-22",
+      "url": "https://arxiv.org/abs/2608.19535v1"
     }
   ]
 }
