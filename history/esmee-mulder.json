@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.13426v1",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.13420v1",
-      "date": "2026-08-15"
-    },
-    {
-      "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting",
-      "date": "2026-08-15"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/14/thrives-joshua-kushner-chides-silicon-valley-vcs-over-ai-euphoria",
       "date": "2026-08-16"
     },
@@ -231,49 +199,29 @@
     {
       "url": "https://arxiv.org/abs/2608.19535v1",
       "date": "2026-08-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/nvidia-partners-with-data-center-developer-cloverleaf",
+      "date": "2026-08-23"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBFa3VOWGNqZEhhYmdGNnNLb25DUFR5aXJnajNScVVSc1VyWXZyb3F2SWFORW11bGFSeFB3UFc3NUJQb2tDRW0wT2stVmpZd1g4cU9ta1VpclM1RUYxcVgyMg?oc=5",
+      "date": "2026-08-23"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/senator-asks-us-federal-watchdog-to-review-how-feds-use-hacking-tools",
+      "date": "2026-08-23"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/michael-polansky-is-training-an-ai-model-on-skin-thats-still-alive",
+      "date": "2026-08-23"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero",
+      "date": "2026-08-23"
     }
   ],
   "topics": [
-    {
-      "label": "OpenAI's New 'Ultrafast' Model for Enterprises",
-      "date": "2026-08-15",
-      "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed"
-    },
-    {
-      "label": "IBM and OpenAI Partnership for Enterprise AI",
-      "date": "2026-08-15",
-      "url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push"
-    },
-    {
-      "label": "Anthropic's AI Agents and Safety Risks",
-      "date": "2026-08-15",
-      "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war"
-    },
-    {
-      "label": "Nvidia's $500B Plan for AI Buildouts",
-      "date": "2026-08-15",
-      "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus"
-    },
-    {
-      "label": "Microsoft's AI Feature Consolidation",
-      "date": "2026-08-15",
-      "url": "https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps"
-    },
-    {
-      "label": "Reduced Matrix Multiplication for LLM Inference",
-      "date": "2026-08-15",
-      "url": "https://arxiv.org/abs/2608.13426v1"
-    },
-    {
-      "label": "Enhancing Virtual Agents with Edge Computing",
-      "date": "2026-08-15",
-      "url": "https://arxiv.org/abs/2608.13420v1"
-    },
-    {
-      "label": "AI Hallucinations and Cybercrime",
-      "date": "2026-08-15",
-      "url": "https://spectrum.ieee.org/ai-cyberattacks-llm-slop-squatting"
-    },
     {
       "label": "AI Euphoria and Investment Discipline",
       "date": "2026-08-16",
@@ -523,6 +471,31 @@
       "label": "Trends in AI and Data Center Innovations",
       "date": "2026-08-22",
       "url": "https://arxiv.org/abs/2608.19535v1"
+    },
+    {
+      "label": "Nvidia's Data Center Expansion and Partnerships",
+      "date": "2026-08-23",
+      "url": "https://techcrunch.com/2026/08/21/nvidia-partners-with-data-center-developer-cloverleaf"
+    },
+    {
+      "label": "Emerging Trends in AI and Data Center Innovations",
+      "date": "2026-08-23",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBFa3VOWGNqZEhhYmdGNnNLb25DUFR5aXJnajNScVVSc1VyWXZyb3F2SWFORW11bGFSeFB3UFc3NUJQb2tDRW0wT2stVmpZd1g4cU9ta1VpclM1RUYxcVgyMg?oc=5"
+    },
+    {
+      "label": "Challenges in AI Adoption and Market Perception",
+      "date": "2026-08-23",
+      "url": "https://techcrunch.com/2026/08/21/senator-asks-us-federal-watchdog-to-review-how-feds-use-hacking-tools"
+    },
+    {
+      "label": "Innovations in AI Delivery Systems",
+      "date": "2026-08-23",
+      "url": "https://techcrunch.com/2026/08/21/michael-polansky-is-training-an-ai-model-on-skin-thats-still-alive"
+    },
+    {
+      "label": "AI Model Performance Insights from Nvidia",
+      "date": "2026-08-23",
+      "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero"
     }
   ]
 }
