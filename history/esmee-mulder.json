@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/14/thrives-joshua-kushner-chides-silicon-valley-vcs-over-ai-euphoria",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/14/self-driving-trucks-are-officially-testing-on-california-highways",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/14/google-will-now-allow-users-to-remove-visible-watermark-from-its-ai-generations",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/14/hyperscalers-might-regret-embracing-natural-gas-if-new-forecast-proves-correct",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://www.itpro.com/business/leadership/tricentis-names-erika-dean-as-chief-information-security-officer",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.10385v1",
-      "date": "2026-08-16"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.09225v1",
-      "date": "2026-08-16"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/14/kog-is-going-deeper-to-squeeze-more-inference-out-of-gpus",
       "date": "2026-08-17"
     },
@@ -219,49 +187,37 @@
     {
       "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero",
       "date": "2026-08-23"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/22/openai-says-california-should-strengthen-its-ai-safety-bill",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/how-ai-accounting-startup-rillet-raised-100m-and-became-a-unicorn-in-48-hours",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/22/harvards-699-startup-bootcamp-offers-ai-avatars-of-its-instructors",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/22/frontier-ai-labs-still-wont-say-how-theyd-contain-a-rogue-model",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/22/us-battery-startups-have-found-a-lifeline-in-defense",
+      "date": "2026-08-24"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.20614v1",
+      "date": "2026-08-24"
     }
   ],
   "topics": [
-    {
-      "label": "AI Euphoria and Investment Discipline",
-      "date": "2026-08-16",
-      "url": "https://techcrunch.com/2026/08/14/thrives-joshua-kushner-chides-silicon-valley-vcs-over-ai-euphoria"
-    },
-    {
-      "label": "Self-Driving Trucks Testing in California",
-      "date": "2026-08-16",
-      "url": "https://techcrunch.com/2026/08/14/self-driving-trucks-are-officially-testing-on-california-highways"
-    },
-    {
-      "label": "Google's AI Watermark Removal Feature",
-      "date": "2026-08-16",
-      "url": "https://techcrunch.com/2026/08/14/google-will-now-allow-users-to-remove-visible-watermark-from-its-ai-generations"
-    },
-    {
-      "label": "AI Model Deployment Cost Management",
-      "date": "2026-08-16",
-      "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs"
-    },
-    {
-      "label": "AI's Impact on Data Center Costs",
-      "date": "2026-08-16",
-      "url": "https://techcrunch.com/2026/08/14/hyperscalers-might-regret-embracing-natural-gas-if-new-forecast-proves-correct"
-    },
-    {
-      "label": "AI in Cybersecurity: New Developments",
-      "date": "2026-08-16",
-      "url": "https://www.itpro.com/business/leadership/tricentis-names-erika-dean-as-chief-information-security-officer"
-    },
-    {
-      "label": "Emerging AI Research Trends",
-      "date": "2026-08-16",
-      "url": "https://arxiv.org/abs/2608.10385v1"
-    },
-    {
-      "label": "AI and Multi-Tenant Inference Security",
-      "date": "2026-08-16",
-      "url": "https://arxiv.org/abs/2608.09225v1"
-    },
     {
       "label": "AI Inference Optimization Techniques",
       "date": "2026-08-17",
@@ -496,6 +452,41 @@
       "label": "AI Model Performance Insights from Nvidia",
       "date": "2026-08-23",
       "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero"
+    },
+    {
+      "label": "Innovative AI Applications in Research",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research"
+    },
+    {
+      "label": "AI Safety and Regulation Developments",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/22/openai-says-california-should-strengthen-its-ai-safety-bill"
+    },
+    {
+      "label": "AI in Product Management Insights",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/21/how-ai-accounting-startup-rillet-raised-100m-and-became-a-unicorn-in-48-hours"
+    },
+    {
+      "label": "AI in Networking and Collaboration",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/22/harvards-699-startup-bootcamp-offers-ai-avatars-of-its-instructors"
+    },
+    {
+      "label": "AI and Autonomous Systems Challenges",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/22/frontier-ai-labs-still-wont-say-how-theyd-contain-a-rogue-model"
+    },
+    {
+      "label": "AI's Role in Battery Technology",
+      "date": "2026-08-24",
+      "url": "https://techcrunch.com/2026/08/22/us-battery-startups-have-found-a-lifeline-in-defense"
+    },
+    {
+      "label": "AI and Continuous Skill Evaluation",
+      "date": "2026-08-24",
+      "url": "https://arxiv.org/abs/2608.20614v1"
     }
   ]
 }
