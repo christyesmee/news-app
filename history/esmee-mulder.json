@@ -1,34 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/14/kog-is-going-deeper-to-squeeze-more-inference-out-of-gpus",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/15/how-to-tell-if-your-ai-platforms-accounts-have-been-hacked",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://spectrum.ieee.org/rare-earth-metals-in-semiconductors",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://spectrum.ieee.org/video-friday-darpa-heavy-lift-challenge",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://spectrum.ieee.org/digital-signal-processing",
-      "date": "2026-08-17"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/14/uber-and-pony-ai-plan-to-bring-2000-robotaxis-to-europe",
-      "date": "2026-08-17"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/16/stripe-will-reportedly-acquire-ai-gateway-startup-openrouter-for-7b",
       "date": "2026-08-18"
     },
@@ -215,44 +187,41 @@
     {
       "url": "https://arxiv.org/abs/2608.20614v1",
       "date": "2026-08-24"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/23/whos-behind-the-new-stealth-model-ox-alpha",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/23/uber-faces-fine-of-nearly-1b-over-automated-driver-suspensions",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/23/is-it-legal-to-train-ai-models-on-copyrighted-books-its-complicated",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/23/linkdazes-smart-calendar-is-built-to-run-a-household-not-just-track-a-schedule",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/21/apple-is-reportedly-cutting-hundreds-of-jobs-from-siri-vision-pro-teams",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.22108v1",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.21764v1",
+      "date": "2026-08-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/23/techcrunch-mobility-the-custom-chip-driving-waymos-robotaxi-ambitions",
+      "date": "2026-08-25"
     }
   ],
   "topics": [
-    {
-      "label": "AI Inference Optimization Techniques",
-      "date": "2026-08-17",
-      "url": "https://techcrunch.com/2026/08/14/kog-is-going-deeper-to-squeeze-more-inference-out-of-gpus"
-    },
-    {
-      "label": "Cybersecurity in AI Platforms",
-      "date": "2026-08-17",
-      "url": "https://techcrunch.com/2026/08/15/how-to-tell-if-your-ai-platforms-accounts-have-been-hacked"
-    },
-    {
-      "label": "Chip Supply Chain Innovations",
-      "date": "2026-08-17",
-      "url": "https://spectrum.ieee.org/rare-earth-metals-in-semiconductors"
-    },
-    {
-      "label": "Watermarking in AI Models",
-      "date": "2026-08-17",
-      "url": "https://techcrunch.com/2026/08/15/anthropic-shares-more-details-about-how-claudes-new-watermarks-will-work"
-    },
-    {
-      "label": "AI's Role in Robotics",
-      "date": "2026-08-17",
-      "url": "https://spectrum.ieee.org/video-friday-darpa-heavy-lift-challenge"
-    },
-    {
-      "label": "AI and Digital Signal Processing",
-      "date": "2026-08-17",
-      "url": "https://spectrum.ieee.org/digital-signal-processing"
-    },
-    {
-      "label": "AI and Autonomous Vehicles",
-      "date": "2026-08-17",
-      "url": "https://techcrunch.com/2026/08/14/uber-and-pony-ai-plan-to-bring-2000-robotaxis-to-europe"
-    },
     {
       "label": "Stripe's Acquisition of OpenRouter and AI Gateway Innovations",
       "date": "2026-08-18",
@@ -487,6 +456,46 @@
       "label": "AI and Continuous Skill Evaluation",
       "date": "2026-08-24",
       "url": "https://arxiv.org/abs/2608.20614v1"
+    },
+    {
+      "label": "AI Model Developments and Speculations",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/23/whos-behind-the-new-stealth-model-ox-alpha"
+    },
+    {
+      "label": "Uber's GDPR Fine and Its Implications",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/23/uber-faces-fine-of-nearly-1b-over-automated-driver-suspensions"
+    },
+    {
+      "label": "Legal Challenges in AI Training Practices",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/23/is-it-legal-to-train-ai-models-on-copyrighted-books-its-complicated"
+    },
+    {
+      "label": "Innovations in Smart Technology for Daily Life",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/23/linkdazes-smart-calendar-is-built-to-run-a-household-not-just-track-a-schedule"
+    },
+    {
+      "label": "Apple's Job Cuts and Strategic Shift",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/21/apple-is-reportedly-cutting-hundreds-of-jobs-from-siri-vision-pro-teams"
+    },
+    {
+      "label": "AI in Edge Computing for Healthcare",
+      "date": "2026-08-25",
+      "url": "https://arxiv.org/abs/2608.22108v1"
+    },
+    {
+      "label": "AI and Event-Based Vision Innovations",
+      "date": "2026-08-25",
+      "url": "https://arxiv.org/abs/2608.21764v1"
+    },
+    {
+      "label": "Waymo's Custom Chip for Autonomous Vehicles",
+      "date": "2026-08-25",
+      "url": "https://techcrunch.com/2026/08/23/techcrunch-mobility-the-custom-chip-driving-waymos-robotaxi-ambitions"
     }
   ]
 }
