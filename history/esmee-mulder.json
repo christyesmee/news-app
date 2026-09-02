@@ -1,206 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/17/amazon-once-an-online-bookseller-is-destroying-rare-books-to-train-ai-models",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/17/unprecedented-number-of-apple-users-received-recent-spyware-alert-say-investigators",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/17/ai-automation-startup-relay-shuts-down-staff-joins-googles-chrome-team",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://www.forrester.com/blogs/forresters-global-net-promoter-score-rankings-reveal-a-turn-in-customer-loyalty",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/17/uber-adds-zipline-drones-to-its-eats-delivery-network",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.17071v1",
-      "date": "2026-08-19"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxNRERGWF9ZTVJvNDFmandlbWhBNzJZLTFLQ00tcHZKLVVCMWNrQnotcTRwZU9vZ2dhdVBrY1RpeEZtRDBsekhZSHkwTDdFMUZoM1dZM2U3QkJ1eWF3MlFBYU9jbUlxQXE0QkIxc3k0MWg3Yll4LW5reDlJMlEtU2ZYcFMxazU4TXpiaTlRSXQtVmZaQlNDMFJzdmJnVHU0eWRvNm5TWC1kUlFHZzRTREhBRTFpMHVsZEduYWpJcUR0cWI2X3FTcWxGWF9Ua28tLV9fRm55YTYzWWRGd2tFVUo0MHhLNHU5aHZkS2ducF9LVGhEZWVvYjAxYW00ekpKa3Nva2t1bXNLbEMwY0RIRlNpXw?oc=5",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/18/reach-capital-raises-265m-fund-v-to-back-ai-founders-building-to-expand-human-potential",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/18/comcast-adds-motion-sensing-to-millions-of-its-newer-routers-with-a-privacy-catch",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://hbr.org/podcast/2026/08/living-and-working-in-the-age-of-longevity",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://spectrum.ieee.org/arctic-iceberg-drones",
-      "date": "2026-08-20"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/waymos-cheaper-next-gen-robotaxi-is-now-open-to-all-riders-in-these-three-cities",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/ai-was-supposed-to-win-people-over-by-now-it-hasnt",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/researchers-complain-that-openai-revoked-their-access-to-limited-cyber-program",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/terrapowers-nuclear-reactor-has-a-secret-weapon-for-powering-ai-data-centers",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required",
-      "date": "2026-08-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/20/ai-data-startup-micro1-reaches-500m-gross-run-rate-amid-ai-training-boom",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/20/openai-is-gaining-on-anthropic-with-business-users-new-data-indicates",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/20/ramp-launches-its-own-ai-model-router-called-router",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/video/learn-what-vcs-actually-want-from-a-founder-whos-raised-1b",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/20/google-gives-publishers-a-new-way-to-fight-ai-driven-traffic-losses",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/20/tesla-uber-and-waymo-all-get-the-ok-to-operate-thousands-of-robotaxis-in-nevada",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.19535v1",
-      "date": "2026-08-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/nvidia-partners-with-data-center-developer-cloverleaf",
-      "date": "2026-08-23"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBFa3VOWGNqZEhhYmdGNnNLb25DUFR5aXJnajNScVVSc1VyWXZyb3F2SWFORW11bGFSeFB3UFc3NUJQb2tDRW0wT2stVmpZd1g4cU9ta1VpclM1RUYxcVgyMg?oc=5",
-      "date": "2026-08-23"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/senator-asks-us-federal-watchdog-to-review-how-feds-use-hacking-tools",
-      "date": "2026-08-23"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/michael-polansky-is-training-an-ai-model-on-skin-thats-still-alive",
-      "date": "2026-08-23"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero",
-      "date": "2026-08-23"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/22/openai-says-california-should-strengthen-its-ai-safety-bill",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/how-ai-accounting-startup-rillet-raised-100m-and-became-a-unicorn-in-48-hours",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/22/harvards-699-startup-bootcamp-offers-ai-avatars-of-its-instructors",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/22/frontier-ai-labs-still-wont-say-how-theyd-contain-a-rogue-model",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/22/us-battery-startups-have-found-a-lifeline-in-defense",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.20614v1",
-      "date": "2026-08-24"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/23/whos-behind-the-new-stealth-model-ox-alpha",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/23/uber-faces-fine-of-nearly-1b-over-automated-driver-suspensions",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/23/is-it-legal-to-train-ai-models-on-copyrighted-books-its-complicated",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/23/linkdazes-smart-calendar-is-built-to-run-a-household-not-just-track-a-schedule",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/21/apple-is-reportedly-cutting-hundreds-of-jobs-from-siri-vision-pro-teams",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.22108v1",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.21764v1",
-      "date": "2026-08-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/23/techcrunch-mobility-the-custom-chip-driving-waymos-robotaxi-ambitions",
-      "date": "2026-08-25"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/24/alabama-launches-investigation-into-openais-hack-of-hugging-face",
       "date": "2026-08-26"
     },
@@ -231,259 +31,41 @@
     {
       "url": "https://arxiv.org/abs/2608.23834v1",
       "date": "2026-08-26"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/instagram-puts-new-limits-on-undisclosed-ai-profiles",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/ftc-accuses-amazon-of-running-a-secret-ad-surcharge-scheme-in-new-lawsuit",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.00309v1",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://arxiv.org/abs/2608.31074v1",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/magna-increases-bet-on-battery-swapping-in-india-with-35m-for-yuma",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/apple-shares-shocking-evidence-against-former-employee-accused-of-stealing-company-data-for-openai",
+      "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage",
+      "date": "2026-09-02"
     }
   ],
   "topics": [
-    {
-      "label": "AI Revenue Growth and Market Dynamics",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b"
-    },
-    {
-      "label": "AI Chip Market Shifts and Investments",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud"
-    },
-    {
-      "label": "AI and Data Privacy Concerns",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/amazon-once-an-online-bookseller-is-destroying-rare-books-to-train-ai-models"
-    },
-    {
-      "label": "AI in Cybersecurity and User Safety",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/unprecedented-number-of-apple-users-received-recent-spyware-alert-say-investigators"
-    },
-    {
-      "label": "AI Automation and Industry Changes",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/ai-automation-startup-relay-shuts-down-staff-joins-googles-chrome-team"
-    },
-    {
-      "label": "Customer Loyalty Trends in Tech",
-      "date": "2026-08-19",
-      "url": "https://www.forrester.com/blogs/forresters-global-net-promoter-score-rankings-reveal-a-turn-in-customer-loyalty"
-    },
-    {
-      "label": "Innovations in AI Delivery Systems",
-      "date": "2026-08-19",
-      "url": "https://techcrunch.com/2026/08/17/uber-adds-zipline-drones-to-its-eats-delivery-network"
-    },
-    {
-      "label": "AI Frameworks for Optimization",
-      "date": "2026-08-19",
-      "url": "https://arxiv.org/abs/2608.17071v1"
-    },
-    {
-      "label": "AI-Enhanced Production and Robotics at Automation Taipei 2026",
-      "date": "2026-08-20",
-      "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxNRERGWF9ZTVJvNDFmandlbWhBNzJZLTFLQ00tcHZKLVVCMWNrQnotcTRwZU9vZ2dhdVBrY1RpeEZtRDBsekhZSHkwTDdFMUZoM1dZM2U3QkJ1eWF3MlFBYU9jbUlxQXE0QkIxc3k0MWg3Yll4LW5reDlJMlEtU2ZYcFMxazU4TXpiaTlRSXQtVmZaQlNDMFJzdmJnVHU0eWRvNm5TWC1kUlFHZzRTREhBRTFpMHVsZEduYWpJcUR0cWI2X3FTcWxGWF9Ua28tLV9fRm55YTYzWWRGd2tFVUo0MHhLNHU5aHZkS2ducF9LVGhEZWVvYjAxYW00ekpKa3Nva2t1bXNLbEMwY0RIRlNpXw?oc=5"
-    },
-    {
-      "label": "OpenAI Implements New Safeguards Post-Breach",
-      "date": "2026-08-20",
-      "url": "https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach"
-    },
-    {
-      "label": "Warp Introduces Out-of-the-Box AI Development System",
-      "date": "2026-08-20",
-      "url": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development"
-    },
-    {
-      "label": "Reach Capital's $265M Fund to Support AI Founders",
-      "date": "2026-08-20",
-      "url": "https://techcrunch.com/2026/08/18/reach-capital-raises-265m-fund-v-to-back-ai-founders-building-to-expand-human-potential"
-    },
-    {
-      "label": "Comcast's Motion Sensing Routers with Privacy Concerns",
-      "date": "2026-08-20",
-      "url": "https://techcrunch.com/2026/08/18/comcast-adds-motion-sensing-to-millions-of-its-newer-routers-with-a-privacy-catch"
-    },
-    {
-      "label": "Living and Working in the Age of Longevity",
-      "date": "2026-08-20",
-      "url": "https://hbr.org/podcast/2026/08/living-and-working-in-the-age-of-longevity"
-    },
-    {
-      "label": "Cursor Launches GitHub Rival for Developers",
-      "date": "2026-08-20",
-      "url": "https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform"
-    },
-    {
-      "label": "Drones with Claws for Arctic Exploration",
-      "date": "2026-08-20",
-      "url": "https://spectrum.ieee.org/arctic-iceberg-drones"
-    },
-    {
-      "label": "Stripe's Strategic Move with OpenRouter",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/stripe-didnt-really-buy-openrouter-because-of-the-singularity"
-    },
-    {
-      "label": "Waymo's Next-Gen Robotaxi Launch",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/waymos-cheaper-next-gen-robotaxi-is-now-open-to-all-riders-in-these-three-cities"
-    },
-    {
-      "label": "OpenAI's New Privacy Protections for Enterprises",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/openai-seeks-to-one-up-anthropic-with-new-customer-privacy-protections"
-    },
-    {
-      "label": "AI Adoption Challenges and Consumer Sentiment",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/ai-was-supposed-to-win-people-over-by-now-it-hasnt"
-    },
-    {
-      "label": "AI's Role in Cybersecurity and User Safety",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/researchers-complain-that-openai-revoked-their-access-to-limited-cyber-program"
-    },
-    {
-      "label": "TerraPower's Nuclear Advantage for AI Data Centers",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/terrapowers-nuclear-reactor-has-a-secret-weapon-for-powering-ai-data-centers"
-    },
-    {
-      "label": "Amazon's Expansion of AI-Powered Services",
-      "date": "2026-08-21",
-      "url": "https://techcrunch.com/2026/08/19/amazon-makes-its-ai-powered-alexa-free-on-fire-tv-no-prime-required"
-    },
-    {
-      "label": "AI Data Startup Growth Amid Training Boom",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/2026/08/20/ai-data-startup-micro1-reaches-500m-gross-run-rate-amid-ai-training-boom"
-    },
-    {
-      "label": "OpenAI vs Anthropic in Enterprise AI Market",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/2026/08/20/openai-is-gaining-on-anthropic-with-business-users-new-data-indicates"
-    },
-    {
-      "label": "AI Model Routing Innovations",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/2026/08/20/ramp-launches-its-own-ai-model-router-called-router"
-    },
-    {
-      "label": "AI in Product Management: Lessons from Founders",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/video/learn-what-vcs-actually-want-from-a-founder-whos-raised-1b"
-    },
-    {
-      "label": "Google's New Tools for Publishers Against AI Traffic Losses",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/2026/08/20/google-gives-publishers-a-new-way-to-fight-ai-driven-traffic-losses"
-    },
-    {
-      "label": "Tesla, Uber, and Waymo's Robotaxi Operations in Nevada",
-      "date": "2026-08-22",
-      "url": "https://techcrunch.com/2026/08/20/tesla-uber-and-waymo-all-get-the-ok-to-operate-thousands-of-robotaxis-in-nevada"
-    },
-    {
-      "label": "Trends in AI and Data Center Innovations",
-      "date": "2026-08-22",
-      "url": "https://arxiv.org/abs/2608.19535v1"
-    },
-    {
-      "label": "Nvidia's Data Center Expansion and Partnerships",
-      "date": "2026-08-23",
-      "url": "https://techcrunch.com/2026/08/21/nvidia-partners-with-data-center-developer-cloverleaf"
-    },
-    {
-      "label": "Emerging Trends in AI and Data Center Innovations",
-      "date": "2026-08-23",
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBFa3VOWGNqZEhhYmdGNnNLb25DUFR5aXJnajNScVVSc1VyWXZyb3F2SWFORW11bGFSeFB3UFc3NUJQb2tDRW0wT2stVmpZd1g4cU9ta1VpclM1RUYxcVgyMg?oc=5"
-    },
-    {
-      "label": "Challenges in AI Adoption and Market Perception",
-      "date": "2026-08-23",
-      "url": "https://techcrunch.com/2026/08/21/senator-asks-us-federal-watchdog-to-review-how-feds-use-hacking-tools"
-    },
-    {
-      "label": "Innovations in AI Delivery Systems",
-      "date": "2026-08-23",
-      "url": "https://techcrunch.com/2026/08/21/michael-polansky-is-training-an-ai-model-on-skin-thats-still-alive"
-    },
-    {
-      "label": "AI Model Performance Insights from Nvidia",
-      "date": "2026-08-23",
-      "url": "https://techcrunch.com/2026/08/21/nvidia-just-showed-that-the-harness-not-the-ai-model-is-now-the-real-hero"
-    },
-    {
-      "label": "Innovative AI Applications in Research",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/22/inherent-founded-by-deepmind-alumni-says-its-ai-teammate-just-outperformed-anthropic-and-openai-at-replicating-research"
-    },
-    {
-      "label": "AI Safety and Regulation Developments",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/22/openai-says-california-should-strengthen-its-ai-safety-bill"
-    },
-    {
-      "label": "AI in Product Management Insights",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/21/how-ai-accounting-startup-rillet-raised-100m-and-became-a-unicorn-in-48-hours"
-    },
-    {
-      "label": "AI in Networking and Collaboration",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/22/harvards-699-startup-bootcamp-offers-ai-avatars-of-its-instructors"
-    },
-    {
-      "label": "AI and Autonomous Systems Challenges",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/22/frontier-ai-labs-still-wont-say-how-theyd-contain-a-rogue-model"
-    },
-    {
-      "label": "AI's Role in Battery Technology",
-      "date": "2026-08-24",
-      "url": "https://techcrunch.com/2026/08/22/us-battery-startups-have-found-a-lifeline-in-defense"
-    },
-    {
-      "label": "AI and Continuous Skill Evaluation",
-      "date": "2026-08-24",
-      "url": "https://arxiv.org/abs/2608.20614v1"
-    },
-    {
-      "label": "AI Model Developments and Speculations",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/23/whos-behind-the-new-stealth-model-ox-alpha"
-    },
-    {
-      "label": "Uber's GDPR Fine and Its Implications",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/23/uber-faces-fine-of-nearly-1b-over-automated-driver-suspensions"
-    },
-    {
-      "label": "Legal Challenges in AI Training Practices",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/23/is-it-legal-to-train-ai-models-on-copyrighted-books-its-complicated"
-    },
-    {
-      "label": "Innovations in Smart Technology for Daily Life",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/23/linkdazes-smart-calendar-is-built-to-run-a-household-not-just-track-a-schedule"
-    },
-    {
-      "label": "Apple's Job Cuts and Strategic Shift",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/21/apple-is-reportedly-cutting-hundreds-of-jobs-from-siri-vision-pro-teams"
-    },
-    {
-      "label": "AI in Edge Computing for Healthcare",
-      "date": "2026-08-25",
-      "url": "https://arxiv.org/abs/2608.22108v1"
-    },
-    {
-      "label": "AI and Event-Based Vision Innovations",
-      "date": "2026-08-25",
-      "url": "https://arxiv.org/abs/2608.21764v1"
-    },
-    {
-      "label": "Waymo's Custom Chip for Autonomous Vehicles",
-      "date": "2026-08-25",
-      "url": "https://techcrunch.com/2026/08/23/techcrunch-mobility-the-custom-chip-driving-waymos-robotaxi-ambitions"
-    },
     {
       "label": "OpenAI's Investigation and Cybersecurity Issues",
       "date": "2026-08-26",
@@ -523,6 +105,46 @@
       "label": "New Developments in AI Cache Compression",
       "date": "2026-08-26",
       "url": "https://arxiv.org/abs/2608.23834v1"
+    },
+    {
+      "label": "Pentagon Develops AI Tools Similar to ChatGPT",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok"
+    },
+    {
+      "label": "Instagram Limits AI Influencer Profiles",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/instagram-puts-new-limits-on-undisclosed-ai-profiles"
+    },
+    {
+      "label": "Amazon Faces FTC Lawsuit Over Advertising Practices",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/ftc-accuses-amazon-of-running-a-secret-ad-surcharge-scheme-in-new-lawsuit"
+    },
+    {
+      "label": "AI Governance and Workload Identification",
+      "date": "2026-09-02",
+      "url": "https://arxiv.org/abs/2609.00309v1"
+    },
+    {
+      "label": "Real-Time Video Anomaly Detection Using AI",
+      "date": "2026-09-02",
+      "url": "https://arxiv.org/abs/2608.31074v1"
+    },
+    {
+      "label": "Magna Invests in Battery Swapping Technology",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/magna-increases-bet-on-battery-swapping-in-india-with-35m-for-yuma"
+    },
+    {
+      "label": "Apple Accuses Former Employee of Data Theft",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/apple-shares-shocking-evidence-against-former-employee-accused-of-stealing-company-data-for-openai"
+    },
+    {
+      "label": "Microsoft Tests Fix for Outlook Outage",
+      "date": "2026-09-02",
+      "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage"
     }
   ]
 }
