@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/24/alabama-launches-investigation-into-openais-hack-of-hugging-face",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/situational-awareness-star-ai-hedge-fund-that-nearly-imploded-now-being-probed-by-the-sec",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/indias-airbound-bags-37m-to-take-on-trucks-with-rocket-like-drones",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/openai-is-building-an-ai-agent-for-everything-will-everyone-use-them",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/zillow-and-redfin-settle-ftc-antitrust-case",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/amazon-hikes-hardware-prices-by-60-percent-blaming-memory-shortage",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/24/valor-point72-back-general-intuition-at-6b-valuation-as-ai-startup-pushes-into-robotics",
-      "date": "2026-08-26"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.23834v1",
-      "date": "2026-08-26"
-    },
-    {
       "url": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok",
       "date": "2026-09-02"
     },
@@ -63,49 +31,41 @@
     {
       "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage",
       "date": "2026-09-02"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/openais-new-reasoning-technique-alarms-ai-safety-experts",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/techcrunch-disrupt-2026s-new-real-world-ai-stage-features-nvidia-robots-and-extinct-animals",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/palo-alto-networks-paid-500m-for-thrive-backed-console-sources-say",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.03162v1",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPTzBwVlZRYllfc1dJZ3dVbGhma0hIZHNCVWpQTzQwMnA0T1o5b2tUbVdsTUEyTEFIT2IycG9Fb2Z4Y2YwT2ZKaHFocGFhOVF5SUtrMVJBNkJkR2FRTHVwcEh2RXBfMWsyZlNSdW9GbzlsMEdTVDY1aUdFeEVtbjhaV0ZnTHNoa0l3X2x4UzRZT2pNSTE0cnRfUDZUSjFXNVNz?oc=5",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/google-spared-from-ad-business-breakup-but-judge-orders-changes-to-how-it-operates",
+      "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid",
+      "date": "2026-09-04"
     }
   ],
   "topics": [
-    {
-      "label": "OpenAI's Investigation and Cybersecurity Issues",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/alabama-launches-investigation-into-openais-hack-of-hugging-face"
-    },
-    {
-      "label": "AI Hedge Fund Under SEC Scrutiny",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/situational-awareness-star-ai-hedge-fund-that-nearly-imploded-now-being-probed-by-the-sec"
-    },
-    {
-      "label": "Drone Delivery Innovations",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/indias-airbound-bags-37m-to-take-on-trucks-with-rocket-like-drones"
-    },
-    {
-      "label": "AI Agents Development by OpenAI",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/openai-is-building-an-ai-agent-for-everything-will-everyone-use-them"
-    },
-    {
-      "label": "Settlement in Zillow and Redfin Antitrust Case",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/zillow-and-redfin-settle-ftc-antitrust-case"
-    },
-    {
-      "label": "Rising Hardware Prices Due to Memory Shortage",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/amazon-hikes-hardware-prices-by-60-percent-blaming-memory-shortage"
-    },
-    {
-      "label": "AI and Robotics Investment Trends",
-      "date": "2026-08-26",
-      "url": "https://techcrunch.com/2026/08/24/valor-point72-back-general-intuition-at-6b-valuation-as-ai-startup-pushes-into-robotics"
-    },
-    {
-      "label": "New Developments in AI Cache Compression",
-      "date": "2026-08-26",
-      "url": "https://arxiv.org/abs/2608.23834v1"
-    },
     {
       "label": "Pentagon Develops AI Tools Similar to ChatGPT",
       "date": "2026-09-02",
@@ -145,6 +105,46 @@
       "label": "Microsoft Tests Fix for Outlook Outage",
       "date": "2026-09-02",
       "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage"
+    },
+    {
+      "label": "AI Safety Concerns with OpenAI's New Model",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/openais-new-reasoning-technique-alarms-ai-safety-experts"
+    },
+    {
+      "label": "TechCrunch Disrupt 2026 and AI Innovations",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/techcrunch-disrupt-2026s-new-real-world-ai-stage-features-nvidia-robots-and-extinct-animals"
+    },
+    {
+      "label": "Trends in AI and Robotics Investment",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments"
+    },
+    {
+      "label": "Acquisition Trends in AI IT Service Automation",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/palo-alto-networks-paid-500m-for-thrive-backed-console-sources-say"
+    },
+    {
+      "label": "AI Technologies and Their Applications in Networking",
+      "date": "2026-09-04",
+      "url": "https://arxiv.org/abs/2609.03162v1"
+    },
+    {
+      "label": "AI-Enhanced Gaming Technologies",
+      "date": "2026-09-04",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPTzBwVlZRYllfc1dJZ3dVbGhma0hIZHNCVWpQTzQwMnA0T1o5b2tUbVdsTUEyTEFIT2IycG9Fb2Z4Y2YwT2ZKaHFocGFhOVF5SUtrMVJBNkJkR2FRTHVwcEh2RXBfMWsyZlNSdW9GbzlsMEdTVDY1aUdFeEVtbjhaV0ZnTHNoa0l3X2x4UzRZT2pNSTE0cnRfUDZUSjFXNVNz?oc=5"
+    },
+    {
+      "label": "Google's Ad Business Changes and Regulatory Impact",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/google-spared-from-ad-business-breakup-but-judge-orders-changes-to-how-it-operates"
+    },
+    {
+      "label": "Market Dynamics in AI and Food Delivery",
+      "date": "2026-09-04",
+      "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid"
     }
   ]
 }
