@@ -63,6 +63,34 @@
     {
       "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid",
       "date": "2026-09-04"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/05/seattle-times-and-newsday-are-the-latest-publications-to-sue-openai-and-microsoft",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/04/ai-compute-provider-nscale-is-looking-for-3-5b-in-pre-ipo-financing",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/04/openais-rogue-agents-keep-escaping-with-no-formal-process-to-investigate-them",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/podcast/apples-ternus-era-begins-as-nvidia-bets-on-the-whole-ai-stack",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/04/googles-gemini-spark-can-now-manage-your-google-photos-library",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/03/the-sameness-problem-behind-those-unappetizing-ai-generated-menus",
+      "date": "2026-09-07"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks",
+      "date": "2026-09-07"
     }
   ],
   "topics": [
@@ -145,6 +173,41 @@
       "label": "Market Dynamics in AI and Food Delivery",
       "date": "2026-09-04",
       "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid"
+    },
+    {
+      "label": "OpenAI's Legal Challenges Over AI Training Data",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/05/seattle-times-and-newsday-are-the-latest-publications-to-sue-openai-and-microsoft"
+    },
+    {
+      "label": "AI Compute Provider Nscale's Pre-IPO Financing",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/04/ai-compute-provider-nscale-is-looking-for-3-5b-in-pre-ipo-financing"
+    },
+    {
+      "label": "OpenAI's Safety Concerns and Investigations",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/04/openais-rogue-agents-keep-escaping-with-no-formal-process-to-investigate-them"
+    },
+    {
+      "label": "Leadership Changes at Apple and AI Strategy",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/podcast/apples-ternus-era-begins-as-nvidia-bets-on-the-whole-ai-stack"
+    },
+    {
+      "label": "Google's Gemini Spark Enhancements",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/04/googles-gemini-spark-can-now-manage-your-google-photos-library"
+    },
+    {
+      "label": "AI-Generated Menus and Consumer Perception",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/03/the-sameness-problem-behind-those-unappetizing-ai-generated-menus"
+    },
+    {
+      "label": "US Military's Ad Tracking Disablement",
+      "date": "2026-09-07",
+      "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks"
     }
   ]
 }
