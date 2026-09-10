@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/31/instagram-puts-new-limits-on-undisclosed-ai-profiles",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/31/ftc-accuses-amazon-of-running-a-secret-ad-surcharge-scheme-in-new-lawsuit",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://arxiv.org/abs/2609.00309v1",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://arxiv.org/abs/2608.31074v1",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/31/magna-increases-bet-on-battery-swapping-in-india-with-35m-for-yuma",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/31/apple-shares-shocking-evidence-against-former-employee-accused-of-stealing-company-data-for-openai",
-      "date": "2026-09-02"
-    },
-    {
-      "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage",
-      "date": "2026-09-02"
-    },
-    {
       "url": "https://techcrunch.com/2026/09/02/openais-new-reasoning-technique-alarms-ai-safety-experts",
       "date": "2026-09-04"
     },
@@ -91,49 +59,41 @@
     {
       "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks",
       "date": "2026-09-07"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9UQmVxcUhuX2dkckdBbkhmSTI4NnNRQzlOVmpIbnpyZkZDbzNKMjdvaGRGNks5TTZtRmVaNVlmWkk1OTNLSTh5b2pQQlpzMi1sQkpwekNaSWFMY3hqRmdQMklJdnFORUFORU1nbThB?oc=5",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://www.forrester.com/blogs/the-market-is-finally-making-fine-tuned-models-happen",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/google-cloud-races-to-catch-up-in-the-ai-deployment-wars-with-accenture-deal",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNLWswYjhZd2lUWFJLYXpPclpLU2pnNWFZV3BsdjRyY0hfVkFBOFNIUWF0eHE5UXNGQUFVOW44eU85LVE0c1pOTWZCY19UTkFVSVhQSnNFVmZKOThlbFdLOHZQTVcxc1p6NktXYTVuRW0zRF93cElRU1NlQUtGWXU2Xw?oc=5",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/08/cognition-hits-48b-valuation-signaling-investors-believe-ai-coding-is-far-from-a-winner-take-all-market",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://hbr.org/podcast/2026/09/a-leading-restaurateur-on-what-it-takes-to-scale-a-winning-culture",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.09324v1",
+      "date": "2026-09-10"
+    },
+    {
+      "url": "https://spectrum.ieee.org/ai-wildfire-detection",
+      "date": "2026-09-10"
     }
   ],
   "topics": [
-    {
-      "label": "Pentagon Develops AI Tools Similar to ChatGPT",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/the-pentagon-now-has-its-own-version-of-chatgpt-and-grok"
-    },
-    {
-      "label": "Instagram Limits AI Influencer Profiles",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/instagram-puts-new-limits-on-undisclosed-ai-profiles"
-    },
-    {
-      "label": "Amazon Faces FTC Lawsuit Over Advertising Practices",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/ftc-accuses-amazon-of-running-a-secret-ad-surcharge-scheme-in-new-lawsuit"
-    },
-    {
-      "label": "AI Governance and Workload Identification",
-      "date": "2026-09-02",
-      "url": "https://arxiv.org/abs/2609.00309v1"
-    },
-    {
-      "label": "Real-Time Video Anomaly Detection Using AI",
-      "date": "2026-09-02",
-      "url": "https://arxiv.org/abs/2608.31074v1"
-    },
-    {
-      "label": "Magna Invests in Battery Swapping Technology",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/magna-increases-bet-on-battery-swapping-in-india-with-35m-for-yuma"
-    },
-    {
-      "label": "Apple Accuses Former Employee of Data Theft",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/apple-shares-shocking-evidence-against-former-employee-accused-of-stealing-company-data-for-openai"
-    },
-    {
-      "label": "Microsoft Tests Fix for Outlook Outage",
-      "date": "2026-09-02",
-      "url": "https://techcrunch.com/2026/08/31/microsoft-tests-fix-for-latest-hours-long-outlook-outage"
-    },
     {
       "label": "AI Safety Concerns with OpenAI's New Model",
       "date": "2026-09-04",
@@ -208,6 +168,46 @@
       "label": "US Military's Ad Tracking Disablement",
       "date": "2026-09-07",
       "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks"
+    },
+    {
+      "label": "NVIDIA's AI Innovations for Media at IBC 2026",
+      "date": "2026-09-10",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9UQmVxcUhuX2dkckdBbkhmSTI4NnNRQzlOVmpIbnpyZkZDbzNKMjdvaGRGNks5TTZtRmVaNVlmWkk1OTNLSTh5b2pQQlpzMi1sQkpwekNaSWFMY3hqRmdQMklJdnFORUFORU1nbThB?oc=5"
+    },
+    {
+      "label": "Fine-Tuned AI Models Gain Traction",
+      "date": "2026-09-10",
+      "url": "https://www.forrester.com/blogs/the-market-is-finally-making-fine-tuned-models-happen"
+    },
+    {
+      "label": "Google Cloud's AI Deployment Strategy with Accenture",
+      "date": "2026-09-10",
+      "url": "https://techcrunch.com/2026/09/08/google-cloud-races-to-catch-up-in-the-ai-deployment-wars-with-accenture-deal"
+    },
+    {
+      "label": "AI Enhancements in Video Archiving",
+      "date": "2026-09-10",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNLWswYjhZd2lUWFJLYXpPclpLU2pnNWFZV3BsdjRyY0hfVkFBOFNIUWF0eHE5UXNGQUFVOW44eU85LVE0c1pOTWZCY19UTkFVSVhQSnNFVmZKOThlbFdLOHZQTVcxc1p6NktXYTVuRW0zRF93cElRU1NlQUtGWXU2Xw?oc=5"
+    },
+    {
+      "label": "AI Coding Market Dynamics and Investment Trends",
+      "date": "2026-09-10",
+      "url": "https://techcrunch.com/2026/09/08/cognition-hits-48b-valuation-signaling-investors-believe-ai-coding-is-far-from-a-winner-take-all-market"
+    },
+    {
+      "label": "Leadership Insights from Successful Companies",
+      "date": "2026-09-10",
+      "url": "https://hbr.org/podcast/2026/09/a-leading-restaurateur-on-what-it-takes-to-scale-a-winning-culture"
+    },
+    {
+      "label": "Advancements in 5G AI-RAN Selection Techniques",
+      "date": "2026-09-10",
+      "url": "https://arxiv.org/abs/2609.09324v1"
+    },
+    {
+      "label": "AI's Role in Wildfire Detection from Space",
+      "date": "2026-09-10",
+      "url": "https://spectrum.ieee.org/ai-wildfire-detection"
     }
   ]
 }
