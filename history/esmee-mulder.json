@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/09/02/openais-new-reasoning-technique-alarms-ai-safety-experts",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/02/techcrunch-disrupt-2026s-new-real-world-ai-stage-features-nvidia-robots-and-extinct-animals",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/02/palo-alto-networks-paid-500m-for-thrive-backed-console-sources-say",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://arxiv.org/abs/2609.03162v1",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPTzBwVlZRYllfc1dJZ3dVbGhma0hIZHNCVWpQTzQwMnA0T1o5b2tUbVdsTUEyTEFIT2IycG9Fb2Z4Y2YwT2ZKaHFocGFhOVF5SUtrMVJBNkJkR2FRTHVwcEh2RXBfMWsyZlNSdW9GbzlsMEdTVDY1aUdFeEVtbjhaV0ZnTHNoa0l3X2x4UzRZT2pNSTE0cnRfUDZUSjFXNVNz?oc=5",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/02/google-spared-from-ad-business-breakup-but-judge-orders-changes-to-how-it-operates",
-      "date": "2026-09-04"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid",
-      "date": "2026-09-04"
-    },
-    {
       "url": "https://techcrunch.com/2026/09/05/seattle-times-and-newsday-are-the-latest-publications-to-sue-openai-and-microsoft",
       "date": "2026-09-07"
     },
@@ -91,49 +59,37 @@
     {
       "url": "https://spectrum.ieee.org/ai-wildfire-detection",
       "date": "2026-09-10"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/10/jensen-huang-explains-why-nvidia-will-grow-an-astounding-70-next-year",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://hbr.org/tip/2026/09/want-better-ideas-rethink-your-incentives",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxQS1Vha3NUNVdJZlEtX1FxLXRSeG9JQ2d3LU9Hc252MzlMVm4tai1UcXFRdFRLSXdaY3l0TktUakRFVUJzVXNSeFJvSC1VMlR2OFhEVmh1WHZLbW1ILWJ4X0VLXzM1RmJXZHVQVWFCSVRRTDhtb3hOSkx3dGx5SlRqSmJybGR4VlpiQXJ2Y3pCU1RuajAyY0s0NE9QRGd2MlNYLU5oUmZCSFhqVjc5MWFGTmk2RW5yQWZFNU4tWk1fZVQtRVA2NHhVOEo4Y25NdGg3TmUyQk83NTh5Y050bjJBTUFR?oc=5",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/10/indias-pocket-fm-doubles-revenue-run-rate-to-500m-as-ai-powers-93-of-audio-content",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/10/metas-ai-agent-muse-is-now-the-no-2-app-in-the-us",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/10/anthropic-details-distillation-campaigns-from-alibaba-moonshot-ai-and-deepseek",
+      "date": "2026-09-12"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/10/ai-agents-are-flooding-public-services-with-new-requests",
+      "date": "2026-09-12"
     }
   ],
   "topics": [
-    {
-      "label": "AI Safety Concerns with OpenAI's New Model",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/openais-new-reasoning-technique-alarms-ai-safety-experts"
-    },
-    {
-      "label": "TechCrunch Disrupt 2026 and AI Innovations",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/techcrunch-disrupt-2026s-new-real-world-ai-stage-features-nvidia-robots-and-extinct-animals"
-    },
-    {
-      "label": "Trends in AI and Robotics Investment",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/hiddenlayer-nabs-100m-as-enterprises-rush-to-secure-their-ai-deployments"
-    },
-    {
-      "label": "Acquisition Trends in AI IT Service Automation",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/palo-alto-networks-paid-500m-for-thrive-backed-console-sources-say"
-    },
-    {
-      "label": "AI Technologies and Their Applications in Networking",
-      "date": "2026-09-04",
-      "url": "https://arxiv.org/abs/2609.03162v1"
-    },
-    {
-      "label": "AI-Enhanced Gaming Technologies",
-      "date": "2026-09-04",
-      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPTzBwVlZRYllfc1dJZ3dVbGhma0hIZHNCVWpQTzQwMnA0T1o5b2tUbVdsTUEyTEFIT2IycG9Fb2Z4Y2YwT2ZKaHFocGFhOVF5SUtrMVJBNkJkR2FRTHVwcEh2RXBfMWsyZlNSdW9GbzlsMEdTVDY1aUdFeEVtbjhaV0ZnTHNoa0l3X2x4UzRZT2pNSTE0cnRfUDZUSjFXNVNz?oc=5"
-    },
-    {
-      "label": "Google's Ad Business Changes and Regulatory Impact",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/google-spared-from-ad-business-breakup-but-judge-orders-changes-to-how-it-operates"
-    },
-    {
-      "label": "Market Dynamics in AI and Food Delivery",
-      "date": "2026-09-04",
-      "url": "https://techcrunch.com/2026/09/02/delivery-hero-board-backs-ubers-15b-takeover-bid"
-    },
     {
       "label": "OpenAI's Legal Challenges Over AI Training Data",
       "date": "2026-09-07",
@@ -208,6 +164,41 @@
       "label": "AI's Role in Wildfire Detection from Space",
       "date": "2026-09-10",
       "url": "https://spectrum.ieee.org/ai-wildfire-detection"
+    },
+    {
+      "label": "NVIDIA's Growth and AI Strategy Insights",
+      "date": "2026-09-12",
+      "url": "https://techcrunch.com/2026/09/10/jensen-huang-explains-why-nvidia-will-grow-an-astounding-70-next-year"
+    },
+    {
+      "label": "Incentives for Innovation in Tech Companies",
+      "date": "2026-09-12",
+      "url": "https://hbr.org/tip/2026/09/want-better-ideas-rethink-your-incentives"
+    },
+    {
+      "label": "AI's Role in Video Archiving Innovations",
+      "date": "2026-09-12",
+      "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxQS1Vha3NUNVdJZlEtX1FxLXRSeG9JQ2d3LU9Hc252MzlMVm4tai1UcXFRdFRLSXdaY3l0TktUakRFVUJzVXNSeFJvSC1VMlR2OFhEVmh1WHZLbW1ILWJ4X0VLXzM1RmJXZHVQVWFCSVRRTDhtb3hOSkx3dGx5SlRqSmJybGR4VlpiQXJ2Y3pCU1RuajAyY0s0NE9QRGd2MlNYLU5oUmZCSFhqVjc5MWFGTmk2RW5yQWZFNU4tWk1fZVQtRVA2NHhVOEo4Y25NdGg3TmUyQk83NTh5Y050bjJBTUFR?oc=5"
+    },
+    {
+      "label": "AI's Impact on Audio Content Creation",
+      "date": "2026-09-12",
+      "url": "https://techcrunch.com/2026/09/10/indias-pocket-fm-doubles-revenue-run-rate-to-500m-as-ai-powers-93-of-audio-content"
+    },
+    {
+      "label": "Meta's AI Agent Muse Performance",
+      "date": "2026-09-12",
+      "url": "https://techcrunch.com/2026/09/10/metas-ai-agent-muse-is-now-the-no-2-app-in-the-us"
+    },
+    {
+      "label": "Anthropic's AI Distillation Campaigns",
+      "date": "2026-09-12",
+      "url": "https://techcrunch.com/2026/09/10/anthropic-details-distillation-campaigns-from-alibaba-moonshot-ai-and-deepseek"
+    },
+    {
+      "label": "AI Agents in Public Services",
+      "date": "2026-09-12",
+      "url": "https://techcrunch.com/2026/09/10/ai-agents-are-flooding-public-services-with-new-requests"
     }
   ]
 }
