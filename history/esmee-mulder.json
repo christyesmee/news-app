@@ -1,34 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/09/05/seattle-times-and-newsday-are-the-latest-publications-to-sue-openai-and-microsoft",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/04/ai-compute-provider-nscale-is-looking-for-3-5b-in-pre-ipo-financing",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/04/openais-rogue-agents-keep-escaping-with-no-formal-process-to-investigate-them",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/podcast/apples-ternus-era-begins-as-nvidia-bets-on-the-whole-ai-stack",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/04/googles-gemini-spark-can-now-manage-your-google-photos-library",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/03/the-sameness-problem-behind-those-unappetizing-ai-generated-menus",
-      "date": "2026-09-07"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks",
-      "date": "2026-09-07"
-    },
-    {
       "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9UQmVxcUhuX2dkckdBbkhmSTI4NnNRQzlOVmpIbnpyZkZDbzNKMjdvaGRGNks5TTZtRmVaNVlmWkk1OTNLSTh5b2pQQlpzMi1sQkpwekNaSWFMY3hqRmdQMklJdnFORUFORU1nbThB?oc=5",
       "date": "2026-09-10"
     },
@@ -119,44 +91,41 @@
     {
       "url": "https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data",
       "date": "2026-09-14"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/13/whats-behind-the-ai-industrys-latest-warnings-of-doom",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://spectrum.ieee.org/v2x-highway-vehicle-communication",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/13/the-9-buzziest-startups-from-y-combinators-latest-demo-day-according-to-vcs",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/13/techcrunch-mobility-lyft-has-entered-the-robotaxi-chat",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/13/fusion-power-startups-find-new-partners-in-the-defense-world",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/11/openais-feud-with-mathematicians-is-only-escalating",
+      "date": "2026-09-15"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/11/final-final-final-call-for-techcrunch-disrupt-2026-side-events",
+      "date": "2026-09-15"
     }
   ],
   "topics": [
-    {
-      "label": "OpenAI's Legal Challenges Over AI Training Data",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/05/seattle-times-and-newsday-are-the-latest-publications-to-sue-openai-and-microsoft"
-    },
-    {
-      "label": "AI Compute Provider Nscale's Pre-IPO Financing",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/04/ai-compute-provider-nscale-is-looking-for-3-5b-in-pre-ipo-financing"
-    },
-    {
-      "label": "OpenAI's Safety Concerns and Investigations",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/04/openais-rogue-agents-keep-escaping-with-no-formal-process-to-investigate-them"
-    },
-    {
-      "label": "Leadership Changes at Apple and AI Strategy",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/podcast/apples-ternus-era-begins-as-nvidia-bets-on-the-whole-ai-stack"
-    },
-    {
-      "label": "Google's Gemini Spark Enhancements",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/04/googles-gemini-spark-can-now-manage-your-google-photos-library"
-    },
-    {
-      "label": "AI-Generated Menus and Consumer Perception",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/03/the-sameness-problem-behind-those-unappetizing-ai-generated-menus"
-    },
-    {
-      "label": "US Military's Ad Tracking Disablement",
-      "date": "2026-09-07",
-      "url": "https://techcrunch.com/2026/09/04/us-military-disabled-ad-tracking-on-troops-devices-following-reports-of-targeted-attacks"
-    },
     {
       "label": "NVIDIA's AI Innovations for Media at IBC 2026",
       "date": "2026-09-10",
@@ -271,6 +240,46 @@
       "label": "Trends in AI Training Data Valuation",
       "date": "2026-09-14",
       "url": "https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data"
+    },
+    {
+      "label": "AI Industry Warnings and Future Directions",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/13/whats-behind-the-ai-industrys-latest-warnings-of-doom"
+    },
+    {
+      "label": "Networking Innovations and Challenges in Connected Vehicles",
+      "date": "2026-09-15",
+      "url": "https://spectrum.ieee.org/v2x-highway-vehicle-communication"
+    },
+    {
+      "label": "Y Combinator's Latest Startups and AI Trends",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/13/the-9-buzziest-startups-from-y-combinators-latest-demo-day-according-to-vcs"
+    },
+    {
+      "label": "AI's Role in Transportation and Mobility",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/13/techcrunch-mobility-lyft-has-entered-the-robotaxi-chat"
+    },
+    {
+      "label": "Oracle's Stock Sale Cancellation and Market Impact",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock"
+    },
+    {
+      "label": "Fusion Startups and National Security Partnerships",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/13/fusion-power-startups-find-new-partners-in-the-defense-world"
+    },
+    {
+      "label": "AI's Impact on Intellectual Property and Research",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/11/openais-feud-with-mathematicians-is-only-escalating"
+    },
+    {
+      "label": "TechCrunch Disrupt 2026 Networking Opportunities",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/11/final-final-final-call-for-techcrunch-disrupt-2026-side-events"
     }
   ]
 }
