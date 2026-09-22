@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://www.forrester.com/blogs/proprietary-knowledge-becomes-the-ai-advantage-for-b2b-marketing",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/11/one-week-left-to-book-your-exhibit-table-at-techcrunch-disrupt-2026",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxPeU1YWHM3VVNsQ00wRlBOMFpoU053dl85N2ZLeUlFaFQzZFhJa2NLYV9fVnpfcGdCNWx1XzNac2k0VmFFSUdjVWQ5ZGFEQjRTNXVtWnBtdl82NXJnNjU2aVdrd0NlQmxCTFRjY0xycU8yNnFBNTdTajB6bmRDd3dlYktRUmpLMUpFSWFWRDVnQWIzZ1U5NElSVkE2aWFFcEdfMllTZHIyQlhzUGNZSjZJY2FkQ0dsS3U2dUExMDNTa1FuYXFQMS0wa2c2ZGVmZHEtSk4xVFA0RVZHOEhtRkNnY2ktandaWFpk?oc=5",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/12/automattic-confirms-mullenweg-has-returned-as-ceo-after-attempted-ouster-by-board",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/12/revolut-confirms-customer-data-breach-through-fake-government-requests",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://spectrum.ieee.org/video-friday-disaster-response-robots",
-      "date": "2026-09-14"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data",
-      "date": "2026-09-14"
-    },
-    {
       "url": "https://techcrunch.com/2026/09/13/whats-behind-the-ai-industrys-latest-warnings-of-doom",
       "date": "2026-09-15"
     },
@@ -95,49 +63,41 @@
     {
       "url": "https://arxiv.org/abs/2609.17391v1",
       "date": "2026-09-21"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/world-model-companies-are-keeping-a-lot-of-secrets",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/is-the-ai-industry-really-ready-to-slow-down",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/voccis-ring-adds-a-new-form-factor-to-meeting-note-taking",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/scrolled-wants-to-turn-textbooks-into-tiktok",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/new-california-law-will-penalize-influencers-dont-disclose-political-ads",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/6-days-left-to-get-ahead-at-techcrunch-disrupt-2026",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/20/techcrunch-mobility-how-do-we-know-when-an-av-is-safe-enough",
+      "date": "2026-09-22"
+    },
+    {
+      "url": "https://arxiv.org/abs/2609.23582v1",
+      "date": "2026-09-22"
     }
   ],
   "topics": [
-    {
-      "label": "OpenAI's IPO Plans and Leadership Insights",
-      "date": "2026-09-14",
-      "url": "https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026"
-    },
-    {
-      "label": "AI's Role in B2B Marketing Strategies",
-      "date": "2026-09-14",
-      "url": "https://www.forrester.com/blogs/proprietary-knowledge-becomes-the-ai-advantage-for-b2b-marketing"
-    },
-    {
-      "label": "Networking Opportunities at TechCrunch Disrupt 2026",
-      "date": "2026-09-14",
-      "url": "https://techcrunch.com/2026/09/11/one-week-left-to-book-your-exhibit-table-at-techcrunch-disrupt-2026"
-    },
-    {
-      "label": "AI Innovations in Video Archiving",
-      "date": "2026-09-14",
-      "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxPeU1YWHM3VVNsQ00wRlBOMFpoU053dl85N2ZLeUlFaFQzZFhJa2NLYV9fVnpfcGdCNWx1XzNac2k0VmFFSUdjVWQ5ZGFEQjRTNXVtWnBtdl82NXJnNjU2aVdrd0NlQmxCTFRjY0xycU8yNnFBNTdTajB6bmRDd3dlYktRUmpLMUpFSWFWRDVnQWIzZ1U5NElSVkE2aWFFcEdfMllTZHIyQlhzUGNZSjZJY2FkQ0dsS3U2dUExMDNTa1FuYXFQMS0wa2c2ZGVmZHEtSk4xVFA0RVZHOEhtRkNnY2ktandaWFpk?oc=5"
-    },
-    {
-      "label": "Leadership Changes in Tech Companies",
-      "date": "2026-09-14",
-      "url": "https://techcrunch.com/2026/09/12/automattic-confirms-mullenweg-has-returned-as-ceo-after-attempted-ouster-by-board"
-    },
-    {
-      "label": "Data Breaches and Security in Fintech",
-      "date": "2026-09-14",
-      "url": "https://techcrunch.com/2026/09/12/revolut-confirms-customer-data-breach-through-fake-government-requests"
-    },
-    {
-      "label": "AI's Impact on Robotics and Automation",
-      "date": "2026-09-14",
-      "url": "https://spectrum.ieee.org/video-friday-disaster-response-robots"
-    },
-    {
-      "label": "Trends in AI Training Data Valuation",
-      "date": "2026-09-14",
-      "url": "https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data"
-    },
     {
       "label": "AI Industry Warnings and Future Directions",
       "date": "2026-09-15",
@@ -217,6 +177,46 @@
       "label": "AI Model Serving Optimization Techniques",
       "date": "2026-09-21",
       "url": "https://arxiv.org/abs/2609.17391v1"
+    },
+    {
+      "label": "Trends in AI and World Models",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/world-model-companies-are-keeping-a-lot-of-secrets"
+    },
+    {
+      "label": "AI Industry Readiness for Change",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/is-the-ai-industry-really-ready-to-slow-down"
+    },
+    {
+      "label": "AI's Influence on Meeting Productivity",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/voccis-ring-adds-a-new-form-factor-to-meeting-note-taking"
+    },
+    {
+      "label": "Innovative Approaches to Education Technology",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/scrolled-wants-to-turn-textbooks-into-tiktok"
+    },
+    {
+      "label": "Influencer Regulations Impacting Tech Marketing",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/new-california-law-will-penalize-influencers-dont-disclose-political-ads"
+    },
+    {
+      "label": "Networking Innovations at TechCrunch Disrupt 2026",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/6-days-left-to-get-ahead-at-techcrunch-disrupt-2026"
+    },
+    {
+      "label": "AI's Role in Autonomous Vehicles",
+      "date": "2026-09-22",
+      "url": "https://techcrunch.com/2026/09/20/techcrunch-mobility-how-do-we-know-when-an-av-is-safe-enough"
+    },
+    {
+      "label": "AI Applications in Edge Computing",
+      "date": "2026-09-22",
+      "url": "https://arxiv.org/abs/2609.23582v1"
     }
   ]
 }
