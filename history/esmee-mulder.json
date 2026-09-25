@@ -1,38 +1,6 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/09/13/whats-behind-the-ai-industrys-latest-warnings-of-doom",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://spectrum.ieee.org/v2x-highway-vehicle-communication",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/13/the-9-buzziest-startups-from-y-combinators-latest-demo-day-according-to-vcs",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/13/techcrunch-mobility-lyft-has-entered-the-robotaxi-chat",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/13/fusion-power-startups-find-new-partners-in-the-defense-world",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/11/openais-feud-with-mathematicians-is-only-escalating",
-      "date": "2026-09-15"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/11/final-final-final-call-for-techcrunch-disrupt-2026-side-events",
-      "date": "2026-09-15"
-    },
-    {
       "url": "https://techcrunch.com/2026/09/19/vals-backed-by-andreessen-horowitz-is-looking-to-become-the-gold-standard-for-ai-benchmarking",
       "date": "2026-09-21"
     },
@@ -95,49 +63,29 @@
     {
       "url": "https://arxiv.org/abs/2609.23582v1",
       "date": "2026-09-22"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse",
+      "date": "2026-09-25"
+    },
+    {
+      "url": "https://techcrunch.com/video/the-old-cybersecurity-model-is-breaking",
+      "date": "2026-09-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/23/youtube-music-gets-more-conversational-with-new-ai-features",
+      "date": "2026-09-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/23/even-americans-who-use-ai-every-day-are-worried-about-it",
+      "date": "2026-09-25"
+    },
+    {
+      "url": "https://techcrunch.com/2026/09/23/disney-and-hulu-add-to-the-growing-trend-of-streaming-inflation",
+      "date": "2026-09-25"
     }
   ],
   "topics": [
-    {
-      "label": "AI Industry Warnings and Future Directions",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/13/whats-behind-the-ai-industrys-latest-warnings-of-doom"
-    },
-    {
-      "label": "Networking Innovations and Challenges in Connected Vehicles",
-      "date": "2026-09-15",
-      "url": "https://spectrum.ieee.org/v2x-highway-vehicle-communication"
-    },
-    {
-      "label": "Y Combinator's Latest Startups and AI Trends",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/13/the-9-buzziest-startups-from-y-combinators-latest-demo-day-according-to-vcs"
-    },
-    {
-      "label": "AI's Role in Transportation and Mobility",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/13/techcrunch-mobility-lyft-has-entered-the-robotaxi-chat"
-    },
-    {
-      "label": "Oracle's Stock Sale Cancellation and Market Impact",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock"
-    },
-    {
-      "label": "Fusion Startups and National Security Partnerships",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/13/fusion-power-startups-find-new-partners-in-the-defense-world"
-    },
-    {
-      "label": "AI's Impact on Intellectual Property and Research",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/11/openais-feud-with-mathematicians-is-only-escalating"
-    },
-    {
-      "label": "TechCrunch Disrupt 2026 Networking Opportunities",
-      "date": "2026-09-15",
-      "url": "https://techcrunch.com/2026/09/11/final-final-final-call-for-techcrunch-disrupt-2026-side-events"
-    },
     {
       "label": "AI Benchmarking Standards by Vals",
       "date": "2026-09-21",
@@ -217,6 +165,31 @@
       "label": "AI Applications in Edge Computing",
       "date": "2026-09-22",
       "url": "https://arxiv.org/abs/2609.23582v1"
+    },
+    {
+      "label": "Meta's AI Innovations and Product Developments",
+      "date": "2026-09-25",
+      "url": "https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse"
+    },
+    {
+      "label": "AI in Cybersecurity: The Need for a New Model",
+      "date": "2026-09-25",
+      "url": "https://techcrunch.com/video/the-old-cybersecurity-model-is-breaking"
+    },
+    {
+      "label": "AI's Role in Enhancing User Experience",
+      "date": "2026-09-25",
+      "url": "https://techcrunch.com/2026/09/23/youtube-music-gets-more-conversational-with-new-ai-features"
+    },
+    {
+      "label": "Leadership Development in Tech Product Management",
+      "date": "2026-09-25",
+      "url": "https://techcrunch.com/2026/09/23/even-americans-who-use-ai-every-day-are-worried-about-it"
+    },
+    {
+      "label": "AI Features in Streaming Services",
+      "date": "2026-09-25",
+      "url": "https://techcrunch.com/2026/09/23/disney-and-hulu-add-to-the-growing-trend-of-streaming-inflation"
     }
   ]
 }
