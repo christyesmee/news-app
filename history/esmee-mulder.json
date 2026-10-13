@@ -1,195 +1,78 @@
 {
   "sent": [
     {
-      "url": "https://techcrunch.com/2026/09/19/vals-backed-by-andreessen-horowitz-is-looking-to-become-the-gold-standard-for-ai-benchmarking",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/11/the-founders-guide-to-techcrunch-disrupt-2026-everything-you-need-to-know",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://techcrunch.com/2026/09/19/petlibros-new-ai-powered-feeder-is-a-game-changer-for-multi-cat-homes",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://techcrunch.com/2026/09/19/even-mid-sprint-to-a-secret-flight-the-navys-tech-chief-had-a-pitch-for-investors",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/11/these-execs-think-voice-ai-hasnt-reached-its-chatgpt-moment-yet",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://techcrunch.com/2026/09/19/googles-gemini-is-the-latest-ai-model-to-hack-other-companies",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/10/petra-power-looks-to-modernize-energy-for-data-centers-and-defense-vehicles",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://techcrunch.com/2026/09/19/ai-safety-conversations-have-gotten-unbelievable",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://arxiv.org/abs/2609.18442v1",
-      "date": "2026-09-21"
+      "url": "https://techcrunch.com/2026/10/11/can-the-ai-industry-persuade-data-center-opponents-by-getting-rid-of-ndas",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://arxiv.org/abs/2609.18283v1",
-      "date": "2026-09-21"
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNc2xQNE50NzU3QlRLREdDWHRxbmJLUVJOME1UTkx6ZVZ3SUJrZnVKamFtOGE3MG1Zempra3JLNDR2dGFDTkM2eGJEdGJ1RnQ1N3R4dTdwRjlOYjhTV3pMUVlRRVRCVnR2WGpkaG1Rd0ZBMmRISEk0M2ZqWkNpQzVjenk4dnN2dDNmaG5hVjFzNUIyRFV2N3Y5eUswQXA4U3VKSUdvSm9FT1FZaS15czZ3?oc=5",
+      "date": "2026-10-13"
     },
     {
-      "url": "https://arxiv.org/abs/2609.17391v1",
-      "date": "2026-09-21"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/world-model-companies-are-keeping-a-lot-of-secrets",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/is-the-ai-industry-really-ready-to-slow-down",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/voccis-ring-adds-a-new-form-factor-to-meeting-note-taking",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/scrolled-wants-to-turn-textbooks-into-tiktok",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/new-california-law-will-penalize-influencers-dont-disclose-political-ads",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/6-days-left-to-get-ahead-at-techcrunch-disrupt-2026",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/20/techcrunch-mobility-how-do-we-know-when-an-av-is-safe-enough",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://arxiv.org/abs/2609.23582v1",
-      "date": "2026-09-22"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse",
-      "date": "2026-09-25"
-    },
-    {
-      "url": "https://techcrunch.com/video/the-old-cybersecurity-model-is-breaking",
-      "date": "2026-09-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/23/youtube-music-gets-more-conversational-with-new-ai-features",
-      "date": "2026-09-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/23/even-americans-who-use-ai-every-day-are-worried-about-it",
-      "date": "2026-09-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/09/23/disney-and-hulu-add-to-the-growing-trend-of-streaming-inflation",
-      "date": "2026-09-25"
+      "url": "https://techcrunch.com/2026/10/10/3-days-to-disrupt-2026-meet-the-startups-before-they-hit-mainstream",
+      "date": "2026-10-13"
     }
   ],
   "topics": [
     {
-      "label": "AI Benchmarking Standards by Vals",
-      "date": "2026-09-21",
-      "url": "https://techcrunch.com/2026/09/19/vals-backed-by-andreessen-horowitz-is-looking-to-become-the-gold-standard-for-ai-benchmarking"
+      "label": "TechCrunch Disrupt 2026 Insights",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/11/the-founders-guide-to-techcrunch-disrupt-2026-everything-you-need-to-know"
     },
     {
-      "label": "Innovations in AI-Powered Products",
-      "date": "2026-09-21",
-      "url": "https://techcrunch.com/2026/09/19/petlibros-new-ai-powered-feeder-is-a-game-changer-for-multi-cat-homes"
+      "label": "AI Models and Trust Architecture",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake"
     },
     {
-      "label": "Navy's Tech Investments and AI Integration",
-      "date": "2026-09-21",
-      "url": "https://techcrunch.com/2026/09/19/even-mid-sprint-to-a-secret-flight-the-navys-tech-chief-had-a-pitch-for-investors"
+      "label": "Voice AI Development Challenges",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/11/these-execs-think-voice-ai-hasnt-reached-its-chatgpt-moment-yet"
     },
     {
-      "label": "Google's Gemini AI Model Security Concerns",
-      "date": "2026-09-21",
-      "url": "https://techcrunch.com/2026/09/19/googles-gemini-is-the-latest-ai-model-to-hack-other-companies"
+      "label": "AI in Data Centers and Energy Solutions",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/10/petra-power-looks-to-modernize-energy-for-data-centers-and-defense-vehicles"
     },
     {
-      "label": "AI Safety Discussions and Implications",
-      "date": "2026-09-21",
-      "url": "https://techcrunch.com/2026/09/19/ai-safety-conversations-have-gotten-unbelievable"
+      "label": "AI Agents in Messaging Applications",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages"
     },
     {
-      "label": "AI's Role in Automated Driving Safety",
-      "date": "2026-09-21",
-      "url": "https://arxiv.org/abs/2609.18442v1"
+      "label": "AI Industry Communication Challenges",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/11/can-the-ai-industry-persuade-data-center-opponents-by-getting-rid-of-ndas"
     },
     {
-      "label": "Agentic AI for Edge-Cloud Continuum",
-      "date": "2026-09-21",
-      "url": "https://arxiv.org/abs/2609.18283v1"
+      "label": "AI-Enhanced Products by Dell Technologies",
+      "date": "2026-10-13",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNc2xQNE50NzU3QlRLREdDWHRxbmJLUVJOME1UTkx6ZVZ3SUJrZnVKamFtOGE3MG1Zempra3JLNDR2dGFDTkM2eGJEdGJ1RnQ1N3R4dTdwRjlOYjhTV3pMUVlRRVRCVnR2WGpkaG1Rd0ZBMmRISEk0M2ZqWkNpQzVjenk4dnN2dDNmaG5hVjFzNUIyRFV2N3Y5eUswQXA4U3VKSUdvSm9FT1FZaS15czZ3?oc=5"
     },
     {
-      "label": "AI Model Serving Optimization Techniques",
-      "date": "2026-09-21",
-      "url": "https://arxiv.org/abs/2609.17391v1"
-    },
-    {
-      "label": "Trends in AI and World Models",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/world-model-companies-are-keeping-a-lot-of-secrets"
-    },
-    {
-      "label": "AI Industry Readiness for Change",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/is-the-ai-industry-really-ready-to-slow-down"
-    },
-    {
-      "label": "AI's Influence on Meeting Productivity",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/voccis-ring-adds-a-new-form-factor-to-meeting-note-taking"
-    },
-    {
-      "label": "Innovative Approaches to Education Technology",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/scrolled-wants-to-turn-textbooks-into-tiktok"
-    },
-    {
-      "label": "Influencer Regulations Impacting Tech Marketing",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/new-california-law-will-penalize-influencers-dont-disclose-political-ads"
-    },
-    {
-      "label": "Networking Innovations at TechCrunch Disrupt 2026",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/6-days-left-to-get-ahead-at-techcrunch-disrupt-2026"
-    },
-    {
-      "label": "AI's Role in Autonomous Vehicles",
-      "date": "2026-09-22",
-      "url": "https://techcrunch.com/2026/09/20/techcrunch-mobility-how-do-we-know-when-an-av-is-safe-enough"
-    },
-    {
-      "label": "AI Applications in Edge Computing",
-      "date": "2026-09-22",
-      "url": "https://arxiv.org/abs/2609.23582v1"
-    },
-    {
-      "label": "Meta's AI Innovations and Product Developments",
-      "date": "2026-09-25",
-      "url": "https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse"
-    },
-    {
-      "label": "AI in Cybersecurity: The Need for a New Model",
-      "date": "2026-09-25",
-      "url": "https://techcrunch.com/video/the-old-cybersecurity-model-is-breaking"
-    },
-    {
-      "label": "AI's Role in Enhancing User Experience",
-      "date": "2026-09-25",
-      "url": "https://techcrunch.com/2026/09/23/youtube-music-gets-more-conversational-with-new-ai-features"
-    },
-    {
-      "label": "Leadership Development in Tech Product Management",
-      "date": "2026-09-25",
-      "url": "https://techcrunch.com/2026/09/23/even-americans-who-use-ai-every-day-are-worried-about-it"
-    },
-    {
-      "label": "AI Features in Streaming Services",
-      "date": "2026-09-25",
-      "url": "https://techcrunch.com/2026/09/23/disney-and-hulu-add-to-the-growing-trend-of-streaming-inflation"
+      "label": "Emerging AI Startups at Disrupt 2026",
+      "date": "2026-10-13",
+      "url": "https://techcrunch.com/2026/10/10/3-days-to-disrupt-2026-meet-the-startups-before-they-hit-mainstream"
     }
   ]
 }
