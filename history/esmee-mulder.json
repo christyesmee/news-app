@@ -31,6 +31,34 @@
     {
       "url": "https://techcrunch.com/2026/10/10/3-days-to-disrupt-2026-meet-the-startups-before-they-hit-mainstream",
       "date": "2026-10-13"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/12/meta-releases-its-first-frontier-model-muse-wonder",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/12/microsoft-president-says-uk-is-best-placed-to-drive-ai-regulation",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/12/honeyjar-offers-ai-tools-to-improve-pr-and-comms-at-every-company",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/12/this-ai-startup-says-it-can-generate-permit-ready-blueprints-in-minutes",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.17531v1",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.18417v1",
+      "date": "2026-10-14"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.16985v1",
+      "date": "2026-10-14"
     }
   ],
   "topics": [
@@ -73,6 +101,41 @@
       "label": "Emerging AI Startups at Disrupt 2026",
       "date": "2026-10-13",
       "url": "https://techcrunch.com/2026/10/10/3-days-to-disrupt-2026-meet-the-startups-before-they-hit-mainstream"
+    },
+    {
+      "label": "Meta's New AI Model Muse Wonder",
+      "date": "2026-10-14",
+      "url": "https://techcrunch.com/2026/10/12/meta-releases-its-first-frontier-model-muse-wonder"
+    },
+    {
+      "label": "AI Regulation Advocacy by Microsoft",
+      "date": "2026-10-14",
+      "url": "https://techcrunch.com/2026/10/12/microsoft-president-says-uk-is-best-placed-to-drive-ai-regulation"
+    },
+    {
+      "label": "AI Tools for PR and Communications",
+      "date": "2026-10-14",
+      "url": "https://techcrunch.com/2026/10/12/honeyjar-offers-ai-tools-to-improve-pr-and-comms-at-every-company"
+    },
+    {
+      "label": "AI-Driven Blueprint Generation",
+      "date": "2026-10-14",
+      "url": "https://techcrunch.com/2026/10/12/this-ai-startup-says-it-can-generate-permit-ready-blueprints-in-minutes"
+    },
+    {
+      "label": "Energy Efficiency in AI Models",
+      "date": "2026-10-14",
+      "url": "https://arxiv.org/abs/2610.17531v1"
+    },
+    {
+      "label": "3D Object Detection with AI",
+      "date": "2026-10-14",
+      "url": "https://arxiv.org/abs/2610.18417v1"
+    },
+    {
+      "label": "AI in Autonomous Driving",
+      "date": "2026-10-14",
+      "url": "https://arxiv.org/abs/2610.16985v1"
     }
   ]
 }
