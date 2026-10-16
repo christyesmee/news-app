@@ -59,6 +59,38 @@
     {
       "url": "https://arxiv.org/abs/2610.16985v1",
       "date": "2026-10-14"
+    },
+    {
+      "url": "https://spectrum.ieee.org/realignment-ieee-regions",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://spectrum.ieee.org/semiconductor-research",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/13/amex-introduces-a-framework-to-prevent-ai-agents-from-making-unauthorized-purchases",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/14/zenzap-raises-44m-for-its-ai-chat-app-that-aims-to-replace-whatsapp-in-the-workplace",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://spectrum.ieee.org/anthropic-engineer-ai-agent",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://hbr.org/podcast/2026/10/why-great-teams-dont-need-to-like-each-other",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data",
+      "date": "2026-10-16"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/13/giraffe-bio-aims-its-bespoke-biomolecules-at-the-looming-copper-shortage",
+      "date": "2026-10-16"
     }
   ],
   "topics": [
@@ -136,6 +168,46 @@
       "label": "AI in Autonomous Driving",
       "date": "2026-10-14",
       "url": "https://arxiv.org/abs/2610.16985v1"
+    },
+    {
+      "label": "IEEE Geographic Realignment",
+      "date": "2026-10-16",
+      "url": "https://spectrum.ieee.org/realignment-ieee-regions"
+    },
+    {
+      "label": "Chip Industry R&D Investments",
+      "date": "2026-10-16",
+      "url": "https://spectrum.ieee.org/semiconductor-research"
+    },
+    {
+      "label": "AI Agents and Purchase Authorization",
+      "date": "2026-10-16",
+      "url": "https://techcrunch.com/2026/10/13/amex-introduces-a-framework-to-prevent-ai-agents-from-making-unauthorized-purchases"
+    },
+    {
+      "label": "AI Chat Applications in the Workplace",
+      "date": "2026-10-16",
+      "url": "https://techcrunch.com/2026/10/14/zenzap-raises-44m-for-its-ai-chat-app-that-aims-to-replace-whatsapp-in-the-workplace"
+    },
+    {
+      "label": "AI in Autonomous Systems",
+      "date": "2026-10-16",
+      "url": "https://spectrum.ieee.org/anthropic-engineer-ai-agent"
+    },
+    {
+      "label": "Team Dynamics and Leadership",
+      "date": "2026-10-16",
+      "url": "https://hbr.org/podcast/2026/10/why-great-teams-dont-need-to-like-each-other"
+    },
+    {
+      "label": "AI in Military Applications",
+      "date": "2026-10-16",
+      "url": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data"
+    },
+    {
+      "label": "AI and Environmental Sustainability",
+      "date": "2026-10-16",
+      "url": "https://techcrunch.com/2026/10/13/giraffe-bio-aims-its-bespoke-biomolecules-at-the-looming-copper-shortage"
     }
   ]
 }
