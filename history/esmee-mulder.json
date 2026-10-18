@@ -91,6 +91,22 @@
     {
       "url": "https://techcrunch.com/2026/10/13/giraffe-bio-aims-its-bespoke-biomolecules-at-the-looming-copper-shortage",
       "date": "2026-10-16"
+    },
+    {
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLWhrRUlIdHktbmRYSUhrN0JyaVVJOGpHODlvYWNJT3pVWlprV0hBWkR3QXhDZXZ0b1o4MkFST0dsYnRqMUw0bXRXQ3p6S1ZaQlBYSFdfLVpJd2ZqX1E2VDRYZmFZTm9kbTRpRnNZNHdLWlNDRkstM3QwS19NZG5rTGY2VlVqLWptUm0wOQ?oc=5",
+      "date": "2026-10-18"
+    },
+    {
+      "url": "https://spectrum.ieee.org/ieee-smart-cities-new-services",
+      "date": "2026-10-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/16/waymos-robotaxis-are-headed-to-canada",
+      "date": "2026-10-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai",
+      "date": "2026-10-18"
     }
   ],
   "topics": [
@@ -208,6 +224,26 @@
       "label": "AI and Environmental Sustainability",
       "date": "2026-10-16",
       "url": "https://techcrunch.com/2026/10/13/giraffe-bio-aims-its-bespoke-biomolecules-at-the-looming-copper-shortage"
+    },
+    {
+      "label": "HP and NVIDIA Collaborate on AI Security Framework",
+      "date": "2026-10-18",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLWhrRUlIdHktbmRYSUhrN0JyaVVJOGpHODlvYWNJT3pVWlprV0hBWkR3QXhDZXZ0b1o4MkFST0dsYnRqMUw0bXRXQ3p6S1ZaQlBYSFdfLVpJd2ZqX1E2VDRYZmFZTm9kbTRpRnNZNHdLWlNDRkstM3QwS19NZG5rTGY2VlVqLWptUm0wOQ?oc=5"
+    },
+    {
+      "label": "IEEE's Smart City Services Expansion",
+      "date": "2026-10-18",
+      "url": "https://spectrum.ieee.org/ieee-smart-cities-new-services"
+    },
+    {
+      "label": "Waymo Expands Robotaxi Testing to Canada",
+      "date": "2026-10-18",
+      "url": "https://techcrunch.com/2026/10/16/waymos-robotaxis-are-headed-to-canada"
+    },
+    {
+      "label": "Ramp's Valuation Surge Amid AI Expansion",
+      "date": "2026-10-18",
+      "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai"
     }
   ]
 }
