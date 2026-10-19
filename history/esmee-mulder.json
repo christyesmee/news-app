@@ -107,6 +107,38 @@
     {
       "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai",
       "date": "2026-10-18"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/14/figma-announces-new-features-to-define-how-agents-work-on-its-platform",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://techcrunch.com/2026/10/15/citizen-lab-says-governments-are-abusing-online-ads-to-hack-people-with-zero-click-spyware",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://spectrum.ieee.org/china-rare-earth-minerals",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.23072v1",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.23796v1",
+      "date": "2026-10-19"
+    },
+    {
+      "url": "https://arxiv.org/abs/2610.19122v1",
+      "date": "2026-10-19"
     }
   ],
   "topics": [
@@ -244,6 +276,46 @@
       "label": "Ramp's Valuation Surge Amid AI Expansion",
       "date": "2026-10-18",
       "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai"
+    },
+    {
+      "label": "Meta's Updated Terms on AI Training and Scraping",
+      "date": "2026-10-19",
+      "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns"
+    },
+    {
+      "label": "Figma's New Features for AI Agents",
+      "date": "2026-10-19",
+      "url": "https://techcrunch.com/2026/10/14/figma-announces-new-features-to-define-how-agents-work-on-its-platform"
+    },
+    {
+      "label": "Anthropic's Workforce Changes and Transparency",
+      "date": "2026-10-19",
+      "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings"
+    },
+    {
+      "label": "Zero-Click Spyware and Online Security Risks",
+      "date": "2026-10-19",
+      "url": "https://techcrunch.com/2026/10/15/citizen-lab-says-governments-are-abusing-online-ads-to-hack-people-with-zero-click-spyware"
+    },
+    {
+      "label": "Chasing China's Monazite Monopoly",
+      "date": "2026-10-19",
+      "url": "https://spectrum.ieee.org/china-rare-earth-minerals"
+    },
+    {
+      "label": "AI-RAN and GPU Resource Management",
+      "date": "2026-10-19",
+      "url": "https://arxiv.org/abs/2610.23072v1"
+    },
+    {
+      "label": "FuTransformer for Efficient AI Inference",
+      "date": "2026-10-19",
+      "url": "https://arxiv.org/abs/2610.23796v1"
+    },
+    {
+      "label": "Learning in Orbit: AI in Spacecraft Operations",
+      "date": "2026-10-19",
+      "url": "https://arxiv.org/abs/2610.19122v1"
     }
   ]
 }
