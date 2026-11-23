@@ -1,186 +1,78 @@
 {
   "sent": [
     {
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLWhrRUlIdHktbmRYSUhrN0JyaVVJOGpHODlvYWNJT3pVWlprV0hBWkR3QXhDZXZ0b1o4MkFST0dsYnRqMUw0bXRXQ3p6S1ZaQlBYSFdfLVpJd2ZqX1E2VDRYZmFZTm9kbTRpRnNZNHdLWlNDRkstM3QwS19NZG5rTGY2VlVqLWptUm0wOQ?oc=5",
-      "date": "2026-10-18"
+      "url": "https://techcrunch.com/2026/11/21/a-tale-of-two-nvidias",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://spectrum.ieee.org/ieee-smart-cities-new-services",
-      "date": "2026-10-18"
+      "url": "https://techcrunch.com/2026/11/21/all-the-ai-agents-that-can-live-in-your-text-messages",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/16/waymos-robotaxis-are-headed-to-canada",
-      "date": "2026-10-18"
+      "url": "https://techcrunch.com/2026/11/19/apple-may-be-developing-its-own-ai-agent-that-runs-your-mac",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai",
-      "date": "2026-10-18"
+      "url": "https://techcrunch.com/2026/11/20/super-hot-rock-geothermal-could-end-data-center-energy-woes",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns",
-      "date": "2026-10-19"
+      "url": "https://techcrunch.com/2026/11/20/experts-warn-nearly-everyone-in-ai-is-susceptible-to-a-honey-trap-scheme-right-now",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/14/figma-announces-new-features-to-define-how-agents-work-on-its-platform",
-      "date": "2026-10-19"
+      "url": "https://techcrunch.com/2026/11/20/a-transcription-firm-used-by-police-prosecutors-and-tech-giants-exposed-customer-data-online",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings",
-      "date": "2026-10-19"
+      "url": "https://techcrunch.com/2026/11/20/6-ai-powered-gadgets-that-could-make-your-home-office-smarter",
+      "date": "2026-11-23"
     },
     {
-      "url": "https://techcrunch.com/2026/10/15/citizen-lab-says-governments-are-abusing-online-ads-to-hack-people-with-zero-click-spyware",
-      "date": "2026-10-19"
-    },
-    {
-      "url": "https://spectrum.ieee.org/china-rare-earth-minerals",
-      "date": "2026-10-19"
-    },
-    {
-      "url": "https://arxiv.org/abs/2610.23072v1",
-      "date": "2026-10-19"
-    },
-    {
-      "url": "https://arxiv.org/abs/2610.23796v1",
-      "date": "2026-10-19"
-    },
-    {
-      "url": "https://arxiv.org/abs/2610.19122v1",
-      "date": "2026-10-19"
-    },
-    {
-      "url": "https://techcrunch.com/2026/10/22/chinese-hackers-spied-on-thousands-of-companies-after-breaching-it-giant-connectwise",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxORXY1a1RpZWx1aE01VjFkb01jNVNWbk1ybDdvOVVRWkNPa0dQYmNPV0xSejF6VlFFa0N3ajFPaU1jdXhhRmFxa3ZqNmRKR25KUHdKbTVWaURZZjlJd3lzMGc1T2FETmRuOEFoSHE0ekM0b1Z4bmpjcFBBMkxqUV9UNXJad2dIMWZZSGhwdlhjeDRsdw?oc=5",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5UTVJSOWhveml2dkdyNG9HbGV4NDNfaDV5MkFHYkdQUEoxS0kwRHVqX19CNXpGU21vaEVMNHFLM0loLVFIelpqbmc3Slg0YWthNk5TZUFoQTlfTDJ3dkVFb3VfUmJmc3V2WHpJUGEyUnhYdVl0RHZIQ2g1T09Idw?oc=5",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://spectrum.ieee.org/engineering-jobs-that-ai-cant-replace",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://techcrunch.com/sponsor/fidelity-private-shares/best-practices-for-running-a-successful-fundraise-from-preparation-to-investor-engagement",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://hbr.org/podcast/2026/10/when-you-feel-envy-turn-it-into-something-productive",
-      "date": "2026-10-25"
-    },
-    {
-      "url": "https://techcrunch.com/2026/10/21/the-internet-is-having-a-very-bad-cybersecurity-day",
-      "date": "2026-10-25"
+      "url": "https://techcrunch.com/2026/11/20/ai-claimed-a-solution-to-the-167-year-old-riemann-hypothesis-and-a-human-did-too",
+      "date": "2026-11-23"
     }
   ],
   "topics": [
     {
-      "label": "HP and NVIDIA Collaborate on AI Security Framework",
-      "date": "2026-10-18",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLWhrRUlIdHktbmRYSUhrN0JyaVVJOGpHODlvYWNJT3pVWlprV0hBWkR3QXhDZXZ0b1o4MkFST0dsYnRqMUw0bXRXQ3p6S1ZaQlBYSFdfLVpJd2ZqX1E2VDRYZmFZTm9kbTRpRnNZNHdLWlNDRkstM3QwS19NZG5rTGY2VlVqLWptUm0wOQ?oc=5"
+      "label": "Nvidia's Management Challenges",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/21/a-tale-of-two-nvidias"
     },
     {
-      "label": "IEEE's Smart City Services Expansion",
-      "date": "2026-10-18",
-      "url": "https://spectrum.ieee.org/ieee-smart-cities-new-services"
+      "label": "AI Agents in Messaging Apps",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/21/all-the-ai-agents-that-can-live-in-your-text-messages"
     },
     {
-      "label": "Waymo Expands Robotaxi Testing to Canada",
-      "date": "2026-10-18",
-      "url": "https://techcrunch.com/2026/10/16/waymos-robotaxis-are-headed-to-canada"
+      "label": "Apple's Development of AI Agents",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/19/apple-may-be-developing-its-own-ai-agent-that-runs-your-mac"
     },
     {
-      "label": "Ramp's Valuation Surge Amid AI Expansion",
-      "date": "2026-10-18",
-      "url": "https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai"
+      "label": "Geothermal Energy Solutions for Data Centers",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/20/super-hot-rock-geothermal-could-end-data-center-energy-woes"
     },
     {
-      "label": "Meta's Updated Terms on AI Training and Scraping",
-      "date": "2026-10-19",
-      "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns"
+      "label": "AI's Role in Cybersecurity Vulnerabilities",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/20/experts-warn-nearly-everyone-in-ai-is-susceptible-to-a-honey-trap-scheme-right-now"
     },
     {
-      "label": "Figma's New Features for AI Agents",
-      "date": "2026-10-19",
-      "url": "https://techcrunch.com/2026/10/14/figma-announces-new-features-to-define-how-agents-work-on-its-platform"
+      "label": "Data Security Breaches in Tech Firms",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/20/a-transcription-firm-used-by-police-prosecutors-and-tech-giants-exposed-customer-data-online"
     },
     {
-      "label": "Anthropic's Workforce Changes and Transparency",
-      "date": "2026-10-19",
-      "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings"
+      "label": "AI-Powered Gadgets for Home Offices",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/20/6-ai-powered-gadgets-that-could-make-your-home-office-smarter"
     },
     {
-      "label": "Zero-Click Spyware and Online Security Risks",
-      "date": "2026-10-19",
-      "url": "https://techcrunch.com/2026/10/15/citizen-lab-says-governments-are-abusing-online-ads-to-hack-people-with-zero-click-spyware"
-    },
-    {
-      "label": "Chasing China's Monazite Monopoly",
-      "date": "2026-10-19",
-      "url": "https://spectrum.ieee.org/china-rare-earth-minerals"
-    },
-    {
-      "label": "AI-RAN and GPU Resource Management",
-      "date": "2026-10-19",
-      "url": "https://arxiv.org/abs/2610.23072v1"
-    },
-    {
-      "label": "FuTransformer for Efficient AI Inference",
-      "date": "2026-10-19",
-      "url": "https://arxiv.org/abs/2610.23796v1"
-    },
-    {
-      "label": "Learning in Orbit: AI in Spacecraft Operations",
-      "date": "2026-10-19",
-      "url": "https://arxiv.org/abs/2610.19122v1"
-    },
-    {
-      "label": "AI Agents in Cybersecurity Breaches",
-      "date": "2026-10-25",
-      "url": "https://techcrunch.com/2026/10/22/chinese-hackers-spied-on-thousands-of-companies-after-breaching-it-giant-connectwise"
-    },
-    {
-      "label": "AI in Manufacturing Operations",
-      "date": "2026-10-25",
-      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxORXY1a1RpZWx1aE01VjFkb01jNVNWbk1ybDdvOVVRWkNPa0dQYmNPV0xSejF6VlFFa0N3ajFPaU1jdXhhRmFxa3ZqNmRKR25KUHdKbTVWaURZZjlJd3lzMGc1T2FETmRuOEFoSHE0ekM0b1Z4bmpjcFBBMkxqUV9UNXJad2dIMWZZSGhwdlhjeDRsdw?oc=5"
-    },
-    {
-      "label": "NVIDIA's AI Innovations in Quantum Computing",
-      "date": "2026-10-25",
-      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5UTVJSOWhveml2dkdyNG9HbGV4NDNfaDV5MkFHYkdQUEoxS0kwRHVqX19CNXpGU21vaEVMNHFLM0loLVFIelpqbmc3Slg0YWthNk5TZUFoQTlfTDJ3dkVFb3VfUmJmc3V2WHpJUGEyUnhYdVl0RHZIQ2g1T09Idw?oc=5"
-    },
-    {
-      "label": "AI's Role in Engineering and Workforce Dynamics",
-      "date": "2026-10-25",
-      "url": "https://spectrum.ieee.org/engineering-jobs-that-ai-cant-replace"
-    },
-    {
-      "label": "Best Practices for Fundraising in Tech",
-      "date": "2026-10-25",
-      "url": "https://techcrunch.com/sponsor/fidelity-private-shares/best-practices-for-running-a-successful-fundraise-from-preparation-to-investor-engagement"
-    },
-    {
-      "label": "AI's Impact on Smart Devices",
-      "date": "2026-10-25",
-      "url": "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again"
-    },
-    {
-      "label": "Leadership Insights from Workplace Dynamics",
-      "date": "2026-10-25",
-      "url": "https://hbr.org/podcast/2026/10/when-you-feel-envy-turn-it-into-something-productive"
-    },
-    {
-      "label": "AI and Cybersecurity Challenges",
-      "date": "2026-10-25",
-      "url": "https://techcrunch.com/2026/10/21/the-internet-is-having-a-very-bad-cybersecurity-day"
+      "label": "AI's Impact on Mathematical Research",
+      "date": "2026-11-23",
+      "url": "https://techcrunch.com/2026/11/20/ai-claimed-a-solution-to-the-167-year-old-riemann-hypothesis-and-a-human-did-too"
     }
   ]
 }
